@@ -23,14 +23,14 @@ tasks {
     register("survival-server", Copy::class) {
         dependsOn("jar")
         from("build/libs") {
-            include("HySk-*.jar")
+            include("HySkript-*.jar")
             destinationDir = file("/Users/ShaneBee/Desktop/Server/Hytale/Survival/mods/")
         }
     }
     register("creative-server", Copy::class) {
         dependsOn("jar")
         from("build/libs") {
-            include("HySk-*.jar")
+            include("HySkript-*.jar")
             destinationDir = file("/Users/ShaneBee/Desktop/Server/Hytale/Creative/mods/")
         }
     }
