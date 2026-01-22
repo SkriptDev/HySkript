@@ -1,7 +1,8 @@
 package com.shanebeestudios.skript.api.skript;
 
 import com.shanebeestudios.skript.api.utils.Utils;
-import com.shanebeestudios.skript.plugin.elements.listeners.ListenerHandler;
+import com.shanebeestudios.skript.plugin.Skript;
+import com.shanebeestudios.skript.plugin.elements.ElementRegistration;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.parsing.ScriptLoader;
 
@@ -11,11 +12,11 @@ import java.util.List;
 
 public class ScriptsLoader {
 
-    private final ListenerHandler listenerHandler;
+    private final ElementRegistration elementRegistration;
     private int loadedScriptCount = 0;
 
-    public ScriptsLoader(ListenerHandler listenerHandler) {
-        this.listenerHandler = listenerHandler;
+    public ScriptsLoader(Skript skript) {
+        this.elementRegistration = skript.getElementRegistration();
     }
 
     public void loadScripts(Path directory, boolean reload) {
@@ -37,7 +38,7 @@ public class ScriptsLoader {
         Utils.log((reload ? "Reloaded" : "Loaded") + " %s scripts in %sms", this.loadedScriptCount, end);
 
         // Call load event and start periodical events
-        this.listenerHandler.finishedLoading();
+        this.elementRegistration.finishedLoading();
     }
 
     public void loadScriptsInDirectory(File directory) {

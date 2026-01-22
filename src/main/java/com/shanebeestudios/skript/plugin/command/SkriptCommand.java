@@ -27,7 +27,7 @@ public class SkriptCommand extends AbstractCommandCollection {
             protected CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
                 return CompletableFuture.runAsync(() -> {
                     Skript skript = HySk.getInstance().getSkript();
-                    skript.getListenerHandler().clearTriggers();
+                    skript.getElementRegistration().clearTriggers();
                     skript.getScriptsLoader().loadScripts(skript.getScriptsPath(), true);
                 });
             }
