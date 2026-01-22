@@ -4,7 +4,7 @@ import com.hypixel.hytale.event.EventRegistry;
 import com.shanebeestudios.skript.plugin.Skript;
 import com.shanebeestudios.skript.plugin.elements.events.EvtLoad;
 import com.shanebeestudios.skript.plugin.elements.events.EvtPlayerJoin;
-import com.shanebeestudios.skript.plugin.elements.events.context.ScriptLoadContext;
+import com.shanebeestudios.skript.api.skript.eventcontext.ScriptLoadContext;
 import io.github.syst3ms.skriptparser.event.EvtPeriodical;
 import io.github.syst3ms.skriptparser.event.PeriodicalContext;
 import io.github.syst3ms.skriptparser.lang.SkriptEvent;

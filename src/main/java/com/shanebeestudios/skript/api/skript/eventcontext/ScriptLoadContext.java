@@ -1,4 +1,4 @@
-package com.shanebeestudios.skript.plugin.elements.events.context;
+package com.shanebeestudios.skript.api.skript.eventcontext;
 
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.console.ConsoleSender;

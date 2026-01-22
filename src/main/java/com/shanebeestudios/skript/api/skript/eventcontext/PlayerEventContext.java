@@ -1,4 +1,4 @@
-package com.shanebeestudios.skript.plugin.elements.events.context;
+package com.shanebeestudios.skript.api.skript.eventcontext;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
