@@ -88,7 +88,10 @@ public class SkriptCommand extends AbstractCommandCollection {
         SkriptRegistration registration = skript.getRegistration();
 
         try {
+            Utils.log("Printing documentation");
+
             // EXPRESSIONS
+            Utils.log("Printing expressions");
             File file = getFile("expressions");
 
             PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
@@ -98,6 +101,7 @@ public class SkriptCommand extends AbstractCommandCollection {
             writer.close();
 
             // EFFECTS
+            Utils.log("Printing effects");
             file = getFile("effects");
 
             writer = new PrintWriter(file, StandardCharsets.UTF_8);
@@ -107,6 +111,7 @@ public class SkriptCommand extends AbstractCommandCollection {
             writer.close();
 
             // EVENTS
+            Utils.log("Printing events");
             file = getFile("events");
             writer = new PrintWriter(file, StandardCharsets.UTF_8);
             printEvents(writer, registration);
@@ -114,6 +119,7 @@ public class SkriptCommand extends AbstractCommandCollection {
             writer.close();
 
             // TYPES
+            Utils.log("Printing types");
             file = getFile("types");
             writer = new PrintWriter(file, StandardCharsets.UTF_8);
             printTypes(writer, registration);
@@ -121,12 +127,14 @@ public class SkriptCommand extends AbstractCommandCollection {
             writer.close();
 
             // SECTIONS
+            Utils.log("Printing sections");
             file = getFile("sections");
             writer = new PrintWriter(file, StandardCharsets.UTF_8);
             printSections(writer, registration);
             printSections(writer, Parser.getMainRegistration());
             writer.close();
 
+            Utils.log("Documentation printed!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -198,16 +206,24 @@ public class SkriptCommand extends AbstractCommandCollection {
         if (documentation.getUsage() != null) {
             writer.println("- **Usage**:  ");
             String usage = documentation.getUsage();
-            if (usage.length() > 100) {
-                // Asset store stuff gets really long
-                writer.println("<details>");
-                writer.println("  <summary>Usages</summary>");
-                writer.println();
-                writer.println("`");
-                writer.println(documentation.getUsage());
-                writer.println("`");
-                writer.println("</details>");
-                writer.println();
+            if (usage.length() > 200) {
+                // Asset store stuff gets really long, so plop them on another page
+                // GitHub's wiki pages seem to have a limit
+                Utils.log("Creating asset store link for: " + documentation.getName());
+                writer.println("[Click Here](https://github.com/SkriptDev/HySkript/wiki/usage-" + documentation.getName().replace(" ", "-") + ")");
+                File usageFile = getFile("usage-" + documentation.getName());
+                try {
+                    PrintWriter usageWriter = new PrintWriter(usageFile, StandardCharsets.UTF_8);
+                    usageWriter.println("### Usage: " + documentation.getName());
+                    usageWriter.println("```");
+                    for (String s : usage.split(", ")) {
+                        usageWriter.println(s);
+                    }
+                    usageWriter.println("```");
+                    usageWriter.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 writer.println("`");
                 writer.println(documentation.getUsage());
