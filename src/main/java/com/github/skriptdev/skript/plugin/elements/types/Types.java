@@ -1,11 +1,26 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.skript.AssetStoreRegistry;
+import com.github.skriptdev.skript.api.skript.registration.AssetStoreRegistry;
+import com.github.skriptdev.skript.api.skript.registration.EnumRegistry;
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.hypixel.hytale.assetstore.AssetRegistry;
 import com.hypixel.hytale.builtin.hytalegenerator.assets.biomes.BiomeAsset;
+import com.hypixel.hytale.math.vector.Location;
+import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.InventoryActionType;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
+import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
+import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
+import com.hypixel.hytale.server.core.asset.type.item.config.BlockGroup;
+import com.hypixel.hytale.server.core.asset.type.item.config.CraftingRecipe;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.item.config.ResourceType;
+import com.hypixel.hytale.server.core.asset.type.projectile.config.Projectile;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.asset.type.weather.config.Weather;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.entity.Entity;
@@ -13,7 +28,10 @@ import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.role.Role;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
@@ -31,6 +49,7 @@ public class Types {
         registerItemTypes(registration);
         registerBlockTypes(registration);
         registerWorldTypes(registration);
+        registerAssetStoreTypes(registration);
 
         TypeManager.register(registration);
     }
@@ -54,6 +73,30 @@ public class Types {
         registration.newType(HytaleServer.class, "server", "server@s")
             .name("Server")
             .description("Represents the Hytale server.")
+            .since("INSERT VERSION")
+            .register();
+        registration.newType(Vector3f.class, "vector3f", "vector3f@s")
+            .name("Vector3f")
+            .description("Represents a vector in 3D space using floats.",
+                "Often used for the rotation of entities in a world.")
+            .since("INSERT VERSION")
+            .register();
+        registration.newType(Vector3d.class, "vector3d", "vector3d@s")
+            .name("Vector3d")
+            .description("Represents a vector in 3D space using doubles.",
+                "Often used for the position of entities in a world.")
+            .since("INSERT VERSION")
+            .register();
+        registration.newType(Vector3i.class, "vector3i", "vector3i@s")
+            .name("Vector3i")
+            .description("Represents a vector in 3D space using integers.",
+                "Often used for the position of blocks in a world.")
+            .since("INSERT VERSION")
+            .register();
+        registration.newType(Location.class, "location", "location@s")
+            .name("Location")
+            .description("Represents a location in a world.",
+                "A location contains a world, a position (vector3d) and a rotation (vector3f).")
             .since("INSERT VERSION")
             .register();
     }
@@ -89,13 +132,6 @@ public class Types {
     }
 
     private static void registerItemTypes(SkriptRegistration registration) {
-        AssetStoreRegistry.register(registration, Item.class, Item.getAssetMap(), "item", "item@s")
-            .name("Item")
-            .description("Represents the types of items in the game.")
-            .examples("set {_i} to itemstack of Food_Fish_Grilled")
-            .since("INSERT VERSION")
-            .toStringFunction(Item::getId)
-            .register();
         registration.newType(ItemStack.class, "itemstack", "itemstack@s")
             .name("Item Stack")
             .description("Represents an item in an inventory slot.")
@@ -112,9 +148,51 @@ public class Types {
             .since("INSERT VERSION")
             .toStringFunction(Inventory::toString)
             .register();
+        EnumRegistry.register(registration, InventoryActionType.class, "inventoryactiontype", "inventoryActionType@s")
+            .name("Inventory Action Type")
+            .description("Represents the types of actions that can be performed in an inventory.")
+            .since("INSERT VERSION")
+            .register();
     }
 
     private static void registerBlockTypes(SkriptRegistration registration) {
+    }
+
+    private static void registerWorldTypes(SkriptRegistration registration) {
+        registration.newType(World.class, "world", "world@s")
+            .name("World")
+            .description("Represents a world in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(World::getName)
+            .register();
+        registration.newType(WorldChunk.class, "chunk", "chunk@s")
+            .name("Chunk")
+            .description("Represents a chunk in a world. A chunk is a 32x32x(world height) set of blocks.")
+            .since("INSERT VERSION")
+            .toStringFunction(worldChunk -> "chunk (x=" + worldChunk.getX() + ",z=" + worldChunk.getZ() + ") in world '" + worldChunk.getWorld().getName() + "'")
+            .register();
+    }
+
+    private static void registerAssetStoreTypes(SkriptRegistration registration) {
+        AssetStoreRegistry.register(registration, BiomeAsset.class, BiomeAsset.getAssetStore().getAssetMap(), "biome", "biome@s")
+            .name("Biome")
+            .description("Represents the types of biomes in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(BiomeAsset::getId)
+            .register();
+        AssetStoreRegistry.register(registration, BlockGroup.class, AssetRegistry.getAssetStore(BlockGroup.class).getAssetMap(),
+                "blockgroup", "blockgroup@s")
+            .name("Block Group")
+            .description("Represents the groups of blocks in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(BlockGroup::getId)
+            .register();
+        AssetStoreRegistry.register(registration, CraftingRecipe.class, CraftingRecipe.getAssetMap(), "craftingrecipe", "craftingrecipe@s")
+            .name("Crafting Recipe")
+            .description("Represents the crafting recipes in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(CraftingRecipe::getId)
+            .register();
         AssetStoreRegistry.register(registration, BlockType.class, BlockType.getAssetMap(), "blocktype", "blockType@s")
             .name("BlockType")
             .description("Represents the types of blocks in the game.")
@@ -122,24 +200,70 @@ public class Types {
             .since("INSERT VERSION")
             .toStringFunction(BlockType::getId)
             .register();
-    }
-
-    private static void registerWorldTypes(SkriptRegistration registration) {
-        AssetStoreRegistry.register(registration, BiomeAsset.class, BiomeAsset.getAssetStore().getAssetMap(), "biome", "biome@s")
-            .name("Biome")
-            .description("Represents the types of biomes in the game.")
+        AssetStoreRegistry.register(registration, Fluid.class, Fluid.getAssetMap(), "fluid", "fluid@s")
+            .name("Fluid")
+            .description("Represents the types of fluids in the game.")
             .since("INSERT VERSION")
+            .toStringFunction(Fluid::getId)
             .register();
-        registration.newType(World.class, "world", "world@s")
-            .name("World")
-            .description("Represents a world in the game.")
+        AssetStoreRegistry.register(registration, EntityEffect.class, EntityEffect.getAssetMap(),
+                "entityeffect", "entityEffect@s")
+            .name("Entity Effect")
+            .description("Represents the types of effects that can be applied to entities.")
             .since("INSERT VERSION")
-            .toStringFunction(World::getName)
+            .toStringFunction(EntityEffect::getId)
+            .register();
+        AssetStoreRegistry.register(registration, Environment.class, Environment.getAssetMap(),
+                "environment", "environment@s")
+            .name("Environment")
+            .description("Represents the types of environments in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(Environment::getId)
+            .register();
+        AssetStoreRegistry.register(registration, DamageCause.class, DamageCause.getAssetMap(),
+                "damagecause", "damageCause@s")
+            .name("Damage Cause")
+            .description("Represents the types of damage that can be caused to entities.")
+            .since("INSERT VERSION")
+            .toStringFunction(DamageCause::getId)
+            .register();
+        AssetStoreRegistry.register(registration, Interaction.class, Interaction.getAssetMap(),
+                "interaction", "interaction@s")
+            .name("Interaction")
+            .description("Represents the types of interactions that can be performed by entities.")
+            .since("INSERT VERSION")
+            .toStringFunction(Interaction::getId)
+            .register();
+        AssetStoreRegistry.register(registration, Item.class, Item.getAssetMap(), "item", "item@s")
+            .name("Item")
+            .description("Represents the types of items in the game.")
+            .examples("set {_i} to itemstack of Food_Fish_Grilled")
+            .since("INSERT VERSION")
+            .toStringFunction(Item::getId)
+            .register();
+        AssetStoreRegistry.register(registration, Projectile.class, Projectile.getAssetMap(), "projectile", "projectile@s")
+            .name("Projectile")
+            .description("Represents the types of projectiles in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(Projectile::getId)
+            .register();
+        AssetStoreRegistry.register(registration, ResourceType.class, ResourceType.getAssetMap(), "resourcetype", "resourceType@s")
+            .name("Resource Type")
+            .description("Represents the types of resources in the game, such as woods and stones.")
+            .since("INSERT VERSION")
+            .toStringFunction(ResourceType::getId)
+            .register();
+        AssetStoreRegistry.register(registration, SoundEvent.class, SoundEvent.getAssetMap(), "soundevent", "soundevent@s")
+            .name("Sound Event")
+            .description("Represents the types of sounds in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(SoundEvent::getId)
             .register();
         AssetStoreRegistry.register(registration, Weather.class, Weather.getAssetMap(), "weather", "weather@s")
             .name("Weather")
             .description("Represents the types of weather in the game.")
             .since("INSERT VERSION")
+            .toStringFunction(Weather::getId)
             .register();
     }
 

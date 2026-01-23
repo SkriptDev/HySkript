@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.api.skript;
+package com.github.skriptdev.skript.api.skript.registration;
 
 import com.hypixel.hytale.assetstore.JsonAsset;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
