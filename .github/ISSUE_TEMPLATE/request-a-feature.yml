@@ -2,6 +2,7 @@ name: 👷 Feature Request
 description: Request an addition or change to HySkript
 title: "[SUGGESTION] "
 labels: "needs triage"
+type: "Feature"
 body:
     - type: textarea
       id: suggestion
