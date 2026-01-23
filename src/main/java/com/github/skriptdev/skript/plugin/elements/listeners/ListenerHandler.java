@@ -1,10 +1,9 @@
 package com.github.skriptdev.skript.plugin.elements.listeners;
 
-import com.hypixel.hytale.event.EventRegistry;
+import com.github.skriptdev.skript.api.skript.eventcontext.ScriptLoadContext;
 import com.github.skriptdev.skript.plugin.Skript;
 import com.github.skriptdev.skript.plugin.elements.events.EvtLoad;
 import com.github.skriptdev.skript.plugin.elements.events.EvtPlayerJoin;
-import com.github.skriptdev.skript.api.skript.eventcontext.ScriptLoadContext;
 import io.github.syst3ms.skriptparser.event.EvtPeriodical;
 import io.github.syst3ms.skriptparser.event.PeriodicalContext;
 import io.github.syst3ms.skriptparser.lang.SkriptEvent;
@@ -23,9 +22,9 @@ public class ListenerHandler {
     private final List<Trigger> onLoadTriggers = new ArrayList<>();
     private final List<Trigger> periodicalTriggers = new ArrayList<>();
 
-    public ListenerHandler(Skript skript, EventRegistry registry) {
+    public ListenerHandler(Skript skript) {
         this.skript = skript;
-        this.playerJoinListener = new PlayerJoinListener(registry);
+        this.playerJoinListener = new PlayerJoinListener(skript.getPlugin().getEventRegistry());
     }
 
     public void handleTrigger(Trigger trigger) {

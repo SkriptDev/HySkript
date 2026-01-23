@@ -1,5 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
+import com.github.skriptdev.skript.api.skript.AssetStoreRegistry;
+import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.builtin.hytalegenerator.assets.biomes.BiomeAsset;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
@@ -14,9 +16,8 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.role.Role;
-import com.github.skriptdev.skript.api.skript.AssetStoreRegistry;
-import com.github.skriptdev.skript.api.utils.Utils;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
+import io.github.syst3ms.skriptparser.types.TypeManager;
 
 import java.util.UUID;
 
@@ -30,6 +31,8 @@ public class Types {
         registerItemTypes(registration);
         registerBlockTypes(registration);
         registerWorldTypes(registration);
+
+        TypeManager.register(registration);
     }
 
     private static void registerJavaTypes(SkriptRegistration registration) {

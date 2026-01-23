@@ -10,7 +10,6 @@ import com.github.skriptdev.skript.plugin.elements.types.Types;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.lang.Trigger;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
-import io.github.syst3ms.skriptparser.types.TypeManager;
 import org.jetbrains.annotations.NotNull;
 
 public class ElementRegistration {
@@ -20,7 +19,7 @@ public class ElementRegistration {
 
     public ElementRegistration(Skript skript) {
         this.registration = skript.getRegistration();
-        this.listenerHandler = new ListenerHandler(skript, skript.getPlugin().getEventRegistry());
+        this.listenerHandler = new ListenerHandler(skript);
     }
 
     public void registerElements() {
@@ -28,7 +27,6 @@ public class ElementRegistration {
 
         // TYPES
         Types.register(this.registration);
-        TypeManager.register(this.registration);
 
         // CONDITIONS
         ConditionHandler.register(this.registration);
