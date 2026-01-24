@@ -91,13 +91,14 @@ public class SkriptCommand extends AbstractCommandCollection {
             Utils.log("Printing documentation");
 
             // EXPRESSIONS
-            Utils.log("Printing expressions");
+            Utils.log("Printing expressions and conditions");
             File file = getFile("expressions");
-
             PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
-            printExpressions(writer, registration);
-            printExpressions(writer, Parser.getMainRegistration());
+            PrintWriter condWriter = new PrintWriter(getFile("conditions"), StandardCharsets.UTF_8);
+            printExpressions(writer, condWriter, registration);
+            printExpressions(writer, condWriter, Parser.getMainRegistration());
 
+            condWriter.close();
             writer.close();
 
             // EFFECTS
@@ -160,14 +161,19 @@ public class SkriptCommand extends AbstractCommandCollection {
         });
     }
 
-    private void printExpressions(PrintWriter writer, SkriptRegistration registration) {
+    private void printExpressions(PrintWriter exprWriter, PrintWriter condWriter, SkriptRegistration registration) {
         registration.getExpressions().forEach((aClass, expressionInfos) -> {
             expressionInfos.forEach(expressionInfo -> {
                 Documentation documentation = expressionInfo.getDocumentation();
-                printDocumentation("Expression", writer, documentation, expressionInfo.getPatterns());
-                writer.println("- **Return Type**: " + expressionInfo.getReturnType());
+                if (expressionInfo.getSyntaxClass().getSimpleName().startsWith("Cond")) {
+                    printDocumentation("Condition", condWriter, documentation, expressionInfo.getPatterns());
+                    condWriter.println("- **Return Type**: " + expressionInfo.getReturnType());
+                } else {
+                    printDocumentation("Expression", exprWriter, documentation, expressionInfo.getPatterns());
+                    exprWriter.println("- **Return Type**: " + expressionInfo.getReturnType());
+                }
             });
-            writer.println();
+            exprWriter.println();
         });
     }
 
@@ -190,7 +196,7 @@ public class SkriptCommand extends AbstractCommandCollection {
     private void printSections(PrintWriter writer, SkriptRegistration registration) {
         for (SyntaxInfo<? extends CodeSection> section : registration.getSections()) {
             Documentation documentation = section.getDocumentation();
-            printDocumentation("Section", writer, documentation, List.of());
+            printDocumentation("Section", writer, documentation, section.getPatterns());
         }
     }
 
