@@ -72,12 +72,13 @@ public class Command extends SkriptEvent {
 
     public static void register(SkriptRegistration registration) {
         registration.newEvent(Command.class,
-                "[global] command <.+>",
-                "player command <.+>",
-                "world command <.+>")
+                "*[global] command <.+>",
+                "*player command <.+>",
+                "*world command <.+>")
             .setHandledContexts(ScriptCommandContext.class)
             .name("Command")
             .description("Create a command.",
+                "**Entries**:",
                 "- `Description` = The description for your command that will show in the commands gui (required).",
                 "- `Permission` = The permission required to execute the command (optional).")
             .examples("command /kill:",
