@@ -30,6 +30,8 @@ import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
+import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.npc.NPCPlugin;
@@ -69,6 +71,11 @@ public class Types {
             .description("Represents a command sender such as a player or the console.")
             .since("INSERT VERSION")
             .toStringFunction(CommandSender::getDisplayName)
+            .register();
+        registration.newType(IMessageReceiver.class, "messagereceiver", "messageReceiver@s")
+            .name("Message Receiver")
+            .description("Represents a receiver of messages such as a player or the console.")
+            .since("INSERT VERSION")
             .register();
         registration.newType(HytaleServer.class, "server", "server@s")
             .name("Server")
@@ -128,6 +135,12 @@ public class Types {
             .description("Represents a player in the game.")
             .since("INSERT VERSION")
             .toStringFunction(Player::getDisplayName)
+            .register();
+        registration.newType(PlayerRef.class, "playerref", "playerRef@s")
+            .name("Player Ref")
+            .description("Represents a reference to a player in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(PlayerRef::getUsername)
             .register();
     }
 

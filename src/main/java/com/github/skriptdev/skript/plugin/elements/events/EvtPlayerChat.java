@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
 import com.github.skriptdev.skript.api.skript.eventcontext.CancellableContext;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.SkriptEvent;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
@@ -14,11 +15,13 @@ public class EvtPlayerChat extends SkriptEvent {
     public static class PlayerChatEventContext implements CancellableContext {
 
         private boolean cancelled = false;
+        private final PlayerRef sender;
         private String message;
         private boolean messageChanged = false;
 
-        public PlayerChatEventContext(String message) {
+        public PlayerChatEventContext(String message, PlayerRef sender) {
             this.message = message;
+            this.sender = sender;
         }
 
         public String[] getMessage() {
@@ -32,6 +35,10 @@ public class EvtPlayerChat extends SkriptEvent {
 
         public boolean isMessageChanged() {
             return this.messageChanged;
+        }
+
+        public PlayerRef[] getSender() {
+            return new PlayerRef[]{this.sender};
         }
 
         @Override
@@ -51,10 +58,15 @@ public class EvtPlayerChat extends SkriptEvent {
     }
 
     public static void register(SkriptRegistration registration) {
-        registration.newEvent(EvtPlayerChat.class, "player chat")
+        registration.newEvent(EvtPlayerChat.class, "[player] chat")
             .setHandledContexts(PlayerChatEventContext.class)
             .name("Player Chat")
-            .description("Event triggered when a player sends a message in chat.")
+            .description("Event triggered when a player sends a message in chat.",
+                "This event can be cancelled.")
+            .examples("on player chat:",
+                "\tif name of context-sender = \"bob\":",
+                "\t\tcancel event",
+                "\t\tsend \"You said: %message% and we cancelled that!!!\" to context-sender")
             .since("INSERT VERSION")
             .register();
 
@@ -64,6 +76,18 @@ public class EvtPlayerChat extends SkriptEvent {
                 "message",
                 PlayerChatEventContext::getMessage)
             .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
+            .register();
+        registration.newContextValue(PlayerChatEventContext.class,
+                PlayerRef.class,
+                true,
+                "playerref",
+                PlayerChatEventContext::getSender)
+            .register();
+        registration.newContextValue(PlayerChatEventContext.class,
+                PlayerRef.class,
+                true,
+                "sender",
+                PlayerChatEventContext::getSender)
             .register();
 //        registration.newContextValue(PlayerChatEventContext.class, TODO figure out how to get a player
 //            Player.class,

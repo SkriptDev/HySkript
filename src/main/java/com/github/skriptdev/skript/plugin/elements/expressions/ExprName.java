@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.expressions;
 
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
@@ -23,14 +24,13 @@ public class ExprName extends PropertyExpression<String, Object> {
 
     @Override
     public @Nullable String getProperty(Object object) {
-        switch (object) {
+        return switch (object) {
+            case PlayerRef playerRef -> playerRef.getUsername();
             case Player player -> player.getDisplayName();
             case Entity entity -> entity.getLegacyDisplayName();
             case World world -> world.getName();
-            default -> {
-            }
-        }
-        return null;
+            default -> null;
+        };
     }
 
 }

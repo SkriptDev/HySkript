@@ -17,7 +17,7 @@ public class PlayerListener {
     public PlayerListener(EventRegistry registry) {
         registry.registerAsyncGlobal(PlayerChatEvent.class, future -> {
             future.thenAccept(event -> {
-                PlayerChatEventContext ctx = new PlayerChatEventContext(event.getContent());
+                PlayerChatEventContext ctx = new PlayerChatEventContext(event.getContent(), event.getSender());
                 for (Trigger trigger : this.chatTriggers) {
                     Statement.runAll(trigger, ctx);
                 }

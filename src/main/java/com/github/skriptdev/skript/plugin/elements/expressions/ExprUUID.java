@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.expressions;
 
 import com.hypixel.hytale.server.core.entity.Entity;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
@@ -15,7 +16,7 @@ public class ExprUUID extends PropertyExpression<UUID, Object> {
         registration.newPropertyExpression(ExprUUID.class, UUID.class, "objects",
                 "uuid")
             .name("UUID of Object")
-            .description("Get the UUID of a player, entity, or world.")
+            .description("Get the UUID of a player, player ref, entity, or world.")
             .examples("set {_uuid} to uuid of {_player}")
             .since("INSERT VERSION")
             .register();
@@ -23,9 +24,12 @@ public class ExprUUID extends PropertyExpression<UUID, Object> {
 
     @Override
     public @Nullable UUID getProperty(@NotNull Object owner) {
-        if (owner instanceof Entity entity) return entity.getUuid();
-        else if (owner instanceof World world) return world.getWorldConfig().getUuid();
-        return null;
+        return switch (owner) {
+            case PlayerRef playerRef -> playerRef.getUuid();
+            case Entity entity -> entity.getUuid();
+            case World world -> world.getWorldConfig().getUuid();
+            default -> null;
+        };
     }
 
 }
