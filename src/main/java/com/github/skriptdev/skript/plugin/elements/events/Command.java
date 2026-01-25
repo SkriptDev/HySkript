@@ -1,11 +1,16 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
+import com.github.skriptdev.skript.api.command.ArgUtils;
+import com.github.skriptdev.skript.api.command.CommandArg;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
+import com.hypixel.hytale.server.core.command.system.arguments.system.Argument;
+import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
+import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -25,10 +30,13 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.parsing.ParserState;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import io.github.syst3ms.skriptparser.registration.context.ContextValue.Usage;
+import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -72,6 +80,7 @@ public class Command extends SkriptEvent {
     }
 
     public static void register(SkriptRegistration registration) {
+        ArgUtils.init();
         registration.newEvent(Command.class,
                 "*[global] command <.+>",
                 "*player command <.+>",
@@ -79,13 +88,38 @@ public class Command extends SkriptEvent {
             .setHandledContexts(ScriptCommandContext.class)
             .name("Command")
             .description("Create a command.",
+                "**Command Format**:",
+                "- `<global/player/world> command /command_name (args)`",
+                "",
+                "**Argument Formats**:",
+                "- `<type>`",
+                "- `<name:type>`",
+                "- `<type:\"description\">`",
+                "- `<name:type:\"description\">`",
+                "- <> = Makes the argument required.",
+                "- [<>] = Makes the argument optional.",
+                "- Type = The type of argument to use (required).",
+                "- Name = The name of the argument, this will be used to create local variables (optional).",
+                "- Description = The description of the argument, this is show in the command GUI (optional).",
+                "",
                 "**Entries**:",
-                "- `Description` = The description for your command that will show in the commands gui (required).",
+                "- `Description` = The description for your command that will show in the commands gui (optional).",
                 "- `Permission` = The permission required to execute the command (optional).")
             .examples("command /kill:",
                 "\tdescription: Kill all the players",
                 "\ttrigger:",
                 "\t\tkill all players",
+                "",
+                "command /home [<name:string:\"Name of home\">]:",
+                "\ttrigger:",
+                "\t\tif {_name} is set:",
+                "\t\t\tteleport player to {homes::%{_name}%}",
+                "\t\telse:",
+                "\t\t\tteleport player to {homes::default}",
+                "",
+                "command /broadcast <message:string:\"Message to broadcast\">:",
+                "\ttrigger:",
+                "\t\tbroadcast {_message}",
                 "",
                 "player command /clear:",
                 "\tpermission: my.script.command.clear",
@@ -131,15 +165,28 @@ public class Command extends SkriptEvent {
 
     private String command;
     private int commandType;
+    private final Map<String, CommandArg> args = new HashMap<>();
+    private final Map<String, Argument<?, ?>> argsFromCommand = new HashMap<>();
 
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, ParseContext parseContext) {
-        this.command = parseContext.getMatches().getFirst().group();
-        if (this.command.startsWith("/")) {
-            this.command = this.command.substring(1);
+        String commandLine = parseContext.getMatches().getFirst().group();
+        if (commandLine.startsWith("/")) {
+            commandLine = commandLine.substring(1);
         }
-        if (this.command.contains(" ")) {
-            this.command = this.command.substring(0, this.command.indexOf(" "));
+        if (commandLine.contains(" ")) {
+            String[] commandLineSplit = commandLine.split(" ", 2);
+            this.command = commandLineSplit[0];
+
+            String[] argSplit = commandLineSplit[1].split("(?<=[>\\]])\\s+(?=[<\\[])");
+            for (String s : argSplit) {
+                CommandArg arg = CommandArg.parseArg(s);
+                if (arg == null) {
+                    parseContext.getLogger().error("Invalid argument format: '" + s + "'", ErrorType.SEMANTIC_ERROR);
+                    return false;
+                }
+                setupArg(arg);
+            }
         }
         if (this.command.isEmpty()) {
             parseContext.getLogger().error("Command cannot be empty", ErrorType.SEMANTIC_ERROR);
@@ -166,14 +213,12 @@ public class Command extends SkriptEvent {
 
         Optional<String> descOption = this.sec.getValue("description", String.class);
         if (descOption.isEmpty()) {
-            logger.error("Description cannot be empty", ErrorType.SEMANTIC_ERROR);
-            return List.of();
+            descOption = Optional.of("");
         }
 
         String description = trim(descOption.get());
         if (description.isEmpty()) {
-            logger.error("Description cannot be empty", ErrorType.SEMANTIC_ERROR);
-            return List.of();
+            description = "";
         }
 
         AbstractCommand hyCommand = switch (this.commandType) {
@@ -184,15 +229,18 @@ public class Command extends SkriptEvent {
 
                     CommandSender sender = commandContext.sender();
                     Player player = store.getComponent(ref, Player.getComponentType());
-                    Statement.runAll(trigger, new ScriptCommandContext(Command.this.command, sender, player, world));
-
+                    ScriptCommandContext context = new ScriptCommandContext(Command.this.command, sender, player, world);
+                    createLocalVariables(commandContext, context);
+                    Statement.runAll(trigger, context);
                 }
             };
             case 2 -> new AbstractWorldCommand(this.command, description) {
 
                 @Override
                 protected void execute(@NotNull CommandContext commandContext, @NotNull World world, @NotNull Store<EntityStore> store) {
-                    Statement.runAll(trigger, new ScriptCommandContext(Command.this.command, commandContext.sender(), null, world));
+                    ScriptCommandContext context = new ScriptCommandContext(Command.this.command, commandContext.sender(), null, world);
+                    createLocalVariables(commandContext, context);
+                    Statement.runAll(trigger, context);
                 }
             };
             default -> new AbstractCommand(this.command, description) {
@@ -205,12 +253,22 @@ public class Command extends SkriptEvent {
                         if (sender instanceof Player p) player = p;
                         ScriptCommandContext ctx = new ScriptCommandContext(Command.this.command, sender, player, null);
 
+                        createLocalVariables(commandContext, ctx);
                         Statement.runAll(trigger, ctx);
                     });
                     return null;
                 }
             };
         };
+        this.args.forEach((key, arg) -> {
+            if (arg.isOptional()) {
+                OptionalArg<?> optionalArg = hyCommand.withOptionalArg(arg.getName(), arg.getDescription(), arg.getType());
+                this.argsFromCommand.put(key, optionalArg);
+            } else {
+                RequiredArg<?> requiredArg = hyCommand.withRequiredArg(arg.getName(), arg.getDescription(), arg.getType());
+                this.argsFromCommand.put(key, requiredArg);
+            }
+        });
         Optional<String> permValue = sec.getValue("permission", String.class);
         if (permValue.isPresent()) {
             String perm = trim(permValue.get());
@@ -249,6 +307,28 @@ public class Command extends SkriptEvent {
             default -> "global";
         };
         return type + " command /" + this.command;
+    }
+
+    private void setupArg(CommandArg arg) {
+        String name = arg.getName();
+        if (this.args.containsKey(name)) {
+            for (int i = 1; i < 10; i++) {
+                String newName = name + (i + 1);
+                if (!this.args.containsKey(newName)) {
+                    this.args.put(newName, arg);
+                    return;
+                }
+            }
+        } else {
+            this.args.put(name, arg);
+        }
+    }
+
+    private void createLocalVariables(CommandContext ctx, TriggerContext triggerContext) {
+        this.argsFromCommand.forEach((name, arg) -> {
+            Object o = ctx.get(arg);
+            if (o != null) Variables.setVariable(name, o, triggerContext, true);
+        });
     }
 
 }
