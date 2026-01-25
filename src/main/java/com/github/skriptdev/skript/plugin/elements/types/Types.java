@@ -13,6 +13,7 @@ import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.InventoryActionType;
 import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
@@ -76,6 +77,11 @@ public class Types {
         registration.newType(IMessageReceiver.class, "messagereceiver", "messageReceiver@s")
             .name("Message Receiver")
             .description("Represents a receiver of messages such as a player or the console.")
+            .since("INSERT VERSION")
+            .register();
+        registration.newType(Message.class, "message", "message@s")
+            .name("Message")
+            .description("Represents a stylized message sent to a message receiver.")
             .since("INSERT VERSION")
             .register();
         registration.newType(HytaleServer.class, "server", "server@s")

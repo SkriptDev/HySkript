@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.effects;
 
 import com.github.skriptdev.skript.api.skript.eventcontext.PlayerEventContext;
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import io.github.syst3ms.skriptparser.lang.Effect;
@@ -10,12 +11,11 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EffSendMessage extends Effect {
 
     public static void register(SkriptRegistration registration) {
-        registration.newEffect(EffSendMessage.class, "send [message[s]] %strings% [to %-messagereceivers%]")
+        registration.newEffect(EffSendMessage.class, "send [message[s]] %strings/messages% [to %-messagereceivers%]")
             .name("Send Message")
             .description("Sends a message to a command sender such as a player or the console.")
             .examples("send \"Welcome to the server\" to player")
@@ -23,13 +23,13 @@ public class EffSendMessage extends Effect {
             .register();
     }
 
-    private Expression<String> message;
+    private Expression<?> messages;
     private Expression<IMessageReceiver> senders;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, @NotNull ParseContext parseContext) {
-        this.message = (Expression<String>) exprs[0];
+        this.messages = exprs[0];
         if (exprs.length > 1) { // TODO whatttt?!?!?
             this.senders = (Expression<IMessageReceiver>) exprs[1];
         }
@@ -38,30 +38,43 @@ public class EffSendMessage extends Effect {
 
     @Override
     protected void execute(@NotNull TriggerContext ctx) {
-        String[] messages = this.message.getValues(ctx);
+        Object[] messages = this.messages.getValues(ctx);
         if (this.senders != null) {
             for (IMessageReceiver commandSender : this.senders.getArray(ctx)) {
-                for (String value : messages) {
-                    Utils.sendMessage(commandSender, value);
+                for (Object value : messages) {
+                    if (value instanceof String string) {
+                        Utils.sendMessage(commandSender, string);
+                    } else if (value instanceof Message message) {
+                        commandSender.sendMessage(message);
+                    }
                 }
             }
         } else {
             if (ctx instanceof PlayerEventContext playerEventContext) {
                 for (CommandSender commandSender : playerEventContext.getPlayer()) {
-                    for (String value : messages) {
-                        Utils.sendMessage(commandSender, value);
+                    for (Object value : messages) {
+                        if (value instanceof String string) {
+                            Utils.sendMessage(commandSender, string);
+                        } else if (value instanceof Message message) {
+                            commandSender.sendMessage(message);
+                        }
                     }
                 }
-            }
-            for (String value : messages) {
-                Utils.log(value);
+            } else {
+                for (Object value : messages) {
+                    if (value instanceof String s) {
+                        Utils.log(s);
+                    } else if (value instanceof Message message) {
+                        Utils.log(message.getRawText());
+                    }
+                }
             }
         }
     }
 
     @Override
-    public String toString(@Nullable TriggerContext ctx, boolean debug) {
-        return "send message[s] " + this.message.toString(ctx, debug);
+    public String toString(@NotNull TriggerContext ctx, boolean debug) {
+        return "send message[s] " + this.messages.toString(ctx, debug);
     }
 
 }

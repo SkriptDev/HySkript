@@ -13,6 +13,11 @@ public class ExpressionHandler {
         ExprItemStack.register(registration);
         ExprItemType.register(registration);
         ExprLocationOf.register(registration);
+        ExprMessage.register(registration);
+        ExprMessageColor.register(registration);
+        ExprMessageLink.register(registration);
+        ExprMessageParam.register(registration);
+        ExprMessageProperties.register(registration);
         ExprName.register(registration);
         ExprNPCType.register(registration);
         ExprUUID.register(registration);
