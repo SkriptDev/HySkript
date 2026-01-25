@@ -104,7 +104,8 @@ public class ScriptCommand extends SkriptEvent {
                 "",
                 "**Entries**:",
                 "- `Description` = The description for your command that will show in the commands gui (optional).",
-                "- `Permission` = The permission required to execute the command (optional).")
+                "- `Permission` = The permission required to execute the command (optional).",
+                "- `Aliases` = A list of aliases for the command (optional).")
             .examples("command /kill:",
                 "\tdescription: Kill all the players",
                 "\ttrigger:",
@@ -160,6 +161,7 @@ public class ScriptCommand extends SkriptEvent {
     private final SectionConfiguration sec = new SectionConfiguration.Builder()
         .addOptionalKey("permission")
         .addOptionalKey("description")
+        .addOptionalList("aliases")
         .addSection("trigger")
         .build();
 
@@ -272,13 +274,19 @@ public class ScriptCommand extends SkriptEvent {
                 this.argsFromCommand.put(key, requiredArg);
             }
         });
-        Optional<String> permValue = sec.getValue("permission", String.class);
+        Optional<String> permValue = this.sec.getValue("permission", String.class);
         if (permValue.isPresent()) {
             String perm = trim(permValue.get());
             if (!perm.isEmpty()) {
                 hyCommand.requirePermission(perm);
             } else {
                 logger.warn("Permission is empty, will fallback to default permission.");
+            }
+        }
+        Optional<String[]> aliases = this.sec.getStringList("aliases");
+        if (aliases.isPresent()) {
+            for (String alias : aliases.get()) {
+                hyCommand.addAliases(trim(alias));
             }
         }
         HySk.getInstance().getCommandRegistry().registerCommand(hyCommand);
