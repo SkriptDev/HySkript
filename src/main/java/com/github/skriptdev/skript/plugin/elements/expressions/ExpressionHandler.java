@@ -28,6 +28,7 @@ public class ExpressionHandler {
         ExprWorld.register(registration);
         ExprWorldOfEntity.register(registration);
         ExprWorldOfLocation.register(registration);
+        ExprWorldSpawn.register(registration);
     }
 
 }
