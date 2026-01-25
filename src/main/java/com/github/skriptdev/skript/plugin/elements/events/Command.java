@@ -53,14 +53,15 @@ public class Command extends SkriptEvent {
         }
 
         public CommandSender[] getSender() {
-            return new CommandSender[]{sender};
+            return new CommandSender[]{this.sender};
         }
 
         public World[] getWorld() {
-            return new World[]{world};
+            return new World[]{this.world};
         }
 
         public Player[] getPlayer() {
+            if (this.player == null && this.sender instanceof Player p) return new Player[]{p};
             return new Player[]{this.player};
         }
 
@@ -137,6 +138,13 @@ public class Command extends SkriptEvent {
         if (this.command.startsWith("/")) {
             this.command = this.command.substring(1);
         }
+        if (this.command.contains(" ")) {
+            this.command = this.command.substring(0, this.command.indexOf(" "));
+        }
+        if (this.command.isEmpty()) {
+            parseContext.getLogger().error("Command cannot be empty", ErrorType.SEMANTIC_ERROR);
+            return false;
+        }
         this.commandType = matchedPattern;
         return true;
     }
@@ -145,16 +153,28 @@ public class Command extends SkriptEvent {
     public List<Statement> loadSection(@NotNull FileSection section, @NotNull ParserState parserState, @NotNull SkriptLogger logger) {
         this.sec.loadConfiguration(null, section, parserState, logger);
         Optional<CodeSection> triggerSec = this.sec.getSection("trigger");
-        if (triggerSec.isEmpty()) return List.of();
+        if (triggerSec.isEmpty()) {
+            logger.error("Trigger section is missing", ErrorType.SEMANTIC_ERROR);
+            return List.of();
+        }
 
         CodeSection trigger = triggerSec.get();
+        if (trigger.getItems().isEmpty()) {
+            logger.warn("Trigger section should not be empty.");
+            return List.of();
+        }
 
         Optional<String> descOption = this.sec.getValue("description", String.class);
         if (descOption.isEmpty()) {
             logger.error("Description cannot be empty", ErrorType.SEMANTIC_ERROR);
             return List.of();
         }
-        String description = descOption.get();
+
+        String description = trim(descOption.get());
+        if (description.isEmpty()) {
+            logger.error("Description cannot be empty", ErrorType.SEMANTIC_ERROR);
+            return List.of();
+        }
 
         AbstractCommand hyCommand = switch (this.commandType) {
             case 1 -> new AbstractPlayerCommand(this.command, description) {
@@ -191,11 +211,29 @@ public class Command extends SkriptEvent {
                 }
             };
         };
-        Optional<String> perm = sec.getValue("permission", String.class);
-        perm.ifPresent(hyCommand::requirePermission);
+        Optional<String> permValue = sec.getValue("permission", String.class);
+        if (permValue.isPresent()) {
+            String perm = trim(permValue.get());
+            if (!perm.isEmpty()) {
+                hyCommand.requirePermission(perm);
+            } else {
+                logger.warn("Permission is empty, will fallback to default permission.");
+            }
+        }
         HySk.getInstance().getCommandRegistry().registerCommand(hyCommand);
 
         return List.of(trigger);
+    }
+
+    private String trim(String s) {
+        // In case someone puts quotes, let's remove them
+        if (s.startsWith("\"")) {
+            s = s.substring(1);
+        }
+        if (s.endsWith("\"")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        return s.trim();
     }
 
     @Override
