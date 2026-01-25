@@ -52,7 +52,7 @@ public class ScriptsLoader {
             } else {
                 if (!file.getName().endsWith(".sk")) continue;
                 Utils.log("Loading script '" + file.getName() + "'...");
-                List<LogEntry> logEntries = ScriptLoader.loadScript(file.toPath(), this.skript.getLogger(), false);
+                List<LogEntry> logEntries = ScriptLoader.loadScript(file.toPath(), false);
                 this.loadedScriptCount++;
                 for (LogEntry logEntry : logEntries) {
                     Utils.log(logEntry);
@@ -78,7 +78,7 @@ public class ScriptsLoader {
             }
 
             Utils.log("Reloading script '%s'...", name);
-            List<LogEntry> logEntries = ScriptLoader.loadScript(path, this.skript.getLogger(), false);
+            List<LogEntry> logEntries = ScriptLoader.loadScript(path, false);
             for (LogEntry logEntry : logEntries) {
                 Utils.log(logEntry);
             }
