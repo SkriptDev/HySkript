@@ -7,6 +7,7 @@ public class EffectHandler {
     public static void register(SkriptRegistration registration) {
         EffBroadcast.register(registration);
         EffCancelEvent.register(registration);
+        EffKill.register(registration);
         EffSendMessage.register(registration);
         EffTeleport.register(registration);
     }

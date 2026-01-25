@@ -7,11 +7,17 @@ public class ExpressionHandler {
     public static void register(SkriptRegistration registration) {
         ExprAllPlayers.register(registration);
         ExprBlockType.register(registration);
+        ExprChatMessage.register(registration);
         ExprClassInfoOf.register(registration);
         ExprInventory.register(registration);
         ExprItemStack.register(registration);
         ExprItemType.register(registration);
         ExprLocationOf.register(registration);
+        ExprMessage.register(registration);
+        ExprMessageColor.register(registration);
+        ExprMessageLink.register(registration);
+        ExprMessageParam.register(registration);
+        ExprMessageProperties.register(registration);
         ExprName.register(registration);
         ExprNPCType.register(registration);
         ExprUUID.register(registration);
