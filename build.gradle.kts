@@ -4,7 +4,7 @@ plugins {
     id("maven-publish")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 group = "com.github.SkriptDev"
 val projectVersion = "1.0.0"
