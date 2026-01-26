@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin;
 
 import com.github.skriptdev.skript.api.skript.ScriptsLoader;
+import com.github.skriptdev.skript.api.skript.command.ArgUtils;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
@@ -35,6 +36,7 @@ public class Skript extends SkriptAddon {
 
     private void setup() {
         ReflectionUtils.init();
+        ArgUtils.init();
         this.registration = new SkriptRegistration(this);
         this.elementRegistration = new ElementRegistration(this);
         this.elementRegistration.registerElements();

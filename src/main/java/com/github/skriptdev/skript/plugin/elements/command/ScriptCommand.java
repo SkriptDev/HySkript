@@ -65,7 +65,6 @@ public class ScriptCommand extends SkriptEvent implements ScriptCommandParent {
     }
 
     public static void register(SkriptRegistration registration) {
-        ArgUtils.init();
         registration.newEvent(ScriptCommand.class,
                 "*[global] command <.+>",
                 "*player command <.+>",
