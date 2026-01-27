@@ -2,7 +2,6 @@ package com.github.skriptdev.skript.plugin.elements.command;
 
 import com.github.skriptdev.skript.api.skript.command.ScriptCommandBuilder;
 import com.github.skriptdev.skript.api.skript.command.ScriptCommandParent;
-import com.github.skriptdev.skript.api.utils.Utils;
 import io.github.syst3ms.skriptparser.file.FileSection;
 import io.github.syst3ms.skriptparser.lang.CodeSection;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -35,8 +34,7 @@ public class ScriptSubCommand extends CodeSection implements ScriptCommandParent
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
         this.commandLine = parseContext.getMatches().getFirst().group();
         this.commandBuilder = ScriptCommandBuilder.create(-1, parseContext.getLogger());
-        this.commandBuilder.parseCommandLine(this.commandLine);
-        return true;
+        return this.commandBuilder.parseCommandLine(this.commandLine);
     }
 
     @Override
