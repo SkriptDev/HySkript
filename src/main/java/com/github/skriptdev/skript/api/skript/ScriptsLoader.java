@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.api.skript;
 
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.Skript;
+import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.parsing.ScriptLoader;
@@ -20,9 +21,9 @@ public class ScriptsLoader {
         this.skript = skript;
     }
 
-    public void loadScripts(Path directory, boolean reload) {
+    public void loadScripts(IMessageReceiver receiver, Path directory, boolean reload) {
         this.loadedScriptCount = 0;
-        Utils.log((reload ? "Reloading" : "Loading") + " scripts...");
+        Utils.log(receiver, (reload ? "Reloading" : "Loading") + " scripts...");
         long start = System.currentTimeMillis();
 
         File directoryFile = directory.toFile();
@@ -32,10 +33,10 @@ public class ScriptsLoader {
             }
         }
 
-        List<String> scriptNames = loadScriptsInDirectory(directoryFile);
+        List<String> scriptNames = loadScriptsInDirectory(receiver, directoryFile);
 
         long end = System.currentTimeMillis() - start;
-        Utils.log((reload ? "Reloaded" : "Loaded") + " %s scripts in %sms", this.loadedScriptCount, end);
+        Utils.log(receiver, (reload ? "Reloaded" : "Loaded") + " %s scripts in %sms", this.loadedScriptCount, end);
 
         if (reload) {
             // Run load events after reloading scripts
@@ -46,20 +47,20 @@ public class ScriptsLoader {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    public List<String> loadScriptsInDirectory(File directory) {
+    public List<String> loadScriptsInDirectory(IMessageReceiver receiver, File directory) {
         if (directory == null || !directory.isDirectory()) return List.of();
         List<String> loadedScripts = new ArrayList<>();
 
         for (File file : directory.listFiles()) {
             if (file.isDirectory()) {
-                loadedScripts.addAll(loadScriptsInDirectory(file));
+                loadedScripts.addAll(loadScriptsInDirectory(receiver, file));
             } else {
                 if (!file.getName().endsWith(".sk")) continue;
-                Utils.log("Loading script '" + file.getName() + "'...");
+                Utils.log(receiver, "Loading script '" + file.getName() + "'...");
                 List<LogEntry> logEntries = ScriptLoader.loadScript(file.toPath(), false);
                 this.loadedScriptCount++;
                 for (LogEntry logEntry : logEntries) {
-                    Utils.log(logEntry);
+                    Utils.log(receiver, logEntry);
                 }
                 loadedScripts.add(file.getName().substring(0, file.getName().length() - 3));
             }
@@ -67,15 +68,15 @@ public class ScriptsLoader {
         return loadedScripts;
     }
 
-    public void reloadScript(String name) {
+    public void reloadScript(IMessageReceiver receiver, String name) {
         long start = System.currentTimeMillis();
         Path path = this.skript.getScriptsPath().resolve(name);
         if (path.toFile().isDirectory()) {
             this.loadedScriptCount = 0;
-            Utils.log("Reloading scripts in path '%s'...", name);
-            List<String> scriptNames = loadScriptsInDirectory(path.toFile());
+            Utils.log(receiver, "Reloading scripts in path '%s'...", name);
+            List<String> scriptNames = loadScriptsInDirectory(receiver, path.toFile());
             long fin = System.currentTimeMillis() - start;
-            Utils.log("Reloaded %s scripts in %sm.", this.loadedScriptCount, fin);
+            Utils.log(receiver, "Reloaded %s scripts in %sm.", this.loadedScriptCount, fin);
 
             // Run load events after reloading scripts
             for (String scriptName : scriptNames) {
@@ -89,13 +90,13 @@ public class ScriptsLoader {
                 return;
             }
 
-            Utils.log("Reloading script '%s'...", name);
+            Utils.log(receiver, "Reloading script '%s'...", name);
             List<LogEntry> logEntries = ScriptLoader.loadScript(path, false);
             for (LogEntry logEntry : logEntries) {
-                Utils.log(logEntry);
+                Utils.log(receiver, logEntry);
             }
             long fin = System.currentTimeMillis() - start;
-            Utils.log("Reloaded script '%s' in %sms.", name, fin);
+            Utils.log(receiver, "Reloaded script '%s' in %sms.", name, fin);
 
             String scriptFileName = path.toFile().getName();
             String scriptName = scriptFileName.substring(0, scriptFileName.length() - 3);

@@ -9,7 +9,7 @@ import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandRegistry;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
-import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
+import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import io.github.syst3ms.skriptparser.Parser;
@@ -51,25 +51,29 @@ public class SkriptCommand extends AbstractCommandCollection {
 
     private static class ReloadCommand extends AbstractCommand {
 
-        private final OptionalArg<String> scriptArg;
+        private final RequiredArg<String> stringRequiredArg;
 
         protected ReloadCommand() {
             super("reload", "Reloads all scripts.");
-            this.scriptArg = withOptionalArg("script", "A script to reload", ArgTypes.STRING);
+            this.stringRequiredArg = withRequiredArg("script", "A script to reload", ArgTypes.STRING);
+            addSubCommand(new AbstractCommand("all", "Reloads all scripts.") {
+                @Override
+                protected CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
+                    return CompletableFuture.runAsync(() -> {
+                        Skript skript = HySk.getInstance().getSkript();
+                        Path scriptsPath = skript.getScriptsPath();
+                        skript.getScriptsLoader().loadScripts(commandContext.sender(), scriptsPath, true);
+                    });
+                }
+            });
         }
 
         @Override
         protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
             return CompletableFuture.runAsync(() -> {
                 Skript skript = HySk.getInstance().getSkript();
-
-                Path scriptsPath = skript.getScriptsPath();
-                if (this.scriptArg.provided(commandContext)) {
-                    String scriptName = this.scriptArg.get(commandContext);
-                    skript.getScriptsLoader().reloadScript(scriptName);
-                } else {
-                    skript.getScriptsLoader().loadScripts(scriptsPath, true);
-                }
+                String s = this.stringRequiredArg.get(commandContext);
+                skript.getScriptsLoader().reloadScript(commandContext.sender(), s);
             });
         }
     }
