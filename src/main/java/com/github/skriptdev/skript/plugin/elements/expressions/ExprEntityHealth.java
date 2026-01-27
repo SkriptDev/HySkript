@@ -44,7 +44,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
     @Override
     public @Nullable Number getProperty(@NotNull LivingEntity entity) {
-        EntityStatMap entityStatMap = EntityComponentUtils.getHealthComponent(entity);
+        EntityStatMap entityStatMap = EntityComponentUtils.getEntityStatMap(entity);
         if (entityStatMap == null) return null;
         EntityStatValue health = entityStatMap.get(HEALTH_STATE_INDEX);
         if (health == null) return null;
@@ -69,7 +69,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
         if (single.isEmpty()) return;
         LivingEntity entity = single.get();
 
-        EntityStatMap statMap = EntityComponentUtils.getHealthComponent(entity);
+        EntityStatMap statMap = EntityComponentUtils.getEntityStatMap(entity);
         if (statMap == null) return;
 
         float newValue;

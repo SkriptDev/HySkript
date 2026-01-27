@@ -15,12 +15,12 @@ import org.jetbrains.annotations.Nullable;
 public class EntityComponentUtils {
 
     /**
-     * Get the health component of an entity.
+     * Get the EntityStatMap component of an entity.
      *
      * @param entity Entity to get component from
-     * @return Health component of the entity, or null if not found
+     * @return EntityStatMap component of the entity, or null if not found
      */
-    public static @Nullable EntityStatMap getHealthComponent(LivingEntity entity) {
+    public static @Nullable EntityStatMap getEntityStatMap(LivingEntity entity) {
         World world = entity.getWorld();
         if (world == null) return null;
 
