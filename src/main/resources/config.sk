@@ -1,0 +1,7 @@
+databases:
+    default:
+        type: json-database
+        file-type: json
+        file: variables.json
+        pattern: .*
+
