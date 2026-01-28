@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
-import com.github.skriptdev.skript.api.skript.event.IEventContext;
+import com.github.skriptdev.skript.api.skript.event.CancellableContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.event.EventRegistration;
@@ -18,10 +18,9 @@ public class EvtPlayerChat extends SkriptEvent {
 
     public static void register(SkriptRegistration registration) {
         registration.newEvent(EvtPlayerChat.class, "[player] chat")
-            .setHandledContexts(IEventContext.class)
+            .setHandledContexts(PlayerChatContext.class)
             .name("Player Chat")
-            .description("Event triggered when a player sends a message in chat.",
-                "This event can be cancelled.")
+            .description("Event triggered when a player sends a message in chat.")
             .examples("on player chat:",
                 "\tif name of context-sender = \"bob\":",
                 "\t\tcancel event",
@@ -29,9 +28,12 @@ public class EvtPlayerChat extends SkriptEvent {
             .since("INSERT VERSION")
             .register();
 
-        registration.addIEventContext(PlayerChatEvent.class, String.class, "message", PlayerChatEvent::getContent);
-        registration.addIEventContext(PlayerChatEvent.class, PlayerRef.class, "sender", PlayerChatEvent::getSender);
-        registration.addIEventContext(PlayerChatEvent.class, PlayerRef.class, "playerref", PlayerChatEvent::getSender);
+        registration.addContextValue(PlayerChatContext.class, String.class,
+            true, "message", PlayerChatContext::getMessage);
+        registration.addContextValue(PlayerChatContext.class, PlayerRef.class,
+            true, "sender", PlayerChatContext::getSender);
+        registration.addContextValue(PlayerChatContext.class, PlayerRef.class,
+            true, "playerref", PlayerChatContext::getSender);
     }
 
     private EventRegistration<String, PlayerChatEvent> chatListener;
@@ -40,7 +42,7 @@ public class EvtPlayerChat extends SkriptEvent {
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
         this.chatListener = HySk.getInstance().getEventRegistry().registerAsyncGlobal(PlayerChatEvent.class, future -> {
             future.thenAccept(event -> {
-                IEventContext<PlayerChatEvent> ctx = new IEventContext<>(event);
+                PlayerChatContext ctx = new PlayerChatContext(event);
                 for (Trigger trigger : this.getTriggers()) {
                     Statement.runAll(trigger, ctx);
                 }
@@ -64,6 +66,32 @@ public class EvtPlayerChat extends SkriptEvent {
     @Override
     public String toString(@NotNull TriggerContext ctx, boolean debug) {
         return "player chat";
+    }
+
+    private record PlayerChatContext(PlayerChatEvent event) implements TriggerContext, CancellableContext {
+
+        public String[] getMessage() {
+            return new String[]{this.event.getContent()};
+        }
+
+        public PlayerRef[] getSender() {
+            return new PlayerRef[]{this.event.getSender()};
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return this.event.isCancelled();
+        }
+
+        @Override
+        public void setCancelled(boolean cancelled) {
+            this.event.setCancelled(cancelled);
+        }
+
+        @Override
+        public String getName() {
+            return "player chat context";
+        }
     }
 
 }
