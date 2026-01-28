@@ -213,7 +213,10 @@ public class DocPrinter {
         }
         if (!patterns.isEmpty()) {
             writer.println("- **Patterns**:");
-            patterns.forEach(pattern -> writer.println("   - `" + pattern + "`"));
+            patterns.forEach(pattern -> {
+                String r = pattern.toString().replaceAll("-?\\w+:", "");
+                writer.println("   - `" + r + "`");
+            });
         }
         if (documentation.getExamples() != null) {
             writer.println("- **Examples**:  ");
