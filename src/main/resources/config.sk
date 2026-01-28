@@ -1,7 +1,34 @@
+# HySkript Config
+
+debug: false
+# Whether or not to enable debug mode (maybe print more verbose logs to console).
+
+# Represents the database[s] used by HySkript to save variables to.
+# You can add as many databases as you want.
 databases:
+#   dummy: (This is the name of your database)
+#       type: json-database
+#       This is the type of database, currently only 'json-database' is supported
+#
+#       enabled: true
+#       Whether or not the database is enabled
+#
+#       file-type: json
+#       The file type of the database, currently only 'json' and 'bson' are supported
+#       'json' = Will save as a JSON file in text format (Easy to read/change if you need to).
+#       'bson' = Will save as a BSON file in binary format (This is what Hytale uses, much smaller file).
+#
+#       file: variables.json
+#       The file to save variables to.
+#
+#       pattern: .*
+#       The regex pattern to match variables to.
+#       '.*' = Will save all variables.
+#       '(?!-).*' = Will only save variables that don't start with '-' (ex: '{-some_var}' will not be saved).
+
     default:
         type: json-database
+        enabled: true
         file-type: json
         file: variables.json
         pattern: .*
-
