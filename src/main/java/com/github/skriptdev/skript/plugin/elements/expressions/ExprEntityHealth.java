@@ -64,7 +64,6 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
-        super.change(ctx, changeMode, changeWith);
         Optional<? extends LivingEntity> single = getOwner().getSingle(ctx);
         if (single.isEmpty()) return;
         LivingEntity entity = single.get();
