@@ -14,28 +14,22 @@ import io.github.syst3ms.skriptparser.variables.Variables;
 import org.bson.BsonBinaryReader;
 import org.bson.BsonBinaryWriter;
 import org.bson.BsonDocument;
-import org.bson.BsonReader;
 import org.bson.BsonString;
-import org.bson.BsonType;
 import org.bson.BsonValue;
-import org.bson.ByteBufNIO;
 import org.bson.codecs.BsonDocumentCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.io.BasicOutputBuffer;
-import org.bson.io.ByteBufferBsonInput;
 import org.bson.json.JsonWriterSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
@@ -133,43 +127,6 @@ public class JsonVariableStorage extends VariableStorage {
         }
     }
 
-    private void readJsonFile() throws IOException {
-        String jsonContent = Files.readString(this.file.toPath());
-        if (jsonContent.isBlank()) {
-            this.bsonDocument = new BsonDocument();
-        } else {
-            this.bsonDocument = BsonDocument.parse(jsonContent);
-        }
-    }
-
-    private void readBsonFile() throws IOException {
-        if (!this.file.exists()) {
-            throw new FileNotFoundException("File not found: " + this.file.getAbsolutePath());
-        }
-
-        try (FileInputStream fis = new FileInputStream(file); FileChannel fc = fis.getChannel()) {
-            // Read the entire file into a ByteBuffer
-            ByteBuffer buffer = ByteBuffer.allocate((int) fc.size());
-            fc.read(buffer);
-            buffer.flip();
-
-            try (ByteBufferBsonInput bib = new ByteBufferBsonInput(new ByteBufNIO(buffer))) {
-                // Use BsonBinaryReader to read the BSON data
-                BsonReader reader = new BsonBinaryReader(bib);
-
-                // Use a BsonDocumentCodec to decode the BSON into a BsonDocument object
-                BsonDocumentCodec codec = new BsonDocumentCodec();
-                DecoderContext decoderContext = DecoderContext.builder().build();
-                BsonType type = reader.getCurrentBsonType();
-                if (type == null || type == BsonType.NULL || type == BsonType.END_OF_DOCUMENT) {
-                    this.bsonDocument = new BsonDocument();
-                } else {
-                    this.bsonDocument = codec.decode(reader, decoderContext);
-                }
-            }
-        }
-    }
-
     @Override
     protected boolean requiresFile() {
         return true;
@@ -234,7 +191,7 @@ public class JsonVariableStorage extends VariableStorage {
         }
         try {
             Variables.getLock().lock();
-            writeBsonDocumentToFile();
+            writeBsonFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -242,22 +199,47 @@ public class JsonVariableStorage extends VariableStorage {
         }
     }
 
-    public void writeBsonDocumentToFile() throws IOException {
+    private void readJsonFile() throws IOException {
+        String jsonContent = Files.readString(this.file.toPath());
+        if (jsonContent.isBlank()) {
+            this.bsonDocument = new BsonDocument();
+        } else {
+            this.bsonDocument = BsonDocument.parse(jsonContent);
+        }
+    }
+
+    private void readBsonFile() throws IOException {
+        if (!this.file.exists()) {
+            throw new FileNotFoundException("File not found: " + this.file.getAbsolutePath());
+        }
+
+        byte[] bsonBytes = Files.readAllBytes(this.file.toPath());
+        if (bsonBytes.length > 0) {
+            try (BsonBinaryReader reader = new BsonBinaryReader(ByteBuffer.wrap(bsonBytes))) {
+                BsonDocument doc = new BsonDocumentCodec().decode(reader, DecoderContext.builder().build());
+                this.bsonDocument = doc == null ? new BsonDocument() : doc;
+            }
+        } else {
+            this.bsonDocument = new BsonDocument();
+        }
+
+    }
+
+    public void writeBsonFile() throws IOException {
         if (this.type == Type.JSON) {
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(this.file);
             JsonWriterSettings.Builder indent = JsonWriterSettings.builder().indent(true);
             fileWriter.write(this.bsonDocument.toJson(indent.build()));
             fileWriter.close();
         } else if (this.type == Type.BSON) {
-            try (BasicOutputBuffer outputBuffer = new BasicOutputBuffer(); FileOutputStream fos = new FileOutputStream(this.file)) {
+            BasicOutputBuffer outputBuffer = new BasicOutputBuffer();
+            try (BsonBinaryWriter writer = new BsonBinaryWriter(outputBuffer)) {
+                new BsonDocumentCodec().encode(writer, this.bsonDocument, EncoderContext.builder().build());
+            }
 
-                BsonBinaryWriter writer = new BsonBinaryWriter(outputBuffer);
-                // Use BsonDocumentCodec to encode the BsonDocument to the writer
-                new BsonDocumentCodec().encode(writer, this.bsonDocument, EncoderContext.builder().isEncodingCollectibleDocument(true).build());
-                writer.close();
-
-                // Write the byte array to the file
-                fos.write(outputBuffer.toByteArray());
+            byte[] bsonBytes = outputBuffer.toByteArray();
+            try (FileOutputStream fos = new FileOutputStream(this.file)) {
+                fos.write(bsonBytes);
             }
         }
     }
