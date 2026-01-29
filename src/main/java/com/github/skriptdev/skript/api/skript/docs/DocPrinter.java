@@ -126,9 +126,7 @@ public class DocPrinter {
                     PatternType<?> returnType = contextValue.getReturnType();
                     boolean single = returnType.isSingle();
                     String c = single ? "a single" : "multiple";
-                    String[] pluralForms = returnType.getType().getPluralForms();
-                    String baseName = pluralForms.length > 0 && !single ? pluralForms[1] : pluralForms[0];
-                    baseName = String.format("[%s](https://github.com/SkriptDev/HySkript/wiki/types#%s)", baseName,returnType.getType().getDocumentation().getName().toLowerCase(Locale.ROOT).replace(" ", "-"));
+                    String baseName = getLinkForType(returnType.getType(), single);
                     writer.println("   - `context-" + pattern + "` returns " + c + " " + baseName);
                 });
             }
@@ -151,12 +149,13 @@ public class DocPrinter {
         for (List<ExpressionInfo<?, ?>> expressionInfos : values) {
             expressionInfos.forEach(expressionInfo -> {
                 Documentation documentation = expressionInfo.getDocumentation();
+                String returnType = getLinkForType(expressionInfo.getReturnType().getType(), expressionInfo.getReturnType().isSingle());
                 if (expressionInfo.getSyntaxClass().getSimpleName().startsWith("Cond")) {
                     printDocumentation("Condition", condWriter, documentation, expressionInfo.getPatterns());
-                    condWriter.println("- **Return Type**: " + expressionInfo.getReturnType());
+                    condWriter.println("- **Return Type**: " + returnType);
                 } else {
                     printDocumentation("Expression", exprWriter, documentation, expressionInfo.getPatterns());
-                    exprWriter.println("- **Return Type**: " + expressionInfo.getReturnType());
+                    exprWriter.println("- **Return Type**: " + returnType);
                 }
             });
             exprWriter.println();
@@ -271,6 +270,13 @@ public class DocPrinter {
             }
         }
         return file;
+    }
+
+    private static String getLinkForType(Type<?> type, boolean single) {
+        String[] pluralForms = type.getPluralForms();
+        String baseName = pluralForms.length > 0 && !single ? pluralForms[1] : pluralForms[0];
+        String name = type.getDocumentation().getName().replace(" ", "-").toLowerCase(Locale.ROOT);
+        return String.format("[%s](https://github.com/SkriptDev/HySkript/wiki/types#%s)", baseName, name);
     }
 
 }
