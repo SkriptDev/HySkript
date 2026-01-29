@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DocPrinter {
@@ -127,6 +128,7 @@ public class DocPrinter {
                     String c = single ? "a single" : "multiple";
                     String[] pluralForms = returnType.getType().getPluralForms();
                     String baseName = pluralForms.length > 0 && !single ? pluralForms[1] : pluralForms[0];
+                    baseName = String.format("[%s](https://github.com/SkriptDev/HySkript/wiki/types#%s)", baseName,returnType.getType().getDocumentation().getName().toLowerCase(Locale.ROOT).replace(" ", "-"));
                     writer.println("   - `context-" + pattern + "` returns " + c + " " + baseName);
                 });
             }
