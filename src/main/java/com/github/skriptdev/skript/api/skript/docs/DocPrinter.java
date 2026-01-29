@@ -115,6 +115,8 @@ public class DocPrinter {
 
         registration.getEvents().forEach(event -> {
             Documentation documentation = event.getDocumentation();
+            if (documentation.isNoDoc()) return;
+
             if (!Structure.class.isAssignableFrom(event.getSyntaxClass())) {
                 printDocumentation("Event", writer, documentation, event.getPatterns());
             }
@@ -150,6 +152,8 @@ public class DocPrinter {
     private static void printStructures(PrintWriter writer, SkriptRegistration registration) {
         registration.getEvents().forEach(event -> {
             Documentation documentation = event.getDocumentation();
+            if (documentation.isNoDoc()) return;
+
             if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
                 printDocumentation("Structure", writer, documentation, event.getPatterns());
             }
@@ -163,6 +167,8 @@ public class DocPrinter {
         for (List<ExpressionInfo<?, ?>> expressionInfos : values) {
             expressionInfos.forEach(expressionInfo -> {
                 Documentation documentation = expressionInfo.getDocumentation();
+                if (documentation.isNoDoc()) return;
+
                 String returnType = getLinkForType(expressionInfo.getReturnType().getType(), expressionInfo.getReturnType().isSingle());
                 if (expressionInfo.getSyntaxClass().getSimpleName().startsWith("Cond")) {
                     printDocumentation("Condition", condWriter, documentation, expressionInfo.getPatterns());
@@ -197,11 +203,14 @@ public class DocPrinter {
                         parameterNames.add(format);
                     }
                 }
+                Documentation documentation = jf.getDocumentation();
+                if (documentation.isNoDoc()) return;
+
                 // Create a pattern for a function
                 String pattern = String.format("%s(%s)", jf.getName(),  String.join(", ", parameterNames));
                 TextElement textElement = new TextElement(pattern);
 
-                printDocumentation("Function", writer, jf.getDocumentation(), List.of(textElement));
+                printDocumentation("Function", writer, documentation, List.of(textElement));
                 Optional<Class<?>> returnType = (Optional<Class<?>>) jf.getReturnType();
                 if (returnType.isPresent()) {
                     Optional<? extends Type<?>> byClass = TypeManager.getByClass(returnType.get());
