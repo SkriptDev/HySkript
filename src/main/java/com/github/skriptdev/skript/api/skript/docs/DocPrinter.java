@@ -227,6 +227,8 @@ public class DocPrinter {
     private static void printEffects(PrintWriter writer, SkriptRegistration registration) {
         for (SyntaxInfo<? extends Effect> effect : registration.getEffects()) {
             Documentation documentation = effect.getDocumentation();
+            if (documentation.isNoDoc()) continue;
+
             printDocumentation("Effect", writer, documentation, effect.getPatterns());
         }
     }
@@ -236,6 +238,8 @@ public class DocPrinter {
         types.sort(Comparator.comparing(Type::getBaseName));
         types.forEach(type -> {
             Documentation documentation = type.getDocumentation();
+            if (documentation.isNoDoc()) return;
+
             printDocumentation("Type", writer, documentation, List.of());
             writer.println("- **Can Be Serialized**: " + type.getSerializer().isPresent());
         });
@@ -246,6 +250,8 @@ public class DocPrinter {
         sections.sort(Comparator.comparing(info -> info.getSyntaxClass().getSimpleName()));
         for (SyntaxInfo<? extends CodeSection> section : sections) {
             Documentation documentation = section.getDocumentation();
+            if (documentation.isNoDoc()) continue;
+
             printDocumentation("Section", writer, documentation, section.getPatterns());
         }
     }
