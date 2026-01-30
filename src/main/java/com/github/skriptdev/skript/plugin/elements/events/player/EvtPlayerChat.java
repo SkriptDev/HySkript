@@ -51,7 +51,7 @@ public class EvtPlayerChat extends EventRegistrationEvent {
 
     @Override
     public boolean check(@NotNull TriggerContext ctx) {
-        return true;
+        return ctx instanceof PlayerChatContext;
     }
 
     @Override
