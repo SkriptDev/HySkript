@@ -10,6 +10,8 @@ import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerAddToW
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerBreakBlock;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerChat;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDrainFromWorld;
+import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropItem;
+import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropItemRequest;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerJoin;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseClick;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseMove;
@@ -33,6 +35,8 @@ public class EventHandler {
         EvtPlayerBreakBlock.register(registration);
         EvtPlayerChat.register(registration);
         EvtPlayerDrainFromWorld.register(registration);
+        EvtPlayerDropItem.register(registration);
+        EvtPlayerDropItemRequest.register(registration);
         EvtPlayerJoin.register(registration);
         EvtPlayerMouseClick.register(registration);
         EvtPlayerMouseMove.register(registration);
