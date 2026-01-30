@@ -36,19 +36,25 @@ import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldSp
 public class ExpressionHandler {
 
     public static void register(SkriptRegistration registration) {
-        ExprAllPlayers.register(registration);
+        // BLOCK
         ExprBlockAt.register(registration);
         ExprBlockTypeAtLocation.register(registration);
         ExprBlockTypeOfBlock.register(registration);
-        ExprChatMessage.register(registration);
-        ExprClassInfoOf.register(registration);
-        ExprConsole.register(registration);
+
+        // ENTITY
         ExprEntityHealth.register(registration);
         ExprEntityStat.register(registration);
+        ExprName.register(registration);
+        ExprNPCType.register(registration);
+
+        // ITEM
         ExprInventory.register(registration);
         ExprItemContainer.register(registration);
         ExprItemStack.register(registration);
         ExprItemType.register(registration);
+
+        // OTHER
+        ExprClassInfoOf.register(registration);
         ExprLocationDirection.register(registration);
         ExprLocationOf.register(registration);
         ExprMessage.register(registration);
@@ -56,17 +62,25 @@ public class ExpressionHandler {
         ExprMessageLink.register(registration);
         ExprMessageParam.register(registration);
         ExprMessageProperties.register(registration);
-        ExprName.register(registration);
-        ExprNPCType.register(registration);
-        ExprPlayerSpawns.register(registration);
         ExprUUID.register(registration);
         ExprUUIDRandom.register(registration);
         ExprVector3d.register(registration);
         ExprVector3f.register(registration);
         ExprVector3i.register(registration);
+
+        // PLAYER
+        ExprAllPlayers.register(registration);
+        ExprChatMessage.register(registration);
+        ExprPlayerSpawns.register(registration);
+
+        // SERVER
+        ExprConsole.register(registration);
+
+        // WORLD
         ExprWorld.register(registration);
         ExprWorldOf.register(registration);
         ExprWorldSpawn.register(registration);
+
     }
 
 }
