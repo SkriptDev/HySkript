@@ -1,7 +1,7 @@
 package com.github.skriptdev.skript.plugin.command;
 
 import com.github.skriptdev.skript.api.skript.docs.JsonDocPrinter;
-import com.github.skriptdev.skript.api.skript.docs.MDDocPrinter;
+import com.github.skriptdev.skript.api.skript.docs.MarkdownDocPrinter;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.github.skriptdev.skript.plugin.Skript;
@@ -83,12 +83,14 @@ public class SkriptCommand extends AbstractCommandCollection {
         }
 
         private AbstractCommand mdDocsSubCommand() {
-            return new AbstractCommand("markdown", "Print Markdown docs to file.") {
+            AbstractCommand abstractCommand = new AbstractCommand("markdown", "Print Markdown docs to file.") {
                 @Override
                 protected CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
-                    return CompletableFuture.runAsync(MDDocPrinter::printDocs);
+                    return CompletableFuture.runAsync(MarkdownDocPrinter::printDocs);
                 }
             };
+            abstractCommand.addAliases("md");
+            return abstractCommand;
         }
     }
 

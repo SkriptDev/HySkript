@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Documentation printer.
  */
-public class MDDocPrinter {
+public class MarkdownDocPrinter {
 
     /**
      * Print all docs to file.
@@ -278,7 +278,7 @@ public class MDDocPrinter {
             writer.println("> Things may not work as expected and may change without notice.  ");
         }
         String[] description = documentation.getDescription();
-        if (description != null) {
+        if (description.length > 0) {
             writer.println("- **Description**:");
             for (String s : description) {
                 if (s.contains("\n")) {
@@ -328,10 +328,11 @@ public class MDDocPrinter {
                 });
             }
         }
-        if (documentation.getExamples() != null) {
+        String[] examples = documentation.getExamples();
+        if (examples.length > 0) {
             writer.println("- **Examples**:  ");
             writer.println("```applescript");
-            for (String s : documentation.getExamples()) {
+            for (String s : examples) {
                 writer.println(s);
             }
             writer.println("```");
@@ -342,7 +343,7 @@ public class MDDocPrinter {
     }
 
     static private @NotNull File getFile(String name) {
-        File file = HySk.getInstance().getDataDirectory().resolve("docs/md-docs/" + name + ".md").toFile();
+        File file = HySk.getInstance().getDataDirectory().resolve("docs/markdown-docs/" + name + ".md").toFile();
         if (!file.exists()) {
             File parentFile = file.getParentFile();
             if (!parentFile.exists()) {
