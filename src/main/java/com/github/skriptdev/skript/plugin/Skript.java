@@ -38,6 +38,7 @@ public class Skript extends SkriptAddon {
     private ScriptsLoader scriptsLoader;
 
     Skript(HySk hySk) {
+        super("HySkript");
         INSTANCE = this;
         this.hySk = hySk;
         this.scriptsPath = hySk.getDataDirectory().resolve("scripts");
