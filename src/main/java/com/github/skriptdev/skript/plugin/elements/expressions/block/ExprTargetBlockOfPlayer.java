@@ -24,7 +24,7 @@ public class ExprTargetBlockOfPlayer implements Expression<Block> {
             .name("Target Block of Player")
             .description("Returns the block the player is looking at.")
             .examples("set {_block} to target block of player")
-            .since("1.0.0")
+            .since("INSERT VERSION")
             .register();
     }
 
