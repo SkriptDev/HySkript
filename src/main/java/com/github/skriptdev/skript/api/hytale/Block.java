@@ -10,10 +10,11 @@ import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.ChunkColumn;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Represents a block in a world.
@@ -27,6 +28,12 @@ public class Block {
     private final @NotNull World world;
     private @NotNull BlockType type;
     private final @NotNull Vector3i pos;
+
+    public Block(@NotNull World world, @NotNull Vector3i pos) {
+        this.world = world;
+        this.pos = pos;
+        this.type = Objects.requireNonNull(world.getBlockType(pos));
+    }
 
     public Block(@NotNull World world, @NotNull Vector3i pos, @NotNull BlockType type) {
         this.world = world;
