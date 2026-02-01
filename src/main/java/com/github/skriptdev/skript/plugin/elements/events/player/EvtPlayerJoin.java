@@ -14,7 +14,6 @@ import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
-import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,10 +25,6 @@ public class EvtPlayerJoin extends SkriptEvent {
             .description("Events triggered when a player joins or quits the server.")
             .since("1.0.0")
             .setHandledContexts(PlayerEventContext.class)
-            .register();
-
-        registration.newContextValue(PlayerEventContext.class, Player.class, true, "player", PlayerEventContext::getPlayer)
-            .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();
     }
 
@@ -95,11 +90,11 @@ public class EvtPlayerJoin extends SkriptEvent {
         }
 
         public Player[] getPlayer() {
-            return new Player[]{player};
+            return new Player[]{this.player};
         }
 
         public int getPattern() {
-            return pattern;
+            return this.pattern;
         }
 
         @Override

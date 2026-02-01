@@ -40,7 +40,6 @@ public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntitySto
             .setHandledContexts(BreakBlockEventContext.class)
             .register();
 
-        reg.addContextValue(BreakBlockEventContext.class, Player.class, true, "player", BreakBlockEventContext::getPlayer);
         reg.addContextValue(BreakBlockEventContext.class, Block.class, true, "block", BreakBlockEventContext::getBlock);
         reg.addContextValue(BreakBlockEventContext.class, World.class, true, "world", BreakBlockEventContext::getWorld);
         reg.addContextValue(BreakBlockEventContext.class, BlockType.class, true, "blocktype", BreakBlockEventContext::getBlockType);

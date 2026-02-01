@@ -28,7 +28,6 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
             .register();
 
         reg.addContextValue(AddContext.class, World.class, true, "world", AddContext::getWorld);
-        reg.addContextValue(AddContext.class, Player.class, true, "player", AddContext::getPlayer);
     }
 
     private static EventRegistration<String, AddPlayerToWorldEvent> LISTENER;

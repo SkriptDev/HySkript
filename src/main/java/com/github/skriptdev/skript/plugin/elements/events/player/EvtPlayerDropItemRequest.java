@@ -38,7 +38,6 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(RequestDropItemContext.class, Player.class, true, "player", RequestDropItemContext::getPlayer);
         reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "slot-id", RequestDropItemContext::getSlotId);
         reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
         reg.addContextValue(RequestDropItemContext.class, Item.class, true, "item", RequestDropItemContext::getItem);

@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
 
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDamage;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDeath;
@@ -20,6 +21,8 @@ import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerSetupD
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtBoot;
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtShutdown;
 import com.github.skriptdev.skript.plugin.elements.events.skript.EvtLoad;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import io.github.syst3ms.skriptparser.registration.context.ContextValue.Usage;
 
 public class EventHandler {
 
@@ -49,6 +52,15 @@ public class EventHandler {
 
         // SKRIPT
         EvtLoad.register(registration);
+
+        // CONTEXT
+        registerGlobalContexts(registration);
+    }
+
+    private static void registerGlobalContexts(SkriptRegistration reg) {
+        reg.newContextValue(PlayerContext.class, Player.class, true, "player", PlayerContext::getPlayer)
+            .setUsage(Usage.EXPRESSION_OR_ALONE)
+            .register();
     }
 
 }

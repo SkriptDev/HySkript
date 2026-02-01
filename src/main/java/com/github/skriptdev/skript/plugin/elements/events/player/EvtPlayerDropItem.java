@@ -37,7 +37,6 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(DropItemContext.class, Player.class, true, "player", DropItemContext::getPlayer);
         reg.addContextValue(DropItemContext.class, Float.class, true, "throw-speed", DropItemContext::getThrowSpeed);
         reg.addContextValue(DropItemContext.class, Item.class, true, "dropped-item", DropItemContext::getItem);
         reg.addContextValue(DropItemContext.class, ItemStack.class, true, "dropped-itemstack", DropItemContext::getItemStack);

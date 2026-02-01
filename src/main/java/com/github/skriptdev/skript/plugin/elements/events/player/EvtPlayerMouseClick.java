@@ -32,7 +32,6 @@ public class EvtPlayerMouseClick extends SkriptEvent {
             .setHandledContexts(MouseClickContext.class)
             .register();
 
-        reg.addContextValue(MouseClickContext.class, Player.class, true, "player", MouseClickContext::getPlayer);
         reg.addContextValue(MouseClickContext.class, Item.class, true, "item", MouseClickContext::getItemInHand);
         reg.addContextValue(MouseClickContext.class, Entity.class, true, "target-entity", MouseClickContext::getTargetEntity);
         reg.addContextValue(MouseClickContext.class, Vector3i.class, true, "target-block", MouseClickContext::getTargetBlock);
