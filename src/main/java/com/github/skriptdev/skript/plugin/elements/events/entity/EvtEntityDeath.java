@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -23,6 +24,8 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 public class EvtEntityDeath extends SkriptEvent {
 
     public static void register(SkriptRegistration registration) {
@@ -38,7 +41,7 @@ public class EvtEntityDeath extends SkriptEvent {
                 "\tbroadcast \"Poor %context-victim%\" has died!",
                 "",
                 "on death of player:",
-                "\tset {lost::%uuid of context-victim%} to context-lost-items")
+                "\tset {lost::%uuid of context-victim%} to context-lost-itemstacks")
             .since("1.0.0")
             .register();
 
@@ -53,7 +56,9 @@ public class EvtEntityDeath extends SkriptEvent {
         registration.addContextValue(EntityDeathContext.class,
             Damage.class, true, "death-info", EntityDeathContext::getDamage);
         registration.addContextValue(EntityDeathContext.class,
-            ItemStack.class, false, "lost-items", EntityDeathContext::getItemsLostOnDeath);
+            Item.class, false, "lost-items", EntityDeathContext::getItemsLostOnDeath);
+        registration.addContextValue(EntityDeathContext.class,
+            ItemStack.class, false, "lost-itemstacks", EntityDeathContext::getItemStacksLostOnDeath);
     }
 
     private static EntityDeathListener LISTENER;
@@ -147,7 +152,11 @@ public class EvtEntityDeath extends SkriptEvent {
             return new Damage[]{this.component.getDeathInfo()};
         }
 
-        public ItemStack[] getItemsLostOnDeath() {
+        public Item[] getItemsLostOnDeath() {
+            return Arrays.stream(this.component.getItemsLostOnDeath()).map(ItemStack::getItem).toArray(Item[]::new);
+        }
+
+        public ItemStack[] getItemStacksLostOnDeath() {
             return this.component.getItemsLostOnDeath();
         }
 
