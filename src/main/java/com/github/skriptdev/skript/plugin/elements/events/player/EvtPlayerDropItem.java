@@ -10,6 +10,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent.Drop;
@@ -37,6 +38,7 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
 
         reg.addContextValue(DropItemContext.class, Player.class, true, "player", DropItemContext::getPlayer);
         reg.addContextValue(DropItemContext.class, Float.class, true, "throw-speed", DropItemContext::getThrowSpeed);
+        reg.addContextValue(DropItemContext.class, Item.class, true, "dropped-item", DropItemContext::getItem);
         reg.addContextValue(DropItemContext.class, ItemStack.class, true, "dropped-itemstack", DropItemContext::getItemStack);
     }
 
@@ -69,6 +71,10 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
 
         public Float[] getThrowSpeed() {
             return new Float[]{this.drop.getThrowSpeed()};
+        }
+
+        public Item[] getItem() {
+            return new Item[]{this.drop.getItemStack().getItem()};
         }
 
         public ItemStack[] getItemStack() {

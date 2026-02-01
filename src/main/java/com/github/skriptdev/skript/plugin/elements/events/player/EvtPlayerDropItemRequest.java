@@ -10,6 +10,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.inventory.Inventory;
@@ -39,6 +40,7 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
         reg.addContextValue(RequestDropItemContext.class, Player.class, true, "player", RequestDropItemContext::getPlayer);
         reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "slot-id", RequestDropItemContext::getSlotId);
         reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
+        reg.addContextValue(RequestDropItemContext.class, Item.class, true, "item", RequestDropItemContext::getItem);
         reg.addContextValue(RequestDropItemContext.class, ItemStack.class, true, "itemstack", RequestDropItemContext::getItemStack);
     }
 
@@ -76,6 +78,16 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
 
         public Integer[] getInventorySectionId() {
             return new Integer[]{(int) this.request.getInventorySectionId()};
+        }
+
+        public Item[] getItem() {
+            Inventory inventory = this.player.getInventory();
+            ItemContainer container = inventory.getSectionById(this.request.getInventorySectionId());
+            if (container == null) return null;
+            ItemStack itemStack = container.getItemStack(this.request.getSlotId());
+            if (itemStack == null) return null;
+            Item item = itemStack.getItem();
+            return new Item[]{item};
         }
 
         public ItemStack[] getItemStack() {
