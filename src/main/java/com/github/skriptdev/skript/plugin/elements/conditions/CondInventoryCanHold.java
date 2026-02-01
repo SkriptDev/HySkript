@@ -20,7 +20,7 @@ public class CondInventoryCanHold extends ConditionalExpression {
             .description("Checks if the inventory can hold the given items.")
             .examples("if inventory of player can hold itemstack of ingredient_poop:",
                 "if inventory of player can hold {_itemstack}:")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

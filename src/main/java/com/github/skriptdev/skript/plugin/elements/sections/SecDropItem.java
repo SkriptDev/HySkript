@@ -40,7 +40,7 @@ public class SecDropItem extends CodeSection {
             .examples("drop ingredient_poop at location of player",
                 "drop {_itemstack} at location of player with pickup delay 10 seconds",
                 "drop {_i} at location of player with velocity vector3f(0,1,0) and with pickup delay 5 seconds")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
 
         reg.addContextValue(ItemComponentContext.class, ItemComponent.class, true, "item-component", ItemComponentContext::getItemComponent);

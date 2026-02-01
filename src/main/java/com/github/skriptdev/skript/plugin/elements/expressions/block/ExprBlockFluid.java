@@ -23,7 +23,7 @@ public class ExprBlockFluid implements Expression<Fluid> {
             .description("Get the fluid at a location/block.")
             .examples("set {_fluid} to fluid at player's location",
                 "set fluid of block at player's location to slime_red")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

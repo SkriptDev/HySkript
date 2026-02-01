@@ -20,7 +20,7 @@ public class CondPlayerIsCrouching extends ConditionalExpression {
             .description("Checks if the player is crouching.")
             .examples("if player is crouching:",
                 "\tmessage \"You are crouching!\"")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

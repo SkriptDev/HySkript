@@ -23,7 +23,7 @@ public class ExprTargetEntityOfEntity implements Expression<Entity> {
             .name("Target Entity of Entity")
             .description("Returns the target entity of the given entity.")
             .examples("set {_target} to target entity of player")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

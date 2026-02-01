@@ -24,7 +24,7 @@ public class ExprInventorySlot implements Expression<ItemStack> {
                 "delete itemstack in slot 3 of inventory of player",
                 "delete itemstack in slot 2 of hotbar item container of inventory of player",
                 "set itemstack in slot 1 of hotbar item container of inventory of player to itemstack of ingredient_poop")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

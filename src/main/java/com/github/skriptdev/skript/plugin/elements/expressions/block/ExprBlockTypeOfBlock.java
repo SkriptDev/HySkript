@@ -26,7 +26,7 @@ public class ExprBlockTypeOfBlock implements Expression<BlockType> {
                 "\t\tset blocktype of context-block to rock_Stone",
                 "",
                 "set blocktype of {_block} to empty # This is how Hytale refers to air")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

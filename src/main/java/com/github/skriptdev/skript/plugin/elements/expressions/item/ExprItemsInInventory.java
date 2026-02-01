@@ -24,7 +24,7 @@ public class ExprItemsInInventory implements Expression<ItemStack> {
             .description("Returns all itemstacks in an Inventory or ItemContainer.")
             .examples("set {_items::*} to itemstacks in inventory of player",
                 "loop itemstacks in inventory of player:")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

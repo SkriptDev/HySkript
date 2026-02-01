@@ -24,7 +24,7 @@ public class TypesItem {
         registration.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
             .name("Item Component")
             .description("Represents the component of a dropped item.")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .toStringFunction(ic -> String.format("ItemComponent{itemstack=%s}", ic.getItemStack()))
             .serializer(SerializerUtils.getCodecSerializer(ItemComponent.CODEC))
             .register();
