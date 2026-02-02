@@ -25,10 +25,10 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EvtDamageBlock extends SystemEvent<EntityEventSystem<EntityStore, DamageBlockEvent>> {
+public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntityStore, DamageBlockEvent>> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newEvent(EvtDamageBlock.class,
+        reg.newEvent(EvtPlayerBreakBlock.class,
                 "player damage block", "block damaged by player")
             .setHandledContexts(DamageBlockContext.class)
             .name("Block Damage")
