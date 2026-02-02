@@ -47,7 +47,12 @@ public class Block {
     }
 
     public void setType(@NotNull BlockType type, int settings) {
-        this.world.setBlock(this.pos.getX(), this.pos.getY(), this.pos.getZ(), type.getId(), settings);
+        Runnable r = () -> Block.this.world.setBlock(Block.this.pos.getX(), Block.this.pos.getY(), Block.this.pos.getZ(), type.getId(), settings);
+        if (this.world.isInThread()) {
+            r.run();
+        } else {
+            this.world.execute(r);
+        }
     }
 
     public byte getFluidLevel() {
