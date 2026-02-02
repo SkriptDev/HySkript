@@ -26,10 +26,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 
-public class EvtPlayerPostUseBlock extends SystemEvent<EntityEventSystem<EntityStore, ? extends UseBlockEvent>> {
+public class EvtPlayerUseBlock extends SystemEvent<EntityEventSystem<EntityStore, ? extends UseBlockEvent>> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newEvent(EvtPlayerPostUseBlock.class,
+        reg.newEvent(EvtPlayerUseBlock.class,
                 "player use block",
                 "pre player use block",
                 "before player uses block",

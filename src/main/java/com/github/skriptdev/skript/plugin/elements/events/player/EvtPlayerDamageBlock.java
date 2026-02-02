@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.events.block;
+package com.github.skriptdev.skript.plugin.elements.events.player;
 
 import com.github.skriptdev.skript.api.hytale.Block;
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
@@ -25,10 +25,10 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntityStore, DamageBlockEvent>> {
+public class EvtPlayerDamageBlock extends SystemEvent<EntityEventSystem<EntityStore, DamageBlockEvent>> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newEvent(EvtPlayerBreakBlock.class,
+        reg.newEvent(EvtPlayerDamageBlock.class,
                 "player damage block", "block damaged by player")
             .setHandledContexts(DamageBlockContext.class)
             .name("Block Damage")
