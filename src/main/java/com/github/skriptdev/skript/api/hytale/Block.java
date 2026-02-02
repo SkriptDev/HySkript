@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.api.hytale;
 
+import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
@@ -13,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.world.chunk.ChunkColumn;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a block in a world.
@@ -86,10 +88,10 @@ public class Block {
                     return null;
                 }
 
-
                 Fluid fluid = fluidSection.getFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ());
                 if (fluid == null) return null;
-                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, level);
+                byte fluidLevel = (byte)Math.clamp((int)level, 0, fluid.getMaxFluidLevel());
+                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, fluidLevel);
             }
             return chunk;
         });
@@ -103,7 +105,7 @@ public class Block {
         return Fluid.getAssetMap().getAsset(fluidId);
     }
 
-    public void setFluid(@NotNull Fluid fluid) {
+    public void setFluid(@NotNull Fluid fluid, @Nullable Integer level) {
         long index = ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ());
         this.world.getChunkAsync(index).thenApply((chunk) -> {
             Ref<ChunkStore> columnRef = chunk.getReference();
@@ -121,9 +123,16 @@ public class Block {
                 }
 
 
-                byte level = fluidSection.getFluidLevel(this.pos.getX(), this.pos.getY(), this.pos.getZ());
-                if (level <= 0) level = 8;
-                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, level);
+                byte fluidLevel;
+                if (level != null) {
+                    fluidLevel = level.byteValue();
+                } else {
+                    fluidLevel = fluidSection.getFluidLevel(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+                    if (fluidLevel <= 0) fluidLevel = (byte)fluid.getMaxFluidLevel();
+                }
+                fluidLevel = (byte)Math.clamp((int)fluidLevel, 0, fluid.getMaxFluidLevel());
+                Utils.log("Set fluid level to %s", fluidLevel);
+                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, fluidLevel);
             }
             return chunk;
         });

@@ -65,10 +65,10 @@ public class ExprBlockFluid implements Expression<Fluid> {
         if (!(changeWith[0] instanceof Fluid fluid)) return;
         for (Object o : this.locations.getArray(ctx)) {
             if (o instanceof Block block) {
-                block.setFluid(fluid);
+                block.setFluid(fluid, null);
             } else if (o instanceof Location location) {
                 Block block = new Block(location);
-                block.setFluid(fluid);
+                block.setFluid(fluid, null);
             }
         }
     }
