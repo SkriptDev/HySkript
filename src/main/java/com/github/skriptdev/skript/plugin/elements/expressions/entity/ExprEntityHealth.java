@@ -5,7 +5,7 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
-import com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
-    private static final int HEALTH_STATE_INDEX = EntityStatType.getAssetMap().getIndex("Health");
+    private static final int HEALTH_STAT_INDEX = DefaultEntityStatTypes.getHealth();
 
     public static void register(SkriptRegistration registration) {
         registration.newPropertyExpression(ExprEntityHealth.class, Number.class,
@@ -46,7 +46,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
     public @Nullable Number getProperty(@NotNull LivingEntity entity) {
         EntityStatMap entityStatMap = EntityComponentUtils.getEntityStatMap(entity);
         if (entityStatMap == null) return null;
-        EntityStatValue health = entityStatMap.get(HEALTH_STATE_INDEX);
+        EntityStatValue health = entityStatMap.get(HEALTH_STAT_INDEX);
         if (health == null) return null;
 
         if (this.pattern == 1) return health.getMin();
@@ -72,7 +72,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
         if (statMap == null) return;
 
         if (changeMode == ChangeMode.RESET) {
-            statMap.resetStatValue(HEALTH_STATE_INDEX);
+            statMap.resetStatValue(HEALTH_STAT_INDEX);
             return;
         }
 
@@ -84,7 +84,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
         }
 
         if (changeMode != ChangeMode.SET) {
-            EntityStatValue healthStat = statMap.get(HEALTH_STATE_INDEX);
+            EntityStatValue healthStat = statMap.get(HEALTH_STAT_INDEX);
             if (healthStat == null) return;
             float oldHealthValue = healthStat.get();
 
@@ -97,7 +97,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
             }
         }
 
-        statMap.setStatValue(HEALTH_STATE_INDEX, newValue);
+        statMap.setStatValue(HEALTH_STAT_INDEX, newValue);
     }
 
 }
