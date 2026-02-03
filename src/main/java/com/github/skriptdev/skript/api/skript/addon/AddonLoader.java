@@ -5,8 +5,7 @@ import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.codec.util.RawJsonReader;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
-import org.bson.BsonDocument;
-import org.bson.BsonValue;
+import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,10 +90,18 @@ public class AddonLoader {
             }
             if (mainClassIntance instanceof HySkriptAddon addon) {
                 addon.setManifest(manifest);
-                addon.onLoad();
+                addon.setup();
             }
         } catch (IOException e) {
             this.logger.error("Failed to load addon " + file.getName(), ErrorType.EXCEPTION);
+        }
+    }
+
+    public void shutdownAddons() {
+        for (SkriptAddon addon : SkriptAddon.getAddons()) {
+            if (addon instanceof HySkriptAddon hySkriptAddon) {
+                hySkriptAddon.shutdown();
+            }
         }
     }
 

@@ -1,12 +1,16 @@
 package com.github.skriptdev.skript.api.skript.addon;
 
 import com.hypixel.hytale.server.core.Message;
+import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class HySkriptAddon extends io.github.syst3ms.skriptparser.registration.SkriptAddon {
+/**
+ * Base class for addons for HySkript.
+ */
+public abstract class HySkriptAddon extends SkriptAddon {
 
     private Manifest manifest;
 
@@ -18,17 +22,23 @@ public abstract class HySkriptAddon extends io.github.syst3ms.skriptparser.regis
      * Called when the addon starts to load.
      * This is a good time to set up your syntaxes.
      */
-    abstract public void onLoad();
+    abstract public void setup();
 
-    void setManifest(Manifest manifest) {
+    /**
+     * Called when the addon is shutting down.
+     * This is a good time to clean up resources.
+     */
+    abstract public void shutdown();
+
+    final void setManifest(Manifest manifest) {
         this.manifest = manifest;
     }
 
-    public Manifest getManifest() {
+    public final Manifest getManifest() {
         return manifest;
     }
 
-    public Message[] getInfo() {
+    public final Message[] getInfo() {
         List<Message> info = new ArrayList<>();
         info.add(Message.raw("Version: " + this.manifest.getVersion()));
 

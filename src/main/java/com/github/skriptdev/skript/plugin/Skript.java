@@ -103,6 +103,9 @@ public class Skript extends SkriptAddon {
         Utils.log("Saving variables...");
         Variables.shutdown();
         Utils.log("Variable saving complete!");
+
+        // SHUTDOWN ADDONS
+        this.addonLoader.shutdownAddons();
     }
 
     private void printSyntaxCount() {
