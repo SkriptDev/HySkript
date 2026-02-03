@@ -3,6 +3,22 @@
 debug: false
 # Whether or not to enable debug mode (maybe print more verbose logs to console).
 
+# Effect commands allow you to execute effects in chat.
+effect-commands:
+    enabled: true
+    # Whether or not effect commands are enabled.
+
+    allow-ops: false
+    # Whether or not ops can use effect commands.
+    # If false, they will require the permission specified below in 'required-permission'.
+    # This currently does not work as Hytale does not support permissions this way.
+
+    required-permission: hyskript.effect-commands
+    # The permission required to use effect commands (if allow-ops is false).
+
+    token: !
+    # The token used to execute effects in chat.
+
 # Represents the database[s] used by HySkript to save variables to.
 # You can add as many databases as you want.
 databases:

@@ -23,7 +23,7 @@ public class ExprBlockFluid implements Expression<Fluid> {
             .description("Get the fluid at a location/block.")
             .examples("set {_fluid} to fluid at player's location",
                 "set fluid of block at player's location to slime_red")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 
@@ -65,10 +65,10 @@ public class ExprBlockFluid implements Expression<Fluid> {
         if (!(changeWith[0] instanceof Fluid fluid)) return;
         for (Object o : this.locations.getArray(ctx)) {
             if (o instanceof Block block) {
-                block.setFluid(fluid);
+                block.setFluid(fluid, null);
             } else if (o instanceof Location location) {
                 Block block = new Block(location);
-                block.setFluid(fluid);
+                block.setFluid(fluid, null);
             }
         }
     }

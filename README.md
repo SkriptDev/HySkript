@@ -1,5 +1,8 @@
-Skript but for Hytale.  
-![GitHub all releases](https://img.shields.io/github/downloads/SkriptDev/HySkript/total)
+![GitHub all releases](https://img.shields.io/github/downloads/SkriptDev/HySkript/total)  
+# Skript... but for Hytale.  
+
+![landscape](https://github.com/user-attachments/assets/2234f5ea-c2dc-4e79-b51c-4300b795e64f)
+
 
 HySkript is a [**Skript**](https://github.com/SkriptLang/Skript) like plugin for Hytale servers.  
 It allows writing your own little plugins in English like syntaxes.  
@@ -24,6 +27,11 @@ If you find any issues, please report them on our [**issues page**](https://gith
 
 ## Building:
 To build run `./gradlew build`
+
+## Branches:
+- `master` = The latest stable release.
+- `dev/feature` = Development branch for new features.
+- `dev/patch` = Development branch for bugfixes.
 
 ## Contributors:
 You can find all of our contributors on the [**contributors page**](https://github.com/SkriptDev/HySkript/graphs/contributors)

@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.effects;
+package com.github.skriptdev.skript.plugin.elements.effects.other;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.Universe;

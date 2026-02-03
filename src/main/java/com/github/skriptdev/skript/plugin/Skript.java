@@ -7,6 +7,7 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.config.Config;
@@ -56,6 +57,7 @@ public class Skript extends SkriptAddon {
         for (LogEntry logEntry : this.logger.close()) {
             Utils.log(null, logEntry);
         }
+        Utils.log("HySkript setup complete!");
     }
 
     private void setup() {
@@ -64,6 +66,15 @@ public class Skript extends SkriptAddon {
         this.registration = new SkriptRegistration(this);
         this.elementRegistration = new ElementRegistration(this.registration);
         this.elementRegistration.registerElements();
+        ConfigSection effectCommandSection = this.skriptConfig.getConfigSection("effect-commands");
+        if (effectCommandSection != null) {
+            if (effectCommandSection.getBoolean("enabled")) {
+                EffectCommands.register(this,
+                    effectCommandSection.getString("token"),
+                    effectCommandSection.getBoolean("allow-ops"),
+                    effectCommandSection.getString("required-permission"));
+            }
+        }
 
         // FINALIZE SETUP
         this.registration.register();
@@ -117,7 +128,7 @@ public class Skript extends SkriptAddon {
         int expsSize = this.registration.getExpressions().size() + mainRegistration.getExpressions().size();
         int secSize = this.registration.getSections().size() + mainRegistration.getSections().size();
         int typeSize = this.registration.getTypes().size() + mainRegistration.getTypes().size();
-        int funcSize = Functions.getGlobalFunctions().size();
+        int funcSize = Functions.getAllFunctions().size();
 
         int total = structureSize + eventSize + effectSize + expsSize + secSize + typeSize + funcSize;
 

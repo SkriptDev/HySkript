@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.effects;
+package com.github.skriptdev.skript.plugin.elements.effects.entity;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

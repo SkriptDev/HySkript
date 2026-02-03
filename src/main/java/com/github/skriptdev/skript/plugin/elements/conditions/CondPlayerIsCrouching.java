@@ -14,13 +14,13 @@ public class CondPlayerIsCrouching extends ConditionalExpression {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(CondPlayerIsCrouching.class, Boolean.class, true,
-                "%players% (is|are)[neg:( not|n't)] crouching",
+                "%players% (is|are) crouching",
                 "%players% (isn't|is not|aren't|are not) crouching")
             .name("Player is Crouching")
             .description("Checks if the player is crouching.")
             .examples("if player is crouching:",
                 "\tmessage \"You are crouching!\"")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

@@ -34,7 +34,7 @@ public class ExprChatMessage implements Expression<String> {
     @Override
     public String[] getValues(@NotNull TriggerContext ctx) {
         if (ctx instanceof PlayerChatContext chat) {
-            return chat.getMessage();
+            return new String[]{chat.getMessage()};
         }
         return null;
     }

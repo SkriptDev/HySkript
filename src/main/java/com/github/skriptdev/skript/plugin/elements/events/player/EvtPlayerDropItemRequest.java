@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.SystemEvent;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
@@ -10,6 +11,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.inventory.Inventory;
@@ -36,10 +38,10 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(RequestDropItemContext.class, Player.class, true, "player", RequestDropItemContext::getPlayer);
-        reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "slot-id", RequestDropItemContext::getSlotId);
-        reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
-        reg.addContextValue(RequestDropItemContext.class, ItemStack.class, true, "itemstack", RequestDropItemContext::getItemStack);
+        reg.addSingleContextValue(RequestDropItemContext.class, Integer.class, "slot-id", RequestDropItemContext::getSlotId);
+        reg.addSingleContextValue(RequestDropItemContext.class, Integer.class, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
+        reg.addSingleContextValue(RequestDropItemContext.class, Item.class, "item", RequestDropItemContext::getItem);
+        reg.addSingleContextValue(RequestDropItemContext.class, ItemStack.class, "itemstack", RequestDropItemContext::getItemStack);
     }
 
     private static PlayerRequestSystem SYSTEM;
@@ -64,25 +66,34 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
     }
 
     private record RequestDropItemContext(Player player, DropItemEvent.PlayerRequest request)
-        implements TriggerContext, CancellableContext {
+        implements PlayerContext, CancellableContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        public Integer[] getSlotId() {
-            return new Integer[]{(int) this.request.getSlotId()};
+        public int getSlotId() {
+            return (int) this.request.getSlotId();
         }
 
-        public Integer[] getInventorySectionId() {
-            return new Integer[]{(int) this.request.getInventorySectionId()};
+        public int getInventorySectionId() {
+            return this.request.getInventorySectionId();
         }
 
-        public ItemStack[] getItemStack() {
+        public Item getItem() {
             Inventory inventory = this.player.getInventory();
             ItemContainer container = inventory.getSectionById(this.request.getInventorySectionId());
             if (container == null) return null;
-            return new ItemStack[]{container.getItemStack(this.request.getSlotId())};
+            ItemStack itemStack = container.getItemStack(this.request.getSlotId());
+            if (itemStack == null) return null;
+            return itemStack.getItem();
+        }
+
+        public ItemStack getItemStack() {
+            Inventory inventory = this.player.getInventory();
+            ItemContainer container = inventory.getSectionById(this.request.getInventorySectionId());
+            if (container == null) return null;
+            return container.getItemStack(this.request.getSlotId());
         }
 
         @Override

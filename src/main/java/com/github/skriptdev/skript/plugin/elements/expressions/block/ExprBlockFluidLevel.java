@@ -21,7 +21,7 @@ public class ExprBlockFluidLevel implements Expression<Number> {
             .name("Block Fluid Level")
             .description("Get.set the fluid level of a block.")
             .examples("set fluid level of block at player's location to 8")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 

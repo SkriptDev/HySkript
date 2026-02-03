@@ -164,10 +164,10 @@ public class JsonDocPrinter {
             Documentation documentation = event.getDocumentation();
             if (documentation.isNoDoc()) return;
 
-            BsonDocument structureDoc = new BsonDocument();
-
             if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
+                BsonDocument structureDoc = new BsonDocument();
                 printDocumentation("structure", structureDoc, event);
+                structuresArray.add(structureDoc);
             }
         });
 
@@ -210,7 +210,7 @@ public class JsonDocPrinter {
     private void printFunctions(BsonDocument mainDocs, SkriptRegistration registration) {
         String addonKey = registration.getRegisterer().getAddonName().toLowerCase(Locale.ROOT).replace(" ", "_");
         BsonArray functionsArray = mainDocs.getArray("functions", new BsonArray());
-        Functions.getGlobalFunctions().stream().sorted(Comparator.comparing(Function::getName)).forEach(function -> {
+        Functions.getJavaFunctions().stream().sorted(Comparator.comparing(Function::getName)).forEach(function -> {
             if (function instanceof JavaFunction<?> jf) {
                 Documentation documentation = jf.getDocumentation();
                 if (documentation.isNoDoc()) return;
@@ -307,17 +307,22 @@ public class JsonDocPrinter {
     private void printTypes(BsonDocument mainDocs, SkriptRegistration registration) {
         BsonArray typesArray = mainDocs.getArray("types", new BsonArray());
 
-        String addonName = registration.getRegisterer().getAddonName().toLowerCase(Locale.ROOT).replace(" ", "_");
-
         registration.getTypes().forEach(type -> {
             Documentation documentation = type.getDocumentation();
             if (documentation.isNoDoc()) return;
 
             BsonDocument syntaxDoc = new BsonDocument();
+
+            // NAME and ID
             String baseName = type.getBaseName();
             String docName = documentation.getName();
             syntaxDoc.put("name", new BsonString(docName != null ? docName : baseName));
             syntaxDoc.put("id", getId("type", baseName));
+
+            // EXPERIMENTAL
+            if (documentation.isExperimental()) {
+                syntaxDoc.put("experimental", new BsonString(documentation.getExperimentalMessage()));
+            }
 
             // DESCRIPTION
             BsonArray descriptionArray = new BsonArray();
@@ -348,6 +353,9 @@ public class JsonDocPrinter {
                 }
                 syntaxDoc.put("examples", exampleArray);
             }
+
+            // SERIALIZABLE
+            syntaxDoc.put("serializable", new BsonBoolean(type.getSerializer().isPresent()));
 
             // SINCE
             String since = documentation.getSince();
@@ -385,7 +393,9 @@ public class JsonDocPrinter {
         syntaxDoc.put("id", getId(type, syntaxInfo));
 
         // EXPERIMENTAL
-        // TODO
+        if (documentation.isExperimental()) {
+            syntaxDoc.put("experimental", new BsonString(documentation.getExperimentalMessage()));
+        }
 
         // DESCRIPTION
         BsonArray descriptionArray = new BsonArray();
@@ -402,7 +412,7 @@ public class JsonDocPrinter {
 
         // PATTERNS
         List<PatternElement> patterns = syntaxInfo.getPatterns();
-        if (patterns.isEmpty()) {
+        if (!patterns.isEmpty()) {
             BsonArray patternArray = new BsonArray();
             patterns.forEach(pattern -> patternArray.add(new BsonString(pattern.toString())));
             syntaxDoc.put("patterns", patternArray);

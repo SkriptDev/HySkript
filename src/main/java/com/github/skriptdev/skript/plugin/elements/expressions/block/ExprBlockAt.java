@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.hytale.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -47,10 +46,8 @@ public class ExprBlockAt implements Expression<Block> {
             if (world == null) continue;
 
             Vector3i pos = location.getPosition().toVector3i();
-            BlockType blockType = world.getBlockType(pos);
-            if (blockType == null) continue;
 
-            Block block = new Block(world, pos, blockType);
+            Block block = new Block(world, pos);
             blocks.add(block);
         }
 

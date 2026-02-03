@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.event.EventRegistry;
@@ -13,7 +14,6 @@ import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
-import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,10 +25,6 @@ public class EvtPlayerJoin extends SkriptEvent {
             .description("Events triggered when a player joins or quits the server.")
             .since("1.0.0")
             .setHandledContexts(PlayerEventContext.class)
-            .register();
-
-        registration.newContextValue(PlayerEventContext.class, Player.class, true, "player", PlayerEventContext::getPlayer)
-            .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();
     }
 
@@ -83,7 +79,7 @@ public class EvtPlayerJoin extends SkriptEvent {
         return "player " + t;
     }
 
-    public static class PlayerEventContext implements TriggerContext {
+    public static class PlayerEventContext implements PlayerContext {
 
         private final Player player;
         private final int pattern;
@@ -93,12 +89,12 @@ public class EvtPlayerJoin extends SkriptEvent {
             this.pattern = pattern;
         }
 
-        public Player[] getPlayer() {
-            return new Player[]{player};
+        public Player getPlayer() {
+            return this.player;
         }
 
         public int getPattern() {
-            return pattern;
+            return this.pattern;
         }
 
         @Override

@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.events.player;
 
 import com.github.skriptdev.skript.api.hytale.Block;
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.SystemEvent;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -38,11 +40,15 @@ public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntitySto
             .setHandledContexts(BreakBlockEventContext.class)
             .register();
 
-        reg.addContextValue(BreakBlockEventContext.class, Player.class, true, "player", BreakBlockEventContext::getPlayer);
-        reg.addContextValue(BreakBlockEventContext.class, Block.class, true, "block", BreakBlockEventContext::getBlock);
-        reg.addContextValue(BreakBlockEventContext.class, World.class, true, "world", BreakBlockEventContext::getWorld);
-        reg.addContextValue(BreakBlockEventContext.class, BlockType.class, true, "blocktype", BreakBlockEventContext::getBlockType);
-        reg.addContextValue(BreakBlockEventContext.class, ItemStack.class, true, "item-in-hand", BreakBlockEventContext::getItemInHand);
+        reg.newSingleContextValue(BreakBlockEventContext.class, Block.class, "block", BreakBlockEventContext::getBlock)
+            .addSetter(BreakBlockEventContext::setTargetBlock).register();
+        reg.addSingleContextValue(BreakBlockEventContext.class, World.class, "world", BreakBlockEventContext::getWorld);
+        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class, "blocktype", BreakBlockEventContext::getBlockType);
+        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class, "item-in-hand", BreakBlockEventContext::getItemInHand);
+        reg.addSingleContextValue(BreakBlockEventContext.class, World.class, "world", BreakBlockEventContext::getWorld);
+        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class, "blocktype", BreakBlockEventContext::getBlockType);
+        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class, "item-in-hand", BreakBlockEventContext::getItemInHand);
+        reg.addSingleContextValue(BreakBlockEventContext.class, ItemStack.class, "itemstack-in-hand", BreakBlockEventContext::getItemStackInHand);
     }
 
     private static BlockBreakEventSystem SYSTEM;
@@ -67,31 +73,41 @@ public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntitySto
         return "player block break";
     }
 
-    private record BreakBlockEventContext(BreakBlockEvent event, Player player) implements TriggerContext, CancellableContext {
+    private record BreakBlockEventContext(BreakBlockEvent event, Player player)
+        implements PlayerContext, CancellableContext {
 
-        private Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        private Block[] getBlock() {
+        private Block getBlock() {
             BlockType blockType = event.getBlockType();
             Vector3i targetBlock = event.getTargetBlock();
             World world = this.player.getWorld();
             if (world == null || blockType == BlockType.EMPTY) return null;
-            Block block = new Block(world, targetBlock, blockType);
-            return new Block[]{block};
+            return new Block(world, targetBlock);
         }
 
-        private World[] getWorld() {
-            return new World[]{this.player.getWorld()};
+        private void setTargetBlock(Block targetBlock) {
+            this.event.setTargetBlock(targetBlock.getPos());
         }
 
-        private BlockType[] getBlockType() {
-            return new BlockType[]{this.event.getBlockType()};
+        private World getWorld() {
+            return this.player.getWorld();
         }
 
-        private ItemStack[] getItemInHand() {
-            return new ItemStack[]{this.event.getItemInHand()};
+        private BlockType getBlockType() {
+            return this.event.getBlockType();
+        }
+
+        private Item getItemInHand() {
+            ItemStack itemInHand = this.event.getItemInHand();
+            if (itemInHand == null) return null;
+            return itemInHand.getItem();
+        }
+
+        private ItemStack getItemStackInHand() {
+            return this.event.getItemInHand();
         }
 
         @Override

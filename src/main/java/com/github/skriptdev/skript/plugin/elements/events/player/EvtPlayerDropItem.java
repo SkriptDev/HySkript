@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.SystemEvent;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
@@ -10,6 +11,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent.Drop;
@@ -35,9 +37,9 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(DropItemContext.class, Player.class, true, "player", DropItemContext::getPlayer);
-        reg.addContextValue(DropItemContext.class, Float.class, true, "throw-speed", DropItemContext::getThrowSpeed);
-        reg.addContextValue(DropItemContext.class, ItemStack.class, true, "dropped-itemstack", DropItemContext::getItemStack);
+        reg.addSingleContextValue(DropItemContext.class, Float.class, "throw-speed", DropItemContext::getThrowSpeed);
+        reg.addSingleContextValue(DropItemContext.class, Item.class, "dropped-item", DropItemContext::getItem);
+        reg.addSingleContextValue(DropItemContext.class, ItemStack.class, "dropped-itemstack", DropItemContext::getItemStack);
     }
 
     private static PlayerDropItemSystem SYSTEM;
@@ -61,18 +63,22 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
         return "player drop item event";
     }
 
-    private record DropItemContext(Player player, Drop drop) implements TriggerContext, CancellableContext {
+    private record DropItemContext(Player player, Drop drop) implements PlayerContext, CancellableContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        public Float[] getThrowSpeed() {
-            return new Float[]{this.drop.getThrowSpeed()};
+        public Float getThrowSpeed() {
+            return this.drop.getThrowSpeed();
         }
 
-        public ItemStack[] getItemStack() {
-            return new ItemStack[]{this.drop.getItemStack()};
+        public Item getItem() {
+            return this.drop.getItemStack().getItem();
+        }
+
+        public ItemStack getItemStack() {
+            return this.drop.getItemStack();
         }
 
         @Override

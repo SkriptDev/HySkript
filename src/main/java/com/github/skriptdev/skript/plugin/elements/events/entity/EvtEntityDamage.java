@@ -34,11 +34,11 @@ public class EvtEntityDamage extends SkriptEvent {
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(EntityDamageContext.class, Entity.class, true, "victim", EntityDamageContext::getVictim);
-        reg.addContextValue(EntityDamageContext.class, Entity.class, true, "attacker", EntityDamageContext::getAttacker);
-        reg.addContextValue(EntityDamageContext.class, Float.class, true, "damage-amount", EntityDamageContext::getDamage);
-        reg.addContextValue(EntityDamageContext.class, Damage.Source.class, true, "damage-source", EntityDamageContext::getDamageSource);
-        reg.addContextValue(EntityDamageContext.class, DamageCause.class, true, "damage-cause", EntityDamageContext::getDamageCause);
+        reg.addSingleContextValue(EntityDamageContext.class, Entity.class, "victim", EntityDamageContext::getVictim);
+        reg.addSingleContextValue(EntityDamageContext.class, Entity.class, "attacker", EntityDamageContext::getAttacker);
+        reg.addSingleContextValue(EntityDamageContext.class, Float.class, "damage-amount", EntityDamageContext::getDamage);
+        reg.addSingleContextValue(EntityDamageContext.class, Damage.Source.class, "damage-source", EntityDamageContext::getDamageSource);
+        reg.addSingleContextValue(EntityDamageContext.class, DamageCause.class, "damage-cause", EntityDamageContext::getDamageCause);
     }
 
     private static EntityDamageSystem SYSTEM;
@@ -65,33 +65,33 @@ public class EvtEntityDamage extends SkriptEvent {
     private record EntityDamageContext(Entity entity, Store<EntityStore> store, Damage damage)
         implements TriggerContext, CancellableContext {
 
-        public Entity[] getVictim() {
-            return new Entity[]{this.entity};
+        public Entity getVictim() {
+            return this.entity;
         }
 
         @SuppressWarnings("DataFlowIssue")
-        public Entity[] getAttacker() {
+        public Entity getAttacker() {
             Damage.Source source = this.damage.getSource();
             if (source instanceof Damage.EntitySource entitySource) {
                 Player player = this.store.getComponent(entitySource.getRef(), Player.getComponentType());
-                if (player != null) return new Entity[]{player};
+                if (player != null) return player;
                 NPCEntity npc = this.store.getComponent(entitySource.getRef(), NPCEntity.getComponentType());
-                if (npc != null) return new Entity[]{npc};
+                if (npc != null) return npc;
             }
             return null;
         }
 
-        public Float[] getDamage() {
-            return new Float[]{this.damage.getAmount()};
+        public Float getDamage() {
+            return this.damage.getAmount();
         }
 
-        public Damage.Source[] getDamageSource() {
-            return new Damage.Source[]{this.damage.getSource()};
+        public Damage.Source getDamageSource() {
+            return this.damage.getSource();
         }
 
         @SuppressWarnings("deprecation")
-        public DamageCause[] getDamageCause() {
-            return new DamageCause[]{this.damage.getCause()};
+        public DamageCause getDamageCause() {
+            return this.damage.getCause();
         }
 
         @Override

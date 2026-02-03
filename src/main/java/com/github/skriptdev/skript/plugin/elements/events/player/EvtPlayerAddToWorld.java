@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
+import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.component.Holder;
@@ -26,8 +27,7 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(AddContext.class, World.class, true, "world", AddContext::getWorld);
-        reg.addContextValue(AddContext.class, Player.class, true, "player", AddContext::getPlayer);
+        reg.addSingleContextValue(AddContext.class, World.class, "world", AddContext::getWorld);
     }
 
     private static EventRegistration<String, AddPlayerToWorldEvent> LISTENER;
@@ -53,16 +53,16 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
         return "";
     }
 
-    private record AddContext(AddPlayerToWorldEvent event) implements TriggerContext {
+    private record AddContext(AddPlayerToWorldEvent event) implements PlayerContext {
 
-        public World[] getWorld() {
-            return new World[]{this.event.getWorld()};
+        public World getWorld() {
+            return this.event.getWorld();
         }
 
-        public Player[] getPlayer() {
+        public Player getPlayer() {
             Holder<EntityStore> holder = this.event.getHolder();
             Player component = holder.getComponent(Player.getComponentType());
-            return new Player[]{component};
+            return component;
         }
 
         @Override

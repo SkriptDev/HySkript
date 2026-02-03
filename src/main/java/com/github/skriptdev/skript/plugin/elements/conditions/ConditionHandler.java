@@ -7,6 +7,7 @@ public class ConditionHandler {
 
     public static void register(SkriptRegistration registration) {
         CondHasPermission.register(registration);
+        CondInventoryCanHold.register(registration);
         CondPlayerIsCrouching.register(registration);
     }
 

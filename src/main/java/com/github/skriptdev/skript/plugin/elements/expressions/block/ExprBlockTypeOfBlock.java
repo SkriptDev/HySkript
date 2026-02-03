@@ -17,25 +17,32 @@ public class ExprBlockTypeOfBlock implements Expression<BlockType> {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(ExprBlockTypeOfBlock.class, BlockType.class, false,
-                "block[ ]type of %blocks%")
+                "block[ ]type of %blocks% [with settings %number%]")
             .name("Block Type of Block")
-            .description("Get/set the BlockType of a block.")
+            .description("Get/set the BlockType of a block.",
+                "**Settings**:",
+                "I don't really know what this does yet, but from testing:",
+                "- `0` = Without block update, with particles).",
+                "- `4` = Without block update, without particles (default)",
+                "- `256` = With block update, with particles.")
             .examples("on player block break:",
                 "\tif context-blocktype = ore_copper_stone:",
                 "\t\tcancel event",
                 "\t\tset blocktype of context-block to rock_Stone",
                 "",
                 "set blocktype of {_block} to empty # This is how Hytale refers to air")
-            .since("INSERT VERSION")
+            .since("1.0.0")
             .register();
     }
 
     private Expression<Block> blocks;
+    private Expression<Number> settings;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
         this.blocks = (Expression<Block>) expressions[0];
+        if (expressions.length > 1) this.settings = (Expression<Number>) expressions[1];
         return true;
     }
 
@@ -62,8 +69,14 @@ public class ExprBlockTypeOfBlock implements Expression<BlockType> {
 
         if (!(changeWith[0] instanceof BlockType type)) return;
 
+        int settings = 4; // No particles, no updates
+        if (this.settings != null) {
+            Optional<? extends Number> single = this.settings.getSingle(ctx);
+            if (single.isPresent()) settings = single.get().intValue();
+        }
+
         for (Block block : this.blocks.getArray(ctx)) {
-            block.setType(type);
+            block.setType(type, settings);
         }
     }
 
@@ -74,7 +87,8 @@ public class ExprBlockTypeOfBlock implements Expression<BlockType> {
 
     @Override
     public String toString(@NotNull TriggerContext ctx, boolean debug) {
-        return "blocktype of " + this.blocks.toString(ctx, debug);
+        String settings = this.settings == null ? "" : " with settings " + this.settings.toString(ctx, debug);
+        return "blocktype of " + this.blocks.toString(ctx, debug) + settings;
     }
 
 }
