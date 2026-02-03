@@ -8,6 +8,6 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
  */
 public interface PlayerContext extends TriggerContext {
 
-    Player[] getPlayer();
+    Player getPlayer();
 
 }

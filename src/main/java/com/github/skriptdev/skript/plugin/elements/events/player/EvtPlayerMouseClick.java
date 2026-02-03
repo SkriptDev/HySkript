@@ -32,11 +32,11 @@ public class EvtPlayerMouseClick extends SkriptEvent {
             .setHandledContexts(MouseClickContext.class)
             .register();
 
-        reg.addContextValue(MouseClickContext.class, Item.class, true, "item", MouseClickContext::getItemInHand);
-        reg.addContextValue(MouseClickContext.class, Entity.class, true, "target-entity", MouseClickContext::getTargetEntity);
-        reg.addContextValue(MouseClickContext.class, Vector3i.class, true, "target-block", MouseClickContext::getTargetBlock);
-        reg.addContextValue(MouseClickContext.class, Vector2f.class, true, "screen-point", MouseClickContext::getScreenPoint);
-        reg.addContextValue(MouseClickContext.class, MouseButtonEvent.class, true, "mouse-button", MouseClickContext::getMouseButton);
+        reg.addSingleContextValue(MouseClickContext.class, Item.class, "item", MouseClickContext::getItemInHand);
+        reg.addSingleContextValue(MouseClickContext.class, Entity.class, "target-entity", MouseClickContext::getTargetEntity);
+        reg.addSingleContextValue(MouseClickContext.class, Vector3i.class, "target-block", MouseClickContext::getTargetBlock);
+        reg.addSingleContextValue(MouseClickContext.class, Vector2f.class, "screen-point", MouseClickContext::getScreenPoint);
+        reg.addSingleContextValue(MouseClickContext.class, MouseButtonEvent.class, "mouse-button", MouseClickContext::getMouseButton);
     }
 
     private static EventRegistration<Void, PlayerMouseButtonEvent> LISTENER;
@@ -66,28 +66,28 @@ public class EvtPlayerMouseClick extends SkriptEvent {
 
     private record MouseClickContext(PlayerMouseButtonEvent event) implements PlayerContext, CancellableContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.event.getPlayer()};
+        public Player getPlayer() {
+            return this.event.getPlayer();
         }
 
-        private Item[] getItemInHand() {
-            return new Item[]{this.event.getItemInHand()};
+        private Item getItemInHand() {
+            return this.event.getItemInHand();
         }
 
-        private Entity[] getTargetEntity() {
-            return new Entity[]{this.event.getTargetEntity()};
+        private Entity getTargetEntity() {
+            return this.event.getTargetEntity();
         }
 
-        private Vector3i[] getTargetBlock() {
-            return new Vector3i[]{this.event.getTargetBlock()};
+        private Vector3i getTargetBlock() {
+            return this.event.getTargetBlock();
         }
 
-        private Vector2f[] getScreenPoint() {
-            return new Vector2f[]{this.event.getScreenPoint()};
+        private Vector2f getScreenPoint() {
+            return this.event.getScreenPoint();
         }
 
-        private MouseButtonEvent[] getMouseButton() {
-            return new MouseButtonEvent[]{this.event.getMouseButton()};
+        private MouseButtonEvent getMouseButton() {
+            return this.event.getMouseButton();
         }
 
         @Override

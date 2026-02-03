@@ -37,9 +37,9 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(DropItemContext.class, Float.class, true, "throw-speed", DropItemContext::getThrowSpeed);
-        reg.addContextValue(DropItemContext.class, Item.class, true, "dropped-item", DropItemContext::getItem);
-        reg.addContextValue(DropItemContext.class, ItemStack.class, true, "dropped-itemstack", DropItemContext::getItemStack);
+        reg.addSingleContextValue(DropItemContext.class, Float.class, "throw-speed", DropItemContext::getThrowSpeed);
+        reg.addSingleContextValue(DropItemContext.class, Item.class, "dropped-item", DropItemContext::getItem);
+        reg.addSingleContextValue(DropItemContext.class, ItemStack.class, "dropped-itemstack", DropItemContext::getItemStack);
     }
 
     private static PlayerDropItemSystem SYSTEM;
@@ -65,20 +65,20 @@ public class EvtPlayerDropItem extends SystemEvent<EntityEventSystem<EntityStore
 
     private record DropItemContext(Player player, Drop drop) implements PlayerContext, CancellableContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        public Float[] getThrowSpeed() {
-            return new Float[]{this.drop.getThrowSpeed()};
+        public Float getThrowSpeed() {
+            return this.drop.getThrowSpeed();
         }
 
-        public Item[] getItem() {
-            return new Item[]{this.drop.getItemStack().getItem()};
+        public Item getItem() {
+            return this.drop.getItemStack().getItem();
         }
 
-        public ItemStack[] getItemStack() {
-            return new ItemStack[]{this.drop.getItemStack()};
+        public ItemStack getItemStack() {
+            return this.drop.getItemStack();
         }
 
         @Override

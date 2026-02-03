@@ -42,9 +42,9 @@ public class EvtPlayerUseBlock extends SystemEvent<EntityEventSystem<EntityStore
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(UseBlockContext.class, BlockType.class, true, "blocktype", UseBlockContext::getBlockType);
-        reg.addContextValue(UseBlockContext.class, Block.class, true, "block", UseBlockContext::getBlock);
-        reg.addContextValue(UseBlockContext.class, InteractionType.class, true, "interaction-type", UseBlockContext::getInteractionType);
+        reg.addSingleContextValue(UseBlockContext.class, BlockType.class, "blocktype", UseBlockContext::getBlockType);
+        reg.addSingleContextValue(UseBlockContext.class, Block.class, "block", UseBlockContext::getBlock);
+        reg.addSingleContextValue(UseBlockContext.class, InteractionType.class, "interaction-type", UseBlockContext::getInteractionType);
     }
 
     private static PreUseBlockSystem PRE_SYSTEM;
@@ -88,22 +88,22 @@ public class EvtPlayerUseBlock extends SystemEvent<EntityEventSystem<EntityStore
         }
 
         @Override
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        public BlockType[] getBlockType() {
-            return new BlockType[]{this.event.getBlockType()};
+        public BlockType getBlockType() {
+            return this.event.getBlockType();
         }
 
-        public InteractionType[] getInteractionType() {
-            return new InteractionType[]{this.event.getInteractionType()};
+        public InteractionType getInteractionType() {
+            return this.event.getInteractionType();
         }
 
-        public Block[] getBlock() {
+        public Block getBlock() {
             World world = this.player.getWorld();
             if (world == null) return null;
-            return new Block[]{new Block(world, this.event.getTargetBlock(), this.event.getBlockType())};
+            return new Block(world, this.event.getTargetBlock());
         }
     }
 

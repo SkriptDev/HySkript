@@ -3,7 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.effects.other;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.command.system.CommandSender;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import io.github.syst3ms.skriptparser.lang.Effect;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -57,15 +57,14 @@ public class EffSendMessage extends Effect {
             }
         } else {
             if (ctx instanceof PlayerContext playerContext) {
-                for (CommandSender commandSender : playerContext.getPlayer()) {
-                    for (Object value : messages) {
-                        if (value instanceof String string) {
-                            Utils.sendMessage(commandSender, string);
-                        } else if (value instanceof Message message) {
-                            commandSender.sendMessage(message);
-                        } else {
-                            Utils.sendMessage(commandSender, TypeManager.toString(new Object[]{value}));
-                        }
+                Player commandSender = playerContext.getPlayer();
+                for (Object value : messages) {
+                    if (value instanceof String string) {
+                        Utils.sendMessage(commandSender, string);
+                    } else if (value instanceof Message message) {
+                        commandSender.sendMessage(message);
+                    } else {
+                        Utils.sendMessage(commandSender, TypeManager.toString(new Object[]{value}));
                     }
                 }
             } else {

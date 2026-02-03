@@ -26,7 +26,7 @@ import java.util.UUID;
 public class EffectCommands {
 
     public static void register(Skript skript, String token, boolean allowOps, String permission) {
-        skript.getSkriptRegistration().newContextValue(PlayerEffectContext.class, Player.class, true, "me", PlayerEffectContext::getPlayer)
+        skript.getSkriptRegistration().newSingleContextValue(PlayerEffectContext.class, Player.class, "me", PlayerEffectContext::getPlayer)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
@@ -99,8 +99,8 @@ public class EffectCommands {
 
     private record PlayerEffectContext(Player player) implements PlayerContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
         @Override

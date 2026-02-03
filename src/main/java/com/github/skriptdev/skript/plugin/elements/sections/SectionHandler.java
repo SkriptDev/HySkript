@@ -7,6 +7,7 @@ public class SectionHandler {
     public static void register(SkriptRegistration registration) {
         SecDropItem.register(registration);
         SecExecuteInWorld.register(registration);
+        SecPlaySound.register(registration);
         SecSpawnNPC.register(registration);
     }
 

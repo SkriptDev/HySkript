@@ -1,10 +1,13 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
 
+import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.skript.event.BlockContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDamage;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDeath;
+import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityPickupItem;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityRemove;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtLivingEntityInvChange;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerAddToWorld;
@@ -17,6 +20,7 @@ import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropIt
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerJoin;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseClick;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseMove;
+import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerPlaceBlock;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerSetupConnect;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerSetupDisconnect;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerUseBlock;
@@ -31,8 +35,9 @@ public class EventHandler {
     public static void register(SkriptRegistration registration) {
         // ENTITY
         EvtEntityDamage.register(registration);
-        EvtEntityRemove.register(registration);
         EvtEntityDeath.register(registration);
+        EvtEntityPickupItem.register(registration);
+        EvtEntityRemove.register(registration);
         EvtLivingEntityInvChange.register(registration);
 
         // PLAYER
@@ -46,6 +51,7 @@ public class EventHandler {
         EvtPlayerJoin.register(registration);
         EvtPlayerMouseClick.register(registration);
         EvtPlayerMouseMove.register(registration);
+        EvtPlayerPlaceBlock.register(registration);
         EvtPlayerSetupConnect.register(registration);
         EvtPlayerSetupDisconnect.register(registration);
         EvtPlayerUseBlock.register(registration);
@@ -62,7 +68,9 @@ public class EventHandler {
     }
 
     private static void registerGlobalContexts(SkriptRegistration reg) {
-        reg.newContextValue(PlayerContext.class, Player.class, true, "player", PlayerContext::getPlayer)
+        reg.newSingleContextValue(BlockContext.class, Block.class, "block", BlockContext::getBlock)
+            .register();
+        reg.newSingleContextValue(PlayerContext.class, Player.class, "player", PlayerContext::getPlayer)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
     }

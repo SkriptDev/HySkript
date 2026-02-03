@@ -27,7 +27,7 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(AddContext.class, World.class, true, "world", AddContext::getWorld);
+        reg.addSingleContextValue(AddContext.class, World.class, "world", AddContext::getWorld);
     }
 
     private static EventRegistration<String, AddPlayerToWorldEvent> LISTENER;
@@ -55,14 +55,14 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
 
     private record AddContext(AddPlayerToWorldEvent event) implements PlayerContext {
 
-        public World[] getWorld() {
-            return new World[]{this.event.getWorld()};
+        public World getWorld() {
+            return this.event.getWorld();
         }
 
-        public Player[] getPlayer() {
+        public Player getPlayer() {
             Holder<EntityStore> holder = this.event.getHolder();
             Player component = holder.getComponent(Player.getComponentType());
-            return new Player[]{component};
+            return component;
         }
 
         @Override

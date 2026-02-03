@@ -38,10 +38,10 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
             .since("1.0.0")
             .register();
 
-        reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "slot-id", RequestDropItemContext::getSlotId);
-        reg.addContextValue(RequestDropItemContext.class, Integer.class, true, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
-        reg.addContextValue(RequestDropItemContext.class, Item.class, true, "item", RequestDropItemContext::getItem);
-        reg.addContextValue(RequestDropItemContext.class, ItemStack.class, true, "itemstack", RequestDropItemContext::getItemStack);
+        reg.addSingleContextValue(RequestDropItemContext.class, Integer.class, "slot-id", RequestDropItemContext::getSlotId);
+        reg.addSingleContextValue(RequestDropItemContext.class, Integer.class, "inventory-section-id", RequestDropItemContext::getInventorySectionId);
+        reg.addSingleContextValue(RequestDropItemContext.class, Item.class, "item", RequestDropItemContext::getItem);
+        reg.addSingleContextValue(RequestDropItemContext.class, ItemStack.class, "itemstack", RequestDropItemContext::getItemStack);
     }
 
     private static PlayerRequestSystem SYSTEM;
@@ -68,33 +68,32 @@ public class EvtPlayerDropItemRequest extends SystemEvent<EntityEventSystem<Enti
     private record RequestDropItemContext(Player player, DropItemEvent.PlayerRequest request)
         implements PlayerContext, CancellableContext {
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
-        public Integer[] getSlotId() {
-            return new Integer[]{(int) this.request.getSlotId()};
+        public int getSlotId() {
+            return (int) this.request.getSlotId();
         }
 
-        public Integer[] getInventorySectionId() {
-            return new Integer[]{(int) this.request.getInventorySectionId()};
+        public int getInventorySectionId() {
+            return this.request.getInventorySectionId();
         }
 
-        public Item[] getItem() {
+        public Item getItem() {
             Inventory inventory = this.player.getInventory();
             ItemContainer container = inventory.getSectionById(this.request.getInventorySectionId());
             if (container == null) return null;
             ItemStack itemStack = container.getItemStack(this.request.getSlotId());
             if (itemStack == null) return null;
-            Item item = itemStack.getItem();
-            return new Item[]{item};
+            return itemStack.getItem();
         }
 
-        public ItemStack[] getItemStack() {
+        public ItemStack getItemStack() {
             Inventory inventory = this.player.getInventory();
             ItemContainer container = inventory.getSectionById(this.request.getInventorySectionId());
             if (container == null) return null;
-            return new ItemStack[]{container.getItemStack(this.request.getSlotId())};
+            return container.getItemStack(this.request.getSlotId());
         }
 
         @Override

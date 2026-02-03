@@ -1,16 +1,14 @@
 package com.github.skriptdev.skript.plugin.elements.sections;
 
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
-import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.function.consumer.TriConsumer;
 import com.hypixel.hytale.math.vector.Location;
+import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
-import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import io.github.syst3ms.skriptparser.lang.CodeSection;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Statement;
@@ -104,22 +102,22 @@ public class SecSpawnNPC extends CodeSection {
 
         Optional<? extends Statement> firstStatement = getFirst();
 
-        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition(), location.getRotation(), null, new TriConsumer<NPCEntity, Holder<EntityStore>, Store<EntityStore>>() {
-            @Override
-            public void accept(NPCEntity npcEntity, Holder<EntityStore> entityStoreRef, Store<EntityStore> entityStoreStore) {
-                SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
+        Vector3f rotation = location.getRotation().clone();
+        if (Float.isNaN(rotation.getX())) rotation = Vector3f.ZERO;
 
-                // Copy the variables from the main TriggerContext into the SpawnMobContext
-                Variables.copyLocalVariables(ctx, spawnMobContext);
-                setNext(null);
-                firstStatement.ifPresent(statement ->
-                    Statement.runAll(statement, spawnMobContext));
+        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, (npcEntity, _, _) -> {
+            SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
 
-                // After that is run, copy them back
-                Variables.copyLocalVariables(spawnMobContext, ctx);
-                // Clear locals from the no longer used SpawnMobContext
-                Variables.clearLocalVariables(spawnMobContext);
-            }
+            // Copy the variables from the main TriggerContext into the SpawnMobContext
+            Variables.copyLocalVariables(ctx, spawnMobContext);
+            setNext(null);
+            firstStatement.ifPresent(statement ->
+                Statement.runAll(statement, spawnMobContext));
+
+            // After that is run, copy them back
+            Variables.copyLocalVariables(spawnMobContext, ctx);
+            // Clear locals from the no longer used SpawnMobContext
+            Variables.clearLocalVariables(spawnMobContext);
         }, null);
 
         return nextStatement;

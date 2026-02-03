@@ -119,11 +119,17 @@ public class JsonVariableStorage extends VariableStorage {
             if (this.bsonDocument.containsKey("variables")) {
                 variablesDocument = this.bsonDocument.getDocument("variables");
             } else {
-                // Legacy file format (TODO remove before first release)
-                this.logger.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
-                Files.move(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
-                variablesDocument = this.bsonDocument.clone();
-                this.bsonDocument = new BsonDocument();
+                if (!this.bsonDocument.isEmpty() && !this.bsonDocument.containsKey("data")) {
+                    // Legacy file format (TODO remove before first release)
+                    this.logger.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
+                    Files.move(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
+                    variablesDocument = this.bsonDocument.clone();
+                    this.bsonDocument.clear();
+                    this.bsonDocument.put("variables", variablesDocument);
+                } else {
+                    variablesDocument = this.bsonDocument.getDocument("variables", new BsonDocument());
+                }
+                //this.bsonDocument = new BsonDocument();
             }
             JsonElement jsonElement = BsonUtil.translateBsonToJson(variablesDocument);
             if (jsonElement instanceof JsonObject jsonObject) {

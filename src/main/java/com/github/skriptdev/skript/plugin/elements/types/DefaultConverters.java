@@ -2,6 +2,8 @@ package com.github.skriptdev.skript.plugin.elements.types;
 
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.syst3ms.skriptparser.types.conversions.Converters;
 
 import java.util.Optional;
@@ -12,6 +14,7 @@ public class DefaultConverters {
         inventory();
     }
 
+    @SuppressWarnings("removal")
     private static void inventory() {
         // Item to BlockType
         Converters.registerConverter(Item.class, BlockType.class, (item) -> {
@@ -30,6 +33,10 @@ public class DefaultConverters {
             if (item != null) return Optional.of(item);
             return Optional.empty();
         });
+
+        // Player to PlayerRef
+        Converters.registerConverter(Player.class, PlayerRef.class, (player) ->
+            Optional.ofNullable(player.getPlayerRef()));
     }
 
 }

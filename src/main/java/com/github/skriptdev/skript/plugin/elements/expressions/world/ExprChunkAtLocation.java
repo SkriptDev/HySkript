@@ -1,28 +1,27 @@
-package com.github.skriptdev.skript.plugin.elements.expressions.block;
+package com.github.skriptdev.skript.plugin.elements.expressions.world;
 
-import com.github.skriptdev.skript.api.hytale.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ExprBlockAt implements Expression<Block> {
+public class ExprChunkAtLocation implements Expression<WorldChunk> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newExpression(ExprBlockAt.class, Block.class, true,
-            "block[s] at %locations%")
-            .name("Block At")
-            .description("Returns the block at a location.")
-            .examples("set {_block} to block at player's location")
-            .since("1.0.0")
+        reg.newExpression(ExprChunkAtLocation.class, WorldChunk.class, true,
+                "chunk[s] at %locations%")
+            .name("Chunk At Location")
+            .description("Get the chunk at a location.")
+            .examples("set {_chunk} to chunk at player's location",
+                "regenerate chunk at player's location")
+            .since("INSERT VERSION")
             .register();
     }
 
@@ -36,22 +35,25 @@ public class ExprBlockAt implements Expression<Block> {
     }
 
     @Override
-    public Block[] getValues(@NotNull TriggerContext ctx) {
-        List<Block> blocks = new ArrayList<>();
+    public WorldChunk[] getValues(@NotNull TriggerContext ctx) {
+        Location[] locArray = this.locations.getArray(ctx);
+        WorldChunk[] chunks = new WorldChunk[locArray.length];
 
-        for (Location location : this.locations.getArray(ctx)) {
+        for (int i = 0; i < locArray.length; i++) {
+            Location location = locArray[i];
             String worldName = location.getWorld();
             if (worldName == null) continue;
+
             World world = Universe.get().getWorld(worldName);
             if (world == null) continue;
 
             Vector3i pos = location.getPosition().toVector3i();
 
-            Block block = new Block(world, pos);
-            blocks.add(block);
+            long index = ChunkUtil.indexChunkFromBlock(pos.getX(), pos.getZ());
+            chunks[i] = world.getChunk(index);
         }
 
-        return blocks.toArray(new Block[0]);
+        return chunks;
     }
 
     @Override
@@ -61,8 +63,7 @@ public class ExprBlockAt implements Expression<Block> {
 
     @Override
     public String toString(@NotNull TriggerContext ctx, boolean debug) {
-        String plural = this.locations.isSingle() ? "" : "s";
-        return String.format("block%s at %s", plural, this.locations.toString(ctx, debug));
+        return "chunk[s] at " + this.locations.toString(ctx, debug);
     }
 
 }

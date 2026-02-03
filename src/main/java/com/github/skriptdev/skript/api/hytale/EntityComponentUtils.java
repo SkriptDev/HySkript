@@ -1,6 +1,8 @@
 package com.github.skriptdev.skript.api.hytale;
 
 import com.hypixel.hytale.component.AddReason;
+import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -26,6 +28,24 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("UnusedReturnValue")
 public class EntityComponentUtils {
+
+    /**
+     * Get a component from an Entity
+     *
+     * @param entity     Entity to get component from
+     * @param type       Component type to get
+     * @param <ECS_TYPE> EntityStore Type
+     * @param <T>        Type of returned component
+     * @return Component from entity if available otherwise null
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS_TYPE, T extends Component<ECS_TYPE>> @Nullable T getComponent(Entity entity, ComponentType<ECS_TYPE, T> type) {
+        Ref<ECS_TYPE> reference = (Ref<ECS_TYPE>) entity.getReference();
+        if (reference == null) return null;
+
+        Store<ECS_TYPE> store = reference.getStore();
+        return store.getComponent(reference, type);
+    }
 
     /**
      * Get the EntityStatMap component of an entity.

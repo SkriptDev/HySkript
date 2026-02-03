@@ -89,8 +89,8 @@ public class EvtPlayerJoin extends SkriptEvent {
             this.pattern = pattern;
         }
 
-        public Player[] getPlayer() {
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            return this.player;
         }
 
         public int getPattern() {
