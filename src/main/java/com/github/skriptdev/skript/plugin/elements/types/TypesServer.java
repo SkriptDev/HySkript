@@ -9,6 +9,7 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.Vector2f;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
@@ -73,6 +74,12 @@ public class TypesServer {
             .name("Server")
             .description("Represents the Hytale server.")
             .since("1.0.0")
+            .register();
+        registration.newType(Vector2f.class, "vector2f", "vector2f@s")
+            .name("Vector2f")
+            .description("Represents a vector in 2D space using floats.",
+                "Often used for mouse position on screen.")
+            .since("INSERT VERSION")
             .register();
         registration.newType(Vector3f.class, "vector3f", "vector3f@s")
             .name("Vector3f")

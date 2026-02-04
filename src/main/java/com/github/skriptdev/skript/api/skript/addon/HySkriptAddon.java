@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.api.skript.addon;
 
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 import org.jetbrains.annotations.Nullable;
@@ -13,9 +14,11 @@ import java.util.List;
 public abstract class HySkriptAddon extends SkriptAddon {
 
     private Manifest manifest;
+    private final HytaleLogger hytaleLogger;
 
     public HySkriptAddon(String name) {
         super(name);
+        this.hytaleLogger = HytaleLogger.get("HySkript|" + name + "|A");
     }
 
     /**
@@ -29,6 +32,10 @@ public abstract class HySkriptAddon extends SkriptAddon {
      * This is a good time to clean up resources.
      */
     abstract public void shutdown();
+
+    public HytaleLogger getHytaleLogger() {
+        return this.hytaleLogger;
+    }
 
     final void setManifest(Manifest manifest) {
         this.manifest = manifest;

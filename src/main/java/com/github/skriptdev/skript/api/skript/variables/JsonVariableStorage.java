@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Instance of {@link VariableStorage} that stores variables in a JSON file.
@@ -57,29 +58,27 @@ public class JsonVariableStorage extends VariableStorage {
     private final AtomicInteger changes = new AtomicInteger(0);
     private final int changesToSave = 500;
     ScheduledFuture<?> schedule;
-    private final SkriptLogger logger;
 
     public JsonVariableStorage(SkriptLogger logger, String name) {
         super(logger, name);
-        this.logger = logger;
     }
 
     @Override
     protected boolean load(@NotNull ConfigSection section) {
         String fileType = section.getString("file-type");
         if (fileType == null) {
-            this.logger.error("No 'file-type' specified for database '" + this.name + "'!", ErrorType.EXCEPTION);
+            Utils.error("No 'file-type' specified for database '" + this.name + "'!", ErrorType.EXCEPTION);
             return false;
         }
         this.type = switch (fileType.toLowerCase(Locale.ROOT)) {
             case "json" -> Type.JSON;
             case "bson" -> Type.BSON;
             default -> {
-                this.logger.error("Unknown file-type '" + fileType + "' in database '" + this.name + "'", ErrorType.EXCEPTION);
+                Utils.error("Unknown file-type '" + fileType + "' in database '" + this.name + "'", ErrorType.EXCEPTION);
                 yield null;
             }
         };
-        this.logger.info("Database '" + this.name + "' loaded with filetype '" + this.type + "'");
+        Utils.log("Database '" + this.name + "' loaded with filetype '" + this.type + "'");
         return this.type != null;
     }
 
@@ -96,7 +95,7 @@ public class JsonVariableStorage extends VariableStorage {
                     saveVariables(false);
                     this.changes.set(0);
                 } catch (IOException e) {
-                    this.logger.error("Failed to save variable file", ErrorType.EXCEPTION);
+                    Utils.error("Failed to save variable file", ErrorType.EXCEPTION);
                     throw new RuntimeException(e);
                 }
             }
@@ -104,7 +103,7 @@ public class JsonVariableStorage extends VariableStorage {
     }
 
     private void loadVariablesFromFile() {
-        this.logger.info("Loading variables from file...");
+        Utils.log("Loading variables from file...");
 
         try {
             if (this.type == Type.JSON) {
@@ -121,7 +120,7 @@ public class JsonVariableStorage extends VariableStorage {
             } else {
                 if (!this.bsonDocument.isEmpty() && !this.bsonDocument.containsKey("data")) {
                     // Legacy file format (TODO remove before first release)
-                    this.logger.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
+                    Utils.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
                     Files.move(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
                     variablesDocument = this.bsonDocument.clone();
                     this.bsonDocument.clear();
@@ -129,9 +128,10 @@ public class JsonVariableStorage extends VariableStorage {
                 } else {
                     variablesDocument = this.bsonDocument.getDocument("variables", new BsonDocument());
                 }
-                //this.bsonDocument = new BsonDocument();
             }
             JsonElement jsonElement = BsonUtil.translateBsonToJson(variablesDocument);
+            AtomicInteger count = new AtomicInteger();
+            AtomicLong start = new AtomicLong(System.currentTimeMillis());
             if (jsonElement instanceof JsonObject jsonObject) {
                 jsonObject.entrySet().forEach(entry -> {
                     String name = entry.getKey();
@@ -139,17 +139,23 @@ public class JsonVariableStorage extends VariableStorage {
                     String type = value.get("type").getAsString();
                     JsonElement jsonValue = value.get("value");
                     if (jsonValue == null) {
-                        this.logger.error("Skipping variable '" + name + "' due to missing value", ErrorType.STRUCTURE_ERROR);
+                        Utils.error("Skipping variable '%s' due to missing value", name);
                         return;
                     }
 
-                    this.logger.debug("Loading variable '" + name + "' of type '" + type + "' from file. With data '" + jsonValue.toString() + "'");
                     loadVariable(name, type, jsonValue);
+                    count.getAndIncrement();
+                    if (System.currentTimeMillis() - start.get() > 500) {
+                        // If it's taking too long, log progress
+                        start.set(System.currentTimeMillis());
+                        Utils.log(" - Loaded " + count.get() + " variables so far...");
+                    }
                 });
+                Utils.log("Loaded " + count.get() + " variables from file!");
             }
 
         } catch (IOException e) {
-            this.logger.error("Failed to load variables from file", ErrorType.EXCEPTION);
+            Utils.error("Failed to load variables from file", ErrorType.EXCEPTION);
             throw new RuntimeException(e);
         }
     }
@@ -166,9 +172,9 @@ public class JsonVariableStorage extends VariableStorage {
         if (!varFile.exists()) {
             try {
                 if (varFile.createNewFile()) {
-                    this.logger.info("Created " + fileName + " file!");
+                    Utils.log("Created " + fileName + " file!");
                 } else {
-                    this.logger.error("Failed to create " + fileName + " file!", ErrorType.EXCEPTION);
+                    Utils.error("Failed to create " + fileName + " file!", ErrorType.EXCEPTION);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

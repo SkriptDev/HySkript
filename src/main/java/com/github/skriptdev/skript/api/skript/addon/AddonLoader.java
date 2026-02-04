@@ -6,7 +6,6 @@ import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.codec.util.RawJsonReader;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.log.LogEntry;
-import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 
 import java.io.File;
@@ -23,27 +22,24 @@ import java.util.jar.JarFile;
 
 public class AddonLoader {
 
-    private final SkriptLogger logger;
-
-    public AddonLoader(SkriptLogger logger) {
-        this.logger = logger;
-    }
+    private int addonCount = 0;
 
     public void loadAddonsFromFolder() {
+        Utils.log("Loading addons...");
         Path resolve = HySk.getInstance().getDataDirectory().resolve("addons");
         File addonFolder = resolve.toFile();
         if (!addonFolder.exists()) {
             if (!addonFolder.mkdirs()) {
-                this.logger.error("Failed to create addons folder", ErrorType.STRUCTURE_ERROR);
+                Utils.error("Failed to create addons folder");
                 return;
             }
         } else if (!addonFolder.isDirectory()) {
-            this.logger.error("Addons folder is not a directory", ErrorType.STRUCTURE_ERROR);
+            Utils.error("Addons folder is not a directory");
             return;
         }
         File[] files = addonFolder.listFiles();
         if (files == null) {
-            this.logger.error("Failed to list files in addons folder", ErrorType.STRUCTURE_ERROR);
+            Utils.error("Failed to list files in addons folder");
             return;
         }
 
@@ -53,13 +49,15 @@ public class AddonLoader {
             .toList()) {
             loadAddon(file);
         }
+        String plural = this.addonCount == 1 ? "" : "s";
+        Utils.log("Finished loading %s addon%s!", this.addonCount, plural);
     }
 
     private void loadAddon(File file) {
         try (JarFile jarFile = new JarFile(file)) {
             JarEntry jarEntry = jarFile.getJarEntry("manifest.json");
             if (jarEntry == null) {
-                this.logger.error("Manifest.json not found in addon " + file.getName(), ErrorType.STRUCTURE_ERROR);
+                Utils.error("Manifest.json not found in addon " + file.getName());
                 return;
             }
 
@@ -70,7 +68,7 @@ public class AddonLoader {
 
             Manifest manifest = Manifest.CODEC.decodeJson(rawJsonReader, new ExtraInfo());
             if (manifest == null) {
-                this.logger.error("Failed to decode manifest.json in addon " + file.getName(), ErrorType.STRUCTURE_ERROR);
+                Utils.error("Failed to decode manifest.json in addon " + file.getName());
                 return;
             }
 
@@ -80,26 +78,27 @@ public class AddonLoader {
             try {
                 externalClass = classLoader.loadClass(manifest.getMainClass());
             } catch (ClassNotFoundException e) {
-                this.logger.error("Main class not found in addon " + file.getName(), ErrorType.STRUCTURE_ERROR);
+                Utils.error("Main class not found in addon " + file.getName());
                 return;
             }
             Object mainClassIntance;
             try {
                 mainClassIntance = externalClass.getDeclaredConstructor(String.class).newInstance(manifest.getName());
             } catch (ReflectiveOperationException e) {
-                this.logger.error("Failed to create instance of addon " + file.getName(), ErrorType.EXCEPTION);
+                Utils.error("Failed to create instance of addon " + file.getName(), ErrorType.EXCEPTION);
                 return;
             }
             if (mainClassIntance instanceof HySkriptAddon addon) {
                 addon.setManifest(manifest);
                 addon.setup();
+                this.addonCount++;
                 // Finalize registration and logging
                 for (LogEntry logEntry : addon.getSkriptRegistration().register()) {
                     Utils.log(null, logEntry);
                 }
             }
         } catch (IOException e) {
-            this.logger.error("Failed to load addon " + file.getName(), ErrorType.EXCEPTION);
+            Utils.error("Failed to load addon " + file.getName(), ErrorType.EXCEPTION);
         }
     }
 

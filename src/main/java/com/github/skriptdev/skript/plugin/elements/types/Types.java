@@ -7,7 +7,6 @@ import io.github.syst3ms.skriptparser.types.TypeManager;
 public class Types {
 
     public static void register(SkriptRegistration registration) {
-        Utils.log("Setting up Types");
         TypesJava.register(registration);
         TypesCustom.register(registration);
         TypesServer.register(registration);
