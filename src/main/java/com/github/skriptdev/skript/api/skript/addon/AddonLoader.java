@@ -1,9 +1,11 @@
 package com.github.skriptdev.skript.api.skript.addon;
 
+import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.codec.util.RawJsonReader;
 import io.github.syst3ms.skriptparser.log.ErrorType;
+import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 
@@ -91,6 +93,10 @@ public class AddonLoader {
             if (mainClassIntance instanceof HySkriptAddon addon) {
                 addon.setManifest(manifest);
                 addon.setup();
+                // Finalize registration and logging
+                for (LogEntry logEntry : addon.getSkriptRegistration().register()) {
+                    Utils.log(null, logEntry);
+                }
             }
         } catch (IOException e) {
             this.logger.error("Failed to load addon " + file.getName(), ErrorType.EXCEPTION);

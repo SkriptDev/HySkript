@@ -83,10 +83,10 @@ public class Skript extends SkriptAddon {
         Utils.log("HySkript setup complete!");
 
         // LOAD ADDONS
-        Utils.log("Loading addons...");
+        this.logger.info("Loading addons...");
         this.addonLoader = new AddonLoader(this.logger);
         this.addonLoader.loadAddonsFromFolder();
-        Utils.log("Finished loading addons!");
+        this.logger.info("Finished loading addons!");
 
         // LOAD VARIABLES
         loadVariables();
