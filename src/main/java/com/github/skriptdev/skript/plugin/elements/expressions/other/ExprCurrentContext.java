@@ -9,19 +9,23 @@ import org.jetbrains.annotations.NotNull;
 public class ExprCurrentContext implements Expression<String> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newExpression(ExprCurrentContext.class, String.class, true, "current trigger context")
+        reg.newExpression(ExprCurrentContext.class, String.class, true,
+                "current trigger context", "current thread")
             .noDoc() // Used for debugging
             .register();
     }
 
+    private int pattern;
+
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
+        this.pattern = matchedPattern;
         return true;
     }
 
     @Override
-    public String[] getValues(TriggerContext ctx) {
-        return new String[]{ctx.getName()};
+    public String[] getValues(@NotNull TriggerContext ctx) {
+        return new String[]{this.pattern == 0 ? ctx.getName() : Thread.currentThread().getName()};
     }
 
     @Override
