@@ -19,21 +19,29 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
+import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EvtPlayerChangeGameMode extends SystemEvent<EntityEventSystem<EntityStore, ChangeGameModeEvent>> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newEvent(EvtPlayerChangeGameMode.class, "[player(s| )] game[ ]mode change[s]")
+        reg.newEvent(EvtPlayerChangeGameMode.class, "[player(s| )] game[(-| )]mode change[s]")
                 .setHandledContexts(PlayerChangeGameModeContext.class)
                 .name("Player Change GameMode")
                 .description("Called when a player's game-mode is changed.")
                 .since("INSERT VERSION")
                 .register();
 
-        reg.addSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "new-game-mode", PlayerChangeGameModeContext::getNewGameMode);
-        reg.addSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "current-game-mode", PlayerChangeGameModeContext::getOldGameMode);
+        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "game[(-| )]mode", PlayerChangeGameModeContext::getOldGameMode)
+                .setState(ContextValue.State.PAST)
+                .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
+                .register();
+        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "game[(-| )]mode", PlayerChangeGameModeContext::getNewGameMode)
+                .setState(ContextValue.State.PRESENT)
+                .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
+                .addSetter(PlayerChangeGameModeContext::setNewGameMode)
+                .register();
     }
 
     private static ChangeGameModeEventSystem SYSTEM;
@@ -70,6 +78,10 @@ public class EvtPlayerChangeGameMode extends SystemEvent<EntityEventSystem<Entit
 
         public GameMode getOldGameMode() {
             return getPlayer().getGameMode();
+        }
+
+        public void setNewGameMode(GameMode gameMode) {
+            event.setGameMode(gameMode);
         }
 
         @Override
