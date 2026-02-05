@@ -15,6 +15,7 @@ import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerAddToW
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerBreakBlock;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerChangeGameMode;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerChat;
+import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerCraftRecipe;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDamageBlock;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDrainFromWorld;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropItem;
@@ -48,6 +49,7 @@ public class EventHandler {
         EvtPlayerBreakBlock.register(registration);
         EvtPlayerChangeGameMode.register(registration);
         EvtPlayerChat.register(registration);
+        EvtPlayerCraftRecipe.register(registration);
         EvtPlayerDamageBlock.register(registration);
         EvtPlayerDrainFromWorld.register(registration);
         EvtPlayerDropItem.register(registration);
