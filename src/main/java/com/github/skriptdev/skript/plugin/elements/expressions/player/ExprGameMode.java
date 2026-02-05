@@ -1,7 +1,10 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.player;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
@@ -35,15 +38,27 @@ public class ExprGameMode extends PropertyExpression<Player, GameMode> {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, @NotNull Object[] changeWith) {
+    public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
         if (changeMode != ChangeMode.SET || changeWith == null) return;
-        GameMode newGameMode = changeWith[0] instanceof GameMode ? (GameMode) changeWith[0] : null;
-        if (newGameMode == null) return;
 
-        Optional<?> owner = getOwner().getSingle(ctx);
-        if (!(owner.isPresent() && owner.get() instanceof Player player)) return;
+        GameMode newGameMode = changeWith[0] instanceof GameMode gm ? gm : null;
+        if (newGameMode == null) {
+            return;
+        }
 
-        Player.setGameMode(player.getReference(), newGameMode, player.getReference().getStore());
+        for (Player player : getOwner().getArray(ctx)) {
+            if (player == null) continue;
+
+            Ref<EntityStore> ref = player.getReference();
+            Runnable gamemodeRunnable = () -> Player.setGameMode(ref, newGameMode, ref.getStore());
+
+            World world = player.getWorld();
+            if (world.isInThread()) {
+                gamemodeRunnable.run();
+            } else {
+                world.execute(gamemodeRunnable);
+            }
+        }
     }
 
     @Override
