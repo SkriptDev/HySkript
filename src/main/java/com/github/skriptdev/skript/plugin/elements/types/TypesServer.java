@@ -9,6 +9,7 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.Vector2f;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
@@ -18,6 +19,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import io.github.syst3ms.skriptparser.types.changers.TypeSerializer;
 import org.bson.BsonDocument;
+import org.bson.BsonInt32;
 import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.jetbrains.annotations.NotNull;
@@ -175,6 +177,22 @@ public class TypesServer {
             })
             .since("1.0.0")
             .register();
-    }
+        registration.newType(GameMode.class, "gamemode", "gamemode@s")
+                .name("GameMode")
+                .description("Represents a game mode.")
+                .serializer(new TypeSerializer<>() {
+                    @Override
+                    public JsonElement serialize(Gson gson, GameMode value) {
+                        BsonDocument bsonDocument = new BsonDocument();
+                        bsonDocument.put("gamemode", bsonDocument.put("gamemode", new BsonInt32(value.getValue())));
+                        return gson.toJsonTree(bsonDocument);
+                    }
 
+                    @Override
+                    public GameMode deserialize(Gson gson, JsonElement element) {
+                        BsonDocument decode = BsonDocument.parse(element.toString());
+                        return GameMode.fromValue(decode.getInt32("gamemode").getValue());
+                    }
+                }).since("1.0.4").register();
+    }
 }

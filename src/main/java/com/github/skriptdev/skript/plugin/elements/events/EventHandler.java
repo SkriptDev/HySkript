@@ -10,20 +10,7 @@ import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDeath;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityPickupItem;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityRemove;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtLivingEntityInvChange;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerAddToWorld;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerBreakBlock;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerChat;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDamageBlock;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDrainFromWorld;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropItem;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerDropItemRequest;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerJoin;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseClick;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerMouseMove;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerPlaceBlock;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerSetupConnect;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerSetupDisconnect;
-import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerUseBlock;
+import com.github.skriptdev.skript.plugin.elements.events.player.*;
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtBoot;
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtShutdown;
 import com.github.skriptdev.skript.plugin.elements.events.skript.EvtLoad;
@@ -55,6 +42,7 @@ public class EventHandler {
         EvtPlayerSetupConnect.register(registration);
         EvtPlayerSetupDisconnect.register(registration);
         EvtPlayerUseBlock.register(registration);
+        EvtPlayerChangeGameMode.register(registration);
 
         // SERVER
         EvtBoot.register(registration);
