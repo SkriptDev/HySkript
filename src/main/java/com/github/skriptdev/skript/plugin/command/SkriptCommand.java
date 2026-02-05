@@ -37,8 +37,8 @@ public class SkriptCommand extends AbstractCommandCollection {
      * @hidden
      */
     public SkriptCommand(CommandRegistry registry) {
-        super("skript", "Skript commands");
-        addAliases("sk");
+        super("skript", "HySkript commands");
+        addAliases("sk", "hyskript", "hysk");
 
         // Keep these in alphabetical order
         addSubCommand(addonsCommand());
