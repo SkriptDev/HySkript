@@ -94,7 +94,8 @@ public class EvtEntityDeath extends SkriptEvent {
 
         @SuppressWarnings("DataFlowIssue")
         @Override
-        public void onComponentAdded(@NotNull Ref<EntityStore> ref, @NotNull DeathComponent deathComponent, @NotNull Store<EntityStore> store, @NotNull CommandBuffer<EntityStore> buffer) {
+        public void onComponentAdded(@NotNull Ref<EntityStore> ref, @NotNull DeathComponent deathComponent,
+                                     @NotNull Store<EntityStore> store, @NotNull CommandBuffer<EntityStore> buffer) {
             NPCEntity npc = buffer.getComponent(ref, NPCEntity.getComponentType());
             Player player = buffer.getComponent(ref, Player.getComponentType());
 

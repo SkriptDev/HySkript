@@ -150,10 +150,12 @@ public class ExprEntitiesInRadius implements Expression<Entity> {
             case 0 ->
                 "entities in radius " + this.radius.toString(ctx, debug) + " around " + this.location.toString(ctx, debug);
             case 1 ->
-                "entities of type " + this.roles.toString(ctx, debug) + " in radius " + this.radius.toString(ctx, debug) + " around " + this.location.toString(ctx, debug);
+                "entities of type " + this.roles.toString(ctx, debug) + " in radius " + this.radius.toString(ctx, debug) +
+                    " around " + this.location.toString(ctx, debug);
             case 2 -> "entities within " + this.loc1.toString(ctx, debug) + " and " + this.loc2.toString(ctx, debug);
             case 3 ->
-                "entities of type " + this.roles.toString(ctx, debug) + " within " + this.loc1.toString(ctx, debug) + " and " + this.loc2.toString(ctx, debug);
+                "entities of type " + this.roles.toString(ctx, debug) + " within " + this.loc1.toString(ctx, debug) +
+                    " and " + this.loc2.toString(ctx, debug);
             default -> null;
         };
     }

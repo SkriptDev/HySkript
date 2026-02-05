@@ -112,7 +112,9 @@ public class SkriptCommand extends AbstractCommandCollection {
         protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
             if (this.all.provided(commandContext)) {
                 return CompletableFuture.runAsync(() -> {
-                    for (SkriptAddon addon : SkriptAddon.getAddons().stream().filter(addon -> !addon.getAddonName().equalsIgnoreCase("skript-parser")).toList()) {
+                    for (SkriptAddon addon : SkriptAddon.getAddons().stream()
+                        .filter(addon -> !addon.getAddonName().equalsIgnoreCase("skript-parser"))
+                        .toList()) {
                         JsonDocPrinter jsonDocPrinter = new JsonDocPrinter(commandContext.sender(), addon);
                         jsonDocPrinter.printDocs();
                     }
@@ -148,7 +150,8 @@ public class SkriptCommand extends AbstractCommandCollection {
             protected CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
                 return CompletableFuture.runAsync(() -> {
                     List<SkriptAddon> addons = SkriptAddon.getAddons().stream()
-                        .filter(addon -> !addon.getAddonName().equalsIgnoreCase("skript-parser") && !addon.getAddonName().equalsIgnoreCase("HySkript"))
+                        .filter(addon -> !addon.getAddonName().equalsIgnoreCase("skript-parser") &&
+                            !addon.getAddonName().equalsIgnoreCase("HySkript"))
                         .toList();
                     if (addons.isEmpty()) return;
                     CommandSender sender = commandContext.sender();

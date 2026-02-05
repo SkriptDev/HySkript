@@ -97,7 +97,8 @@ public class SecPlaySound extends CodeSection {
         return "";
     }
 
-    public void playSoundToPlayer(@NotNull PlayerRef[] players, @Nullable Location location, int soundEvent, SoundCategory category, boolean is3d, float volume, float pitch) {
+    public void playSoundToPlayer(@NotNull PlayerRef[] players, @Nullable Location location, int soundEvent,
+                                  SoundCategory category, boolean is3d, float volume, float pitch) {
         for (PlayerRef player : players) {
             if (is3d && location != null) {
                 Vector3d pos = location.getPosition();

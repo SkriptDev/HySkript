@@ -16,7 +16,8 @@ public class TypesWorld {
             .name("Chunk")
             .description("Represents a chunk in a world. A chunk is a 32x32x(world height) set of blocks.")
             .since("1.0.0")
-            .toStringFunction(worldChunk -> "chunk (x=" + worldChunk.getX() + ",z=" + worldChunk.getZ() + ") in world '" + worldChunk.getWorld().getName() + "'")
+            .toStringFunction(worldChunk -> "chunk (x=" + worldChunk.getX() + ",z=" + worldChunk.getZ() +
+                ") in world '" + worldChunk.getWorld().getName() + "'")
             .register();
         reg.newType(RelativeDoublePosition.class, "relativeposition", "relativePosition@s")
             .name("Relative Position")

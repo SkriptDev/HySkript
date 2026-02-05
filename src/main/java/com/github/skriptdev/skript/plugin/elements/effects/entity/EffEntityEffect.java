@@ -82,7 +82,8 @@ public class EffEntityEffect extends Effect {
             return "apply infinite entity effect " + this.effects.toString(ctx, debug) + " to " + this.entities.toString(ctx, debug);
         }
         String behavior = " to " + this.behavior.name();
-        return "apply entity effect " + this.effects.toString(ctx, debug) + " to " + this.entities.toString(ctx, debug) + " for " + this.duration.toString(ctx, debug) + behavior;
+        return "apply entity effect " + this.effects.toString(ctx, debug) + " to " + this.entities.toString(ctx, debug) +
+            " for " + this.duration.toString(ctx, debug) + behavior;
     }
 
 }
