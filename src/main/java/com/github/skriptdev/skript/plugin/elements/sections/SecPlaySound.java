@@ -106,14 +106,16 @@ public class SecPlaySound extends CodeSection {
                 if (reference == null || !reference.isValid()) continue;
 
                 Store<EntityStore> store = reference.getStore();
-                SoundUtil.playSoundEvent3dToPlayer(reference, soundEvent, category, pos.getX(), pos.getY(), pos.getZ(), volume, pitch, store);
+                SoundUtil.playSoundEvent3dToPlayer(reference, soundEvent, category,
+                    pos.getX(), pos.getY(), pos.getZ(), volume, pitch, store);
             } else {
                 SoundUtil.playSoundEvent2dToPlayer(player, soundEvent, category, volume, pitch);
             }
         }
     }
 
-    public void playSoundAtLocation(@NotNull Location location, int soundEvent, SoundCategory category, boolean is3d, float volume, float pitch) {
+    public void playSoundAtLocation(@NotNull Location location, int soundEvent, SoundCategory category,
+                                    boolean is3d, float volume, float pitch) {
         String worldName = location.getWorld();
         if (worldName == null) return;
 

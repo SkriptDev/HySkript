@@ -83,7 +83,8 @@ public class ExprActiveEntityEffects implements Expression<ActiveEntityEffect> {
             if (reference == null) continue;
 
             Store<EntityStore> store = reference.getStore();
-            EffectControllerComponent component = EntityComponentUtils.getComponent(livingEntity, EffectControllerComponent.getComponentType());
+            EffectControllerComponent component = EntityComponentUtils.getComponent(livingEntity,
+                EffectControllerComponent.getComponentType());
             if (component == null) continue;
 
             if (changeMode == ChangeMode.DELETE) {

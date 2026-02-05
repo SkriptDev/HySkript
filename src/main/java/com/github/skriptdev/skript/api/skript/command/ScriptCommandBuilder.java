@@ -147,7 +147,8 @@ public class ScriptCommandBuilder {
                         CommandSender sender = commandContext.sender();
                         Player player = null;
                         if (sender instanceof Player p) player = p;
-                        ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName, sender, player, null);
+                        ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
+                            sender, player, null);
 
                         createLocalVariables(commandContext, context);
                         Statement.runAll(trigger, context);

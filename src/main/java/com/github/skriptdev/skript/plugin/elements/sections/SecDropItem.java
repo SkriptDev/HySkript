@@ -44,8 +44,10 @@ public class SecDropItem extends CodeSection {
             .since("1.0.0")
             .register();
 
-        reg.addSingleContextValue(ItemComponentContext.class, ItemComponent.class, "item-component", ItemComponentContext::getItemComponent);
-        reg.addSingleContextValue(ItemComponentContext.class, Entity.class, "item-entity", ItemComponentContext::getEntity);
+        reg.addSingleContextValue(ItemComponentContext.class, ItemComponent.class,
+            "item-component", ItemComponentContext::getItemComponent);
+        reg.addSingleContextValue(ItemComponentContext.class, Entity.class,
+            "item-entity", ItemComponentContext::getEntity);
     }
 
     private Expression<?> items;

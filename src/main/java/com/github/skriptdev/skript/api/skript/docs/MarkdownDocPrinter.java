@@ -172,7 +172,8 @@ public class MarkdownDocPrinter {
         });
     }
 
-    private static void printExpressions(PrintWriter exprWriter, PrintWriter condWriter, PrintWriter exprEffWriter, SkriptRegistration registration) {
+    private static void printExpressions(PrintWriter exprWriter, PrintWriter condWriter,
+                                         PrintWriter exprEffWriter, SkriptRegistration registration) {
         List<List<ExpressionInfo<?, ?>>> values = new ArrayList<>(registration.getExpressions().values());
         values.sort(Comparator.comparing(k -> k.getFirst().getSyntaxClass().getSimpleName()));
 
@@ -299,7 +300,8 @@ public class MarkdownDocPrinter {
                 // Asset store stuff gets really long, so plop them on another page
                 // GitHub's wiki pages seem to have a limit
                 Utils.log("Creating asset store link for: " + documentation.getName());
-                writer.println("[Click Here](https://github.com/SkriptDev/HySkript/wiki/_usage-" + documentation.getName().replace(" ", "-") + ")");
+                writer.println("[Click Here](https://github.com/SkriptDev/HySkript/wiki/_usage-" +
+                    documentation.getName().replace(" ", "-") + ")");
                 File usageFile = getFile("_usage-" + documentation.getName());
                 try {
                     List<String> values = new ArrayList<>();

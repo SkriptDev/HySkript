@@ -40,15 +40,23 @@ public class EvtPlayerBreakBlock extends SystemEvent<EntityEventSystem<EntitySto
             .setHandledContexts(BreakBlockEventContext.class)
             .register();
 
-        reg.newSingleContextValue(BreakBlockEventContext.class, Block.class, "block", BreakBlockEventContext::getBlock)
+        reg.newSingleContextValue(BreakBlockEventContext.class, Block.class,
+                "block", BreakBlockEventContext::getBlock)
             .addSetter(BreakBlockEventContext::setTargetBlock).register();
-        reg.addSingleContextValue(BreakBlockEventContext.class, World.class, "world", BreakBlockEventContext::getWorld);
-        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class, "blocktype", BreakBlockEventContext::getBlockType);
-        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class, "item-in-hand", BreakBlockEventContext::getItemInHand);
-        reg.addSingleContextValue(BreakBlockEventContext.class, World.class, "world", BreakBlockEventContext::getWorld);
-        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class, "blocktype", BreakBlockEventContext::getBlockType);
-        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class, "item-in-hand", BreakBlockEventContext::getItemInHand);
-        reg.addSingleContextValue(BreakBlockEventContext.class, ItemStack.class, "itemstack-in-hand", BreakBlockEventContext::getItemStackInHand);
+        reg.addSingleContextValue(BreakBlockEventContext.class, World.class,
+            "world", BreakBlockEventContext::getWorld);
+        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class,
+            "blocktype", BreakBlockEventContext::getBlockType);
+        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class,
+            "item-in-hand", BreakBlockEventContext::getItemInHand);
+        reg.addSingleContextValue(BreakBlockEventContext.class, World.class,
+            "world", BreakBlockEventContext::getWorld);
+        reg.addSingleContextValue(BreakBlockEventContext.class, BlockType.class,
+            "blocktype", BreakBlockEventContext::getBlockType);
+        reg.addSingleContextValue(BreakBlockEventContext.class, Item.class,
+            "item-in-hand", BreakBlockEventContext::getItemInHand);
+        reg.addSingleContextValue(BreakBlockEventContext.class, ItemStack.class,
+            "itemstack-in-hand", BreakBlockEventContext::getItemStackInHand);
     }
 
     private static BlockBreakEventSystem SYSTEM;

@@ -33,11 +33,13 @@ public class EvtPlayerChangeGameMode extends SystemEvent<EntityEventSystem<Entit
                 .since("1.0.0")
                 .register();
 
-        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "game[(-| )]mode", PlayerChangeGameModeContext::getOldGameMode)
+        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class,
+                "game[(-| )]mode", PlayerChangeGameModeContext::getOldGameMode)
                 .setState(ContextValue.State.PAST)
                 .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
                 .register();
-        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class, "game[(-| )]mode", PlayerChangeGameModeContext::getNewGameMode)
+        reg.newSingleContextValue(PlayerChangeGameModeContext.class, GameMode.class,
+                "game[(-| )]mode", PlayerChangeGameModeContext::getNewGameMode)
                 .setState(ContextValue.State.PRESENT)
                 .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
                 .addSetter(PlayerChangeGameModeContext::setNewGameMode)

@@ -298,12 +298,14 @@ public class JsonVariableStorage extends VariableStorage {
         }
         io.github.syst3ms.skriptparser.types.Type<?> type = TypeManager.getByExactName(typeName).orElse(null);
         if (type == null) {
-            Utils.error("Variable '%s' with type '%s' cannot be deserialized. No type registered. This variable will be removed.", varName, typeName);
+            Utils.error("Variable '%s' with type '%s' cannot be deserialized. No type registered. " +
+                "This variable will be removed.", varName, typeName);
             return null;
         }
         TypeSerializer<?> serializer = type.getSerializer().orElse(null);
         if (serializer == null) {
-            Utils.error("Variable '%s' cannot be deserialized. The type '%s' has no serializer. This variable will be removed.", varName, typeName);
+            Utils.error("Variable '%s' cannot be deserialized. The type '%s' has no serializer. " +
+                "This variable will be removed.", varName, typeName);
             return null;
         }
         return serializer.deserialize(this.gson, value);

@@ -31,7 +31,8 @@ public class EvtPlayerChat extends SkriptEvent {
                 "\t\tsend \"You said: %message% and we cancelled that!!!\" to context-sender",
                 "",
                 "on player chat:",
-                "\tset {_message} to formatted message from \"[<blue>MyServer<reset>] <red>%name of context-playerref%<reset>: %context-message%\"",
+                "\tset {_message} to formatted message from \"[<blue>MyServer<reset>]" +
+                    " <red>%name of context-playerref%<reset>: %context-message%\"",
                 "\tset context-message-format to {_message}")
             .since("1.0.0")
             .register();
