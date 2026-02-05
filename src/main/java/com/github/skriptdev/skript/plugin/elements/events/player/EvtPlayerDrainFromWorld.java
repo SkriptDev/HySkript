@@ -21,7 +21,9 @@ public class EvtPlayerDrainFromWorld extends SkriptEvent {
             .description("Really not sure...") // TODO put real docs
             .since("1.0.0")
             .register();
-        reg.addContextValue(DrainContext.class, World.class, true, "world", DrainContext::getWorld);
+
+        reg.addSingleContextValue(DrainContext.class, World.class,
+            "world", DrainContext::getWorld);
     }
 
     private static EventRegistration<String, DrainPlayerFromWorldEvent> LISTENER;
@@ -49,8 +51,8 @@ public class EvtPlayerDrainFromWorld extends SkriptEvent {
 
     private record DrainContext(DrainPlayerFromWorldEvent event) implements TriggerContext {
 
-        public World[] getWorld() {
-            return new World[]{this.event.getWorld()};
+        public World getWorld() {
+            return this.event.getWorld();
         }
 
         @Override

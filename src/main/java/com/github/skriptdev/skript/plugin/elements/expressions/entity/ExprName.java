@@ -22,6 +22,7 @@ public class ExprName extends PropertyExpression<Object, String> {
             .register();
     }
 
+    @SuppressWarnings("removal") // #getLegacyDisplayName TODO (find a better solution?)
     @Override
     public @Nullable String getProperty(Object object) {
         return switch (object) {

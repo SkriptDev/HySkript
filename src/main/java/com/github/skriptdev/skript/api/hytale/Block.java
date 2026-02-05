@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.ChunkColumn;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  * This class provides a wrapper around Hytale's block system, allowing for easy interaction with blocks in a world.
  * This may be changed/removed in the future.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 public class Block {
 
     private final @NotNull World world;
@@ -57,14 +58,21 @@ public class Block {
 
     public byte getFluidLevel() {
         long index = ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ());
-        Ref<ChunkStore> columnRef = this.world.getChunk(index).getReference();
+        WorldChunk chunk = this.world.getChunk(index);
+        if (chunk == null) return 0;
+
+        Ref<ChunkStore> columnRef = chunk.getReference();
         Store<ChunkStore> store = columnRef.getStore();
         ChunkColumn column = store.getComponent(columnRef, ChunkColumn.getComponentType());
+        if (column == null) return 0;
+
         Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.getY()));
         if (section == null) {
             return 0;
         } else {
             FluidSection fluidSection = store.getComponent(section, FluidSection.getComponentType());
+            if (fluidSection == null) return 0;
+
             return fluidSection.getFluidLevel(this.pos.getX(), this.pos.getY(), this.pos.getZ());
         }
     }

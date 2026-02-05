@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypesAssetStore {
 
+    @SuppressWarnings("deprecation") // BlockGroup (maybe we dont keep this?!?!)
     static void register(SkriptRegistration registration) {
         AssetStoreRegistry.register(registration, BiomeAsset.class, BiomeAsset.getAssetStore().getAssetMap(), "biome", "biome@s")
             .name("Biome")

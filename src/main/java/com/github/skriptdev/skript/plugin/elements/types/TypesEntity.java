@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 public class TypesEntity {
 
+    @SuppressWarnings("removal") // LivingEntity::getLegacyDisplayName
     static void register(SkriptRegistration reg) {
         reg.newType(ActiveEntityEffect.class, "activeentityeffect", "activeEntityEffect@s")
             .name("Active Entity Effect")

@@ -25,8 +25,8 @@ public class EvtEntityRemove extends SkriptEvent {
             .since("1.0.0")
             .setHandledContexts(EntityRemoveEventContext.class)
             .register();
-        reg.addContextValue(EntityRemoveEventContext.class, Entity.class, true, "entity", EntityRemoveEventContext::getEntity);
-        reg.addContextValue(EntityRemoveEventContext.class, World.class, true, "world", EntityRemoveEventContext::getWorld);
+        reg.addSingleContextValue(EntityRemoveEventContext.class, Entity.class, "entity", EntityRemoveEventContext::getEntity);
+        reg.addSingleContextValue(EntityRemoveEventContext.class, World.class, "world", EntityRemoveEventContext::getWorld);
     }
 
     private static EventRegistration<String, EntityRemoveEvent> LISTENER;
@@ -60,12 +60,12 @@ public class EvtEntityRemove extends SkriptEvent {
             return "entity remove context";
         }
 
-        private Entity[] getEntity() {
-            return new Entity[]{this.event.getEntity()};
+        private Entity getEntity() {
+            return this.event.getEntity();
         }
 
-        private World[] getWorld() {
-            return new World[]{this.event.getEntity().getWorld()};
+        private World getWorld() {
+            return getEntity().getWorld();
         }
     }
 

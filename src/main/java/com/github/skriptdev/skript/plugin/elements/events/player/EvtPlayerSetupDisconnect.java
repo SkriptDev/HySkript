@@ -23,9 +23,12 @@ public class EvtPlayerSetupDisconnect extends SkriptEvent {
             .setHandledContexts(PlayerSetupDisconnectContext.class)
             .register();
 
-        reg.addContextValue(PlayerSetupDisconnectContext.class, String.class, true, "name", PlayerSetupDisconnectContext::getUsername);
-        reg.addContextValue(PlayerSetupDisconnectContext.class, UUID.class, true, "uuid", PlayerSetupDisconnectContext::getUuid);
-        reg.addContextValue(PlayerSetupDisconnectContext.class, String.class, true, "reason", PlayerSetupDisconnectContext::getDisconnectReason);
+        reg.addSingleContextValue(PlayerSetupDisconnectContext.class, String.class,
+            "name", PlayerSetupDisconnectContext::getUsername);
+        reg.addSingleContextValue(PlayerSetupDisconnectContext.class, UUID.class,
+            "uuid", PlayerSetupDisconnectContext::getUuid);
+        reg.addSingleContextValue(PlayerSetupDisconnectContext.class, String.class,
+            "reason", PlayerSetupDisconnectContext::getDisconnectReason);
     }
 
     private static EventRegistration<Void, PlayerSetupDisconnectEvent> LISTENER;
@@ -53,16 +56,16 @@ public class EvtPlayerSetupDisconnect extends SkriptEvent {
 
     private record PlayerSetupDisconnectContext(PlayerSetupDisconnectEvent event) implements TriggerContext {
 
-        public String[] getUsername() {
-            return new String[]{this.event.getUsername()};
+        public String getUsername() {
+            return this.event.getUsername();
         }
 
-        public UUID[] getUuid() {
-            return new UUID[]{this.event.getUuid()};
+        public UUID getUuid() {
+            return this.event.getUuid();
         }
 
-        public String[] getDisconnectReason() {
-            return new String[]{this.event.getDisconnectReason().getServerDisconnectReason()};
+        public String getDisconnectReason() {
+            return this.event.getDisconnectReason().getServerDisconnectReason();
         }
 
         @Override

@@ -28,8 +28,8 @@ import java.util.Arrays;
 
 public class EvtEntityDeath extends SkriptEvent {
 
-    public static void register(SkriptRegistration registration) {
-        registration.newEvent(EvtEntityDeath.class, "death", "death of player", "death of npc")
+    public static void register(SkriptRegistration reg) {
+        reg.newEvent(EvtEntityDeath.class, "death", "death of player", "death of npc")
             .setHandledContexts(EntityDeathContext.class)
             .name("Entity Death")
             .description("Called when an entity dies.",
@@ -45,20 +45,20 @@ public class EvtEntityDeath extends SkriptEvent {
             .since("1.0.0")
             .register();
 
-        registration.addContextValue(EntityDeathContext.class,
-            Entity.class, true, "victim", EntityDeathContext::getVictim);
-        registration.addContextValue(EntityDeathContext.class,
-            Entity.class, true, "attacker", EntityDeathContext::getAttacker);
-        registration.addContextValue(EntityDeathContext.class,
-            Damage.Source.class, true, "damage-source", EntityDeathContext::getDamageSource);
-        registration.addContextValue(EntityDeathContext.class,
-            DamageCause.class, true, "death-cause", EntityDeathContext::getDamageCause);
-        registration.addContextValue(EntityDeathContext.class,
-            Damage.class, true, "death-info", EntityDeathContext::getDamage);
-        registration.addContextValue(EntityDeathContext.class,
-            Item.class, false, "lost-items", EntityDeathContext::getItemsLostOnDeath);
-        registration.addContextValue(EntityDeathContext.class,
-            ItemStack.class, false, "lost-itemstacks", EntityDeathContext::getItemStacksLostOnDeath);
+        reg.addSingleContextValue(EntityDeathContext.class,
+            Entity.class, "victim", EntityDeathContext::getVictim);
+        reg.addSingleContextValue(EntityDeathContext.class,
+            Entity.class, "attacker", EntityDeathContext::getAttacker);
+        reg.addSingleContextValue(EntityDeathContext.class,
+            Damage.Source.class, "damage-source", EntityDeathContext::getDamageSource);
+        reg.addSingleContextValue(EntityDeathContext.class,
+            DamageCause.class, "death-cause", EntityDeathContext::getDamageCause);
+        reg.addSingleContextValue(EntityDeathContext.class,
+            Damage.class, "death-info", EntityDeathContext::getDamage);
+        reg.addListContextValue(EntityDeathContext.class,
+            Item.class, "lost-items", EntityDeathContext::getItemsLostOnDeath);
+        reg.addListContextValue(EntityDeathContext.class,
+            ItemStack.class, "lost-itemstacks", EntityDeathContext::getItemStacksLostOnDeath);
     }
 
     private static EntityDeathListener LISTENER;
@@ -120,11 +120,11 @@ public class EvtEntityDeath extends SkriptEvent {
     @SuppressWarnings("DataFlowIssue")
     private record EntityDeathContext(int pattern, Entity victim, DeathComponent component) implements TriggerContext {
 
-        public Entity[] getVictim() {
-            return new Entity[]{this.victim};
+        public Entity getVictim() {
+            return this.victim;
         }
 
-        public Entity[] getAttacker() {
+        public Entity getAttacker() {
             Entity attacker = null;
             if (this.component.getDeathInfo().getSource() instanceof Damage.EntitySource entitySource) {
                 Ref<EntityStore> attackerRef = entitySource.getRef();
@@ -137,19 +137,19 @@ public class EvtEntityDeath extends SkriptEvent {
                     if (npc != null) attacker = npc;
                 }
             }
-            return new Entity[]{attacker};
+            return attacker;
         }
 
-        public Damage.Source[] getDamageSource() {
-            return new Damage.Source[]{this.component.getDeathInfo().getSource()};
+        public Damage.Source getDamageSource() {
+            return this.component.getDeathInfo().getSource();
         }
 
-        public DamageCause[] getDamageCause() {
-            return new DamageCause[]{this.component.getDeathCause()};
+        public DamageCause getDamageCause() {
+            return this.component.getDeathCause();
         }
 
-        public Damage[] getDamage() {
-            return new Damage[]{this.component.getDeathInfo()};
+        public Damage getDamage() {
+            return this.component.getDeathInfo();
         }
 
         public Item[] getItemsLostOnDeath() {
