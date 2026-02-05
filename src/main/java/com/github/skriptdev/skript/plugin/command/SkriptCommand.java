@@ -56,7 +56,7 @@ public class SkriptCommand extends AbstractCommandCollection {
         protected ReloadCommand() {
             super("reload", "Reloads scripts.");
             this.stringRequiredArg = withRequiredArg("script", "A script to reload", ArgTypes.STRING);
-            addSubCommand(new AbstractCommand("all", "Reloads all scripts.") {
+            addSubCommand(new AbstractCommand("scripts", "Reloads all scripts.") {
                 @Override
                 protected CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
                     return CompletableFuture.runAsync(() -> {
