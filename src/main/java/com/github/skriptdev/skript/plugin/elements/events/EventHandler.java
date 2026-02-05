@@ -30,6 +30,7 @@ public class EventHandler {
         // PLAYER
         EvtPlayerAddToWorld.register(registration);
         EvtPlayerBreakBlock.register(registration);
+        EvtPlayerChangeGameMode.register(registration);
         EvtPlayerChat.register(registration);
         EvtPlayerDamageBlock.register(registration);
         EvtPlayerDrainFromWorld.register(registration);
@@ -42,7 +43,6 @@ public class EventHandler {
         EvtPlayerSetupConnect.register(registration);
         EvtPlayerSetupDisconnect.register(registration);
         EvtPlayerUseBlock.register(registration);
-        EvtPlayerChangeGameMode.register(registration);
 
         // SERVER
         EvtBoot.register(registration);

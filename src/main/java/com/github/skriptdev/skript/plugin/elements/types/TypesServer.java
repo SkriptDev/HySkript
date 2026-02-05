@@ -180,19 +180,6 @@ public class TypesServer {
         registration.newType(GameMode.class, "gamemode", "gamemode@s")
                 .name("GameMode")
                 .description("Represents a game mode.")
-                .serializer(new TypeSerializer<>() {
-                    @Override
-                    public JsonElement serialize(Gson gson, GameMode value) {
-                        BsonDocument bsonDocument = new BsonDocument();
-                        bsonDocument.put("gamemode", bsonDocument.put("gamemode", new BsonInt32(value.getValue())));
-                        return gson.toJsonTree(bsonDocument);
-                    }
-
-                    @Override
-                    public GameMode deserialize(Gson gson, JsonElement element) {
-                        BsonDocument decode = BsonDocument.parse(element.toString());
-                        return GameMode.fromValue(decode.getInt32("gamemode").getValue());
-                    }
-                }).since("1.0.4").register();
+                .since("INSERT VERSION").register();
     }
 }
