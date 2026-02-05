@@ -14,6 +14,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.other.EffCancelEvent;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffDelay;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkRegenerate;
+import com.github.skriptdev.skript.plugin.elements.effects.world.EffExplosion;
 
 public class EffectHandler {
 
@@ -40,6 +41,7 @@ public class EffectHandler {
 
         // WORLD
         EffChunkRegenerate.register(registration);
+        EffExplosion.register(registration);
     }
 
 }
