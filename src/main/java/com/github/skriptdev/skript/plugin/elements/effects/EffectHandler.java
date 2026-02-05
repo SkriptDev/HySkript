@@ -6,6 +6,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.entity.EffDropItem;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffEntityEffect;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffKill;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffSpawnEntity;
+import com.github.skriptdev.skript.plugin.elements.effects.other.EffExecuteCommand;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendMessage;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffTeleport;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffBan;
@@ -33,6 +34,7 @@ public class EffectHandler {
         EffBroadcast.register(registration);
         EffCancelEvent.register(registration);
         EffDelay.register(registration);
+        EffExecuteCommand.register(registration);
         EffSendMessage.register(registration);
 
         // PLAYER
