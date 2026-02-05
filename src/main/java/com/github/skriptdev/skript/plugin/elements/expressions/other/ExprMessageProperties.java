@@ -15,11 +15,11 @@ public class ExprMessageProperties implements Expression<Boolean> {
 
     public static void register(SkriptRegistration registration) {
         registration.newExpression(ExprMessageProperties.class, Boolean.class, true,
-                "bold [message[ property of %message%",
-                "italic [message[ property of %message%",
-                "monospace [message[ property of %message%",
-                "underlined [message[ property of %message%",
-                "markup enabled [message[ property of %message%")
+                "bold [message] property of %message%",
+                "italic [message] property of %message%",
+                "monospace [message] property of %message%",
+                "underlined [message] property of %message%",
+                "markup enabled [message] property of %message%")
             .name("Message Properties")
             .description("Get/set different properties of a message.")
             .examples("set bold property of {_msg} to true",

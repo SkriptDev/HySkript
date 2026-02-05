@@ -43,6 +43,7 @@ public class EffKill extends Effect {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void execute(@NotNull TriggerContext ctx) {
         DamageCause cause = DamageCause.COMMAND;
@@ -52,6 +53,7 @@ public class EffKill extends Effect {
         }
         if (cause == null) cause = DamageCause.COMMAND;
 
+        assert cause != null;
         Damage damage = new Damage(Damage.NULL_SOURCE, cause, 1000.0f);
         for (Entity entity : this.entities.getArray(ctx)) {
             killEntity(entity, damage);

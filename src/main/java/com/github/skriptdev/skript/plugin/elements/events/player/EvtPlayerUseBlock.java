@@ -62,7 +62,8 @@ public class EvtPlayerUseBlock extends SystemEvent<EntityEventSystem<EntityStore
             applySystem(POST_SYSTEM);
         }
         this.pre = matchedPattern < 3;
-        parseContext.getParserState().setCurrentContexts(this.pre ? Collections.singleton(PreUseBlockContext.class) : Collections.singleton(PostUseBlockContext.class));
+        parseContext.getParserState().setCurrentContexts(this.pre ? Collections.singleton(PreUseBlockContext.class) :
+            Collections.singleton(PostUseBlockContext.class));
         return true;
     }
 
@@ -153,7 +154,8 @@ public class EvtPlayerUseBlock extends SystemEvent<EntityEventSystem<EntityStore
         }
 
         @Override
-        public void handle(int i, @NotNull ArchetypeChunk<EntityStore> archetypeChunk, @NotNull Store<EntityStore> store, @NotNull CommandBuffer<EntityStore> commandBuffer, @NotNull UseBlockEvent.Pre pre) {
+        public void handle(int i, @NotNull ArchetypeChunk<EntityStore> archetypeChunk, @NotNull Store<EntityStore> store,
+                           @NotNull CommandBuffer<EntityStore> commandBuffer, @NotNull UseBlockEvent.Pre pre) {
 
             Ref<EntityStore> ref = archetypeChunk.getReferenceTo(i);
             Player player = store.getComponent(ref, Player.getComponentType());

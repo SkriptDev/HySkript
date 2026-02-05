@@ -10,6 +10,9 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockTy
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockFluidLevel;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetBlockOfPlayer;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectDuration;
+import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffects;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHealth;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStat;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityVelocity;
@@ -17,6 +20,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprHeldIt
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprNPCType;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprName;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprTargetEntityOfEntity;
+import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectEffect;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventory;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventorySlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventorySlots;
@@ -26,6 +30,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemType
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemsInInventory;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprCast;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprClassInfoOf;
+import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprCurrentContext;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprDistance;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprLocationDirection;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprLocationOf;
@@ -41,9 +46,13 @@ import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprVector3
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprVector3i;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprAllPlayers;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprChatMessage;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprGameMode;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerPermissionGroup;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerPermissions;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerSpawns;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprConsole;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprChunkAtLocation;
+import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprRelativePositionResolve;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorld;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldOf;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldSpawn;
@@ -63,6 +72,7 @@ public class ExpressionHandler {
 
         // ENTITY
         ExprActiveSlot.register(registration);
+        ExprEntitiesInRadius.register(registration);
         ExprEntityHealth.register(registration);
         ExprEntityStat.register(registration);
         ExprEntityVelocity.register(registration);
@@ -70,6 +80,11 @@ public class ExpressionHandler {
         ExprName.register(registration);
         ExprNPCType.register(registration);
         ExprTargetEntityOfEntity.register(registration);
+
+        // ENTITY EFFECT
+        ExprActiveEntityEffectDuration.register(registration);
+        ExprActiveEntityEffectEffect.register(registration);
+        ExprActiveEntityEffects.register(registration);
 
         // ITEM
         ExprInventory.register(registration);
@@ -100,6 +115,9 @@ public class ExpressionHandler {
         // PLAYER
         ExprAllPlayers.register(registration);
         ExprChatMessage.register(registration);
+        ExprGameMode.register(registration);
+        ExprPlayerPermissionGroup.register(registration);
+        ExprPlayerPermissions.register(registration);
         ExprPlayerSpawns.register(registration);
 
         // SERVER
@@ -107,9 +125,13 @@ public class ExpressionHandler {
 
         // WORLD
         ExprChunkAtLocation.register(registration);
+        ExprRelativePositionResolve.register(registration);
         ExprWorld.register(registration);
         ExprWorldOf.register(registration);
         ExprWorldSpawn.register(registration);
+
+        // TEST
+        ExprCurrentContext.register(registration);
 
     }
 

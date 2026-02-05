@@ -79,7 +79,8 @@ public class EntityComponentUtils {
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public static @NotNull Pair<Entity, ItemComponent> dropItem(Store<EntityStore> store, ItemStack itemStack, Location location, Vector3f velocity, float pickupDelay) {
+    public static @NotNull Pair<Entity, ItemComponent> dropItem(Store<EntityStore> store, ItemStack itemStack,
+                                                                Location location, Vector3f velocity, float pickupDelay) {
         if (itemStack.isEmpty() || !itemStack.isValid()) {
             return new Pair<>(null, null);
         }
@@ -87,11 +88,11 @@ public class EntityComponentUtils {
         Vector3d position = location.getPosition();
         Vector3f rotation = location.getRotation();
 
-        Holder<EntityStore> itemEntityHolder = ItemComponent.generateItemDrop(store, itemStack, position, rotation, velocity.getX(), velocity.getY(), velocity.getZ());
+        Holder<EntityStore> itemEntityHolder = ItemComponent.generateItemDrop(store, itemStack, position, rotation,
+            velocity.getX(), velocity.getY(), velocity.getZ());
         if (itemEntityHolder == null) {
             return new Pair<>(null, null);
         }
-        ;
 
         ItemComponent itemComponent = itemEntityHolder.getComponent(ItemComponent.getComponentType());
         if (itemComponent != null) {

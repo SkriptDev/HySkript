@@ -2,11 +2,14 @@ package com.github.skriptdev.skript.api.utils;
 
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import fi.sulku.hytale.TinyMsg;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.logging.Level;
 
 /**
@@ -81,6 +84,22 @@ public class Utils {
 
     public static void warn(IMessageReceiver receiver, String message, Object... args) {
         log(receiver, Level.WARNING, message, args);
+    }
+
+    /**
+     * Log a message to admin players who have the permission "skript.hyskript.admin.messages"
+     *
+     * @param level   Level of logging
+     * @param message Message to log
+     * @param args    Arguments for message formatting
+     */
+    public static void logToAdmins(Level level, String message, Object... args) {
+        PermissionsModule perms = PermissionsModule.get();
+        for (PlayerRef player : Universe.get().getPlayers()) {
+            if (perms.hasPermission(player.getUuid(), "skript.hyskript.admin.messages")) {
+                log(player, level, message, args);
+            }
+        }
     }
 
 }

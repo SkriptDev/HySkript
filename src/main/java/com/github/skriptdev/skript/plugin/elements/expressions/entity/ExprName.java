@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -21,6 +22,7 @@ public class ExprName extends PropertyExpression<Object, String> {
             .register();
     }
 
+    @SuppressWarnings("removal") // #getLegacyDisplayName TODO (find a better solution?)
     @Override
     public @Nullable String getProperty(Object object) {
         return switch (object) {
@@ -28,6 +30,7 @@ public class ExprName extends PropertyExpression<Object, String> {
             case Player player -> player.getDisplayName();
             case Entity entity -> entity.getLegacyDisplayName();
             case World world -> world.getName();
+            case GameMode gameMode -> gameMode.name();
             default -> null;
         };
     }

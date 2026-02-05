@@ -5,11 +5,12 @@ import com.github.skriptdev.skript.plugin.HySk;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.util.BsonUtil;
 import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
+import io.github.syst3ms.skriptparser.types.TypeManager;
+import io.github.syst3ms.skriptparser.types.changers.TypeSerializer;
 import io.github.syst3ms.skriptparser.variables.VariableStorage;
 import io.github.syst3ms.skriptparser.variables.Variables;
 import org.bson.BsonBinaryReader;
@@ -38,9 +39,10 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Instance of {@link VariableStorage} that stores variables in a JSON file.
@@ -48,7 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JsonVariableStorage extends VariableStorage {
 
     public enum Type {
-        JSON, BSON;
+        JSON, BSON
     }
 
     private File file;
@@ -56,30 +58,28 @@ public class JsonVariableStorage extends VariableStorage {
     private BsonDocument bsonDocument;
     private final AtomicInteger changes = new AtomicInteger(0);
     private final int changesToSave = 500;
-    ScheduledFuture<?> schedule;
-    private final SkriptLogger logger;
+    private Thread saveThread;
 
     public JsonVariableStorage(SkriptLogger logger, String name) {
         super(logger, name);
-        this.logger = logger;
     }
 
     @Override
     protected boolean load(@NotNull ConfigSection section) {
         String fileType = section.getString("file-type");
         if (fileType == null) {
-            this.logger.error("No 'file-type' specified for database '" + this.name + "'!", ErrorType.EXCEPTION);
+            Utils.error("No 'file-type' specified for database '" + this.name + "'!", ErrorType.EXCEPTION);
             return false;
         }
         this.type = switch (fileType.toLowerCase(Locale.ROOT)) {
             case "json" -> Type.JSON;
             case "bson" -> Type.BSON;
             default -> {
-                this.logger.error("Unknown file-type '" + fileType + "' in database '" + this.name + "'", ErrorType.EXCEPTION);
+                Utils.error("Unknown file-type '" + fileType + "' in database '" + this.name + "'", ErrorType.EXCEPTION);
                 yield null;
             }
         };
-        this.logger.info("Database '" + this.name + "' loaded with filetype '" + this.type + "'");
+        Utils.log("Database '" + this.name + "' loaded with filetype '" + this.type + "'");
         return this.type != null;
     }
 
@@ -90,21 +90,37 @@ public class JsonVariableStorage extends VariableStorage {
     }
 
     private void startFileWatcher() {
-        this.schedule = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(() -> {
-            if (this.changes.get() >= this.changesToSave) {
-                try {
-                    saveVariables(false);
-                    this.changes.set(0);
-                } catch (IOException e) {
-                    this.logger.error("Failed to save variable file", ErrorType.EXCEPTION);
-                    throw new RuntimeException(e);
+        this.saveThread = new Thread( () -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    // Sleep for 5 minutes
+                    TimeUnit.MINUTES.sleep(5);
+
+                    // Start checking for variables to save
+                    if (this.changes.get() >= this.changesToSave) {
+                        try {
+                            saveVariables(false);
+                            this.changes.set(0);
+                        } catch (IOException e) {
+                            Utils.error("Failed to save variable file", ErrorType.EXCEPTION);
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
+            } catch (InterruptedException e) {
+                // Restore interrupt status and exit
+                Thread.currentThread().interrupt();
+                Utils.error("Variable Save Thread was interrupted, stopping...");
             }
-        }, 5, 5, TimeUnit.MINUTES);
+
+        },"HySkript-Variable-Save-Thread");
+        this.saveThread.setDaemon(true);
+        this.saveThread.start();
     }
 
     private void loadVariablesFromFile() {
-        this.logger.info("Loading variables from file...");
+        Utils.log("Loading variables from file...");
+        AtomicBoolean markForBackup = new AtomicBoolean(false);
 
         try {
             if (this.type == Type.JSON) {
@@ -121,7 +137,7 @@ public class JsonVariableStorage extends VariableStorage {
             } else {
                 if (!this.bsonDocument.isEmpty() && !this.bsonDocument.containsKey("data")) {
                     // Legacy file format (TODO remove before first release)
-                    this.logger.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
+                    Utils.warn("Your variables file is outdated. HySkript will create a backup then convert for you.");
                     Files.move(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
                     variablesDocument = this.bsonDocument.clone();
                     this.bsonDocument.clear();
@@ -129,9 +145,10 @@ public class JsonVariableStorage extends VariableStorage {
                 } else {
                     variablesDocument = this.bsonDocument.getDocument("variables", new BsonDocument());
                 }
-                //this.bsonDocument = new BsonDocument();
             }
             JsonElement jsonElement = BsonUtil.translateBsonToJson(variablesDocument);
+            AtomicInteger count = new AtomicInteger();
+            AtomicLong start = new AtomicLong(System.currentTimeMillis());
             if (jsonElement instanceof JsonObject jsonObject) {
                 jsonObject.entrySet().forEach(entry -> {
                     String name = entry.getKey();
@@ -139,17 +156,30 @@ public class JsonVariableStorage extends VariableStorage {
                     String type = value.get("type").getAsString();
                     JsonElement jsonValue = value.get("value");
                     if (jsonValue == null) {
-                        this.logger.error("Skipping variable '" + name + "' due to missing value", ErrorType.STRUCTURE_ERROR);
+                        Utils.error("Skipping variable '%s' due to missing value", name);
                         return;
                     }
 
-                    this.logger.debug("Loading variable '" + name + "' of type '" + type + "' from file. With data '" + jsonValue.toString() + "'");
-                    loadVariable(name, type, jsonValue);
+                    if (!tryLoadVariable(name, type, jsonValue)) {
+                        markForBackup.set(true);
+                        variablesDocument.remove(name);
+                    }
+                    count.getAndIncrement();
+                    if (System.currentTimeMillis() - start.get() > 500) {
+                        // If it's taking too long, log progress
+                        start.set(System.currentTimeMillis());
+                        Utils.log(" - Loaded " + count.get() + " variables so far...");
+                    }
                 });
+                Utils.log("Loaded %s variables from file!", count.get());
+            }
+            if (markForBackup.get()) {
+                Utils.warn("Failed to load some variables from file. Creating backup...");
+                Files.copy(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
             }
 
         } catch (IOException e) {
-            this.logger.error("Failed to load variables from file", ErrorType.EXCEPTION);
+            Utils.error("Failed to load variables from file", ErrorType.EXCEPTION);
             throw new RuntimeException(e);
         }
     }
@@ -166,9 +196,9 @@ public class JsonVariableStorage extends VariableStorage {
         if (!varFile.exists()) {
             try {
                 if (varFile.createNewFile()) {
-                    this.logger.info("Created " + fileName + " file!");
+                    Utils.log("Created " + fileName + " file!");
                 } else {
-                    this.logger.error("Failed to create " + fileName + " file!", ErrorType.EXCEPTION);
+                    Utils.error("Failed to create " + fileName + " file!", ErrorType.EXCEPTION);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -234,7 +264,7 @@ public class JsonVariableStorage extends VariableStorage {
 
     private void saveVariables(boolean finalSave) throws IOException {
         if (finalSave) {
-            this.schedule.cancel(true);
+            this.saveThread.interrupt();
         }
         try {
             Variables.getLock().lock();
@@ -244,6 +274,39 @@ public class JsonVariableStorage extends VariableStorage {
         } finally {
             Variables.getLock().unlock();
         }
+    }
+
+    @SuppressWarnings("ConstantValue")
+    private boolean tryLoadVariable(@NotNull String name, @NotNull String type, @NotNull JsonElement value) {
+        if (value == null || type == null) { // These shouldn't be null, but things happen
+            Utils.error("value and/or typeName cannot be null");
+            return false;
+        }
+        Object deserialize = deserialize(name, type, value);
+        if (deserialize == null) {
+            return false;
+        }
+        Variables.getVariableMap().setVariable(name, deserialize);
+        return true;
+    }
+
+    @SuppressWarnings("ConstantValue")
+    protected Object deserialize(String varName, @NotNull String typeName, @NotNull JsonElement value) {
+        if (value == null || typeName == null) {
+            Utils.error("value and/or typeName cannot be null");
+            return null;
+        }
+        io.github.syst3ms.skriptparser.types.Type<?> type = TypeManager.getByExactName(typeName).orElse(null);
+        if (type == null) {
+            Utils.error("Variable '%s' with type '%s' cannot be deserialized. No type registered. This variable will be removed.", varName, typeName);
+            return null;
+        }
+        TypeSerializer<?> serializer = type.getSerializer().orElse(null);
+        if (serializer == null) {
+            Utils.error("Variable '%s' cannot be deserialized. The type '%s' has no serializer. This variable will be removed.", varName, typeName);
+            return null;
+        }
+        return serializer.deserialize(this.gson, value);
     }
 
     private void readJsonFile() throws IOException {

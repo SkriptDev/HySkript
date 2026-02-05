@@ -12,11 +12,11 @@ import java.util.TreeMap;
 /**
  * Registry related to {@link com.hypixel.hytale.assetstore.AssetStore AssetStores}.
  *
- * @param <AS> Asset store type
+ * @param <R> Asset store type
  */
-public class AssetStoreRegistry<AS> {
+public class AssetStoreRegistry<R> {
 
-    private final Map<String, AS> assetStoreValues = new TreeMap<>();
+    private final Map<String, R> assetStoreValues = new TreeMap<>();
 
     /**
      * Create a new {@link TypeRegistrar} with for an {@link com.hypixel.hytale.assetstore.AssetStore AssetStore}.
@@ -42,6 +42,7 @@ public class AssetStoreRegistry<AS> {
         assetMap.getAssetMap().forEach((key, value) -> store.assetStoreValues.put(key.toLowerCase(Locale.ROOT), value));
         return registration.newType(c, name, pattern)
             .usage(String.join(", ", store.assetStoreValues.keySet()))
+            .supplier(() -> store.assetStoreValues.values().stream().iterator())
             .literalParser(s -> store.assetStoreValues.get(s.toLowerCase(Locale.ROOT).replace(" ", "_")))
             .toStringFunction(Object::toString);
     }

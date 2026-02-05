@@ -5,6 +5,7 @@ import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.event.events.entity.LivingEntityInventoryChangeEvent;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
@@ -24,8 +25,9 @@ public class EvtLivingEntityInvChange extends SkriptEvent {
             .setHandledContexts(InvChangeContext.class)
             .register();
 
-        reg.addContextValue(InvChangeContext.class, Entity.class, true, "entity", InvChangeContext::getEntity);
-        // TODO more contexts for this event
+        reg.addSingleContextValue(InvChangeContext.class, Entity.class, "entity", InvChangeContext::getEntity);
+        reg.addSingleContextValue(InvChangeContext.class, ItemContainer.class, "item-container", InvChangeContext::getContainer);
+        // TODO add transaction
     }
 
     private static EventRegistration<String, LivingEntityInventoryChangeEvent> LISTENER;
@@ -51,10 +53,14 @@ public class EvtLivingEntityInvChange extends SkriptEvent {
         return "living entity inventory change";
     }
 
-    private static record InvChangeContext(LivingEntityInventoryChangeEvent event) implements TriggerContext {
+    private record InvChangeContext(LivingEntityInventoryChangeEvent event) implements TriggerContext {
 
-        private Entity[] getEntity() {
-            return new Entity[]{this.event.getEntity()};
+        private Entity getEntity() {
+            return this.event.getEntity();
+        }
+
+        private ItemContainer getContainer() {
+            return this.event.getItemContainer();
         }
 
         @Override

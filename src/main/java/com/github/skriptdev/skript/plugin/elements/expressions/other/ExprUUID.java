@@ -21,6 +21,7 @@ public class ExprUUID extends PropertyExpression<Object, UUID> {
             .register();
     }
 
+    @SuppressWarnings("removal") // Entity#getUuid TODO (what else would you use?)
     @Override
     public @Nullable UUID getProperty(@NotNull Object owner) {
         return switch (owner) {

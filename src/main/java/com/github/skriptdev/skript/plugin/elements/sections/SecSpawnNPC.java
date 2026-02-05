@@ -35,8 +35,8 @@ public class SecSpawnNPC extends CodeSection {
             this.entity = entity;
         }
 
-        public Entity[] getEntity() {
-            return new Entity[]{this.entity};
+        public Entity getEntity() {
+            return this.entity;
         }
 
         @Override
@@ -57,11 +57,11 @@ public class SecSpawnNPC extends CodeSection {
             .since("1.0.0")
             .register();
 
-        registration.newContextValue(SpawnMobContext.class, Entity.class, true,
+        registration.newSingleContextValue(SpawnMobContext.class, Entity.class,
                 "spawned-entity", SpawnMobContext::getEntity)
             .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();
-        registration.newContextValue(SpawnMobContext.class, Entity.class, true,
+        registration.newSingleContextValue(SpawnMobContext.class, Entity.class,
                 "spawned-npc", SpawnMobContext::getEntity)
             .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();

@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "9.2.0"
     id("maven-publish")
+    id("checkstyle")
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_25
@@ -25,7 +26,7 @@ repositories {
 dependencies {
     compileOnly("com.hypixel.hytale:Server:${hytaleVersion}")
     compileOnly("org.jetbrains:annotations:26.0.2")
-    implementation("com.github.SkriptDev:skript-parser:1.0.3") {
+    implementation("com.github.SkriptDev:skript-parser:1.0.4") {
         isTransitive = false
     }
     implementation("com.github.Zoltus:TinyMessage:2.0.1") {
@@ -76,6 +77,22 @@ tasks {
             "https://skriptdev.github.io/docs/skript-parser/latest/"
         )
     }
+}
+
+tasks.withType<Checkstyle> {
+    // This one class is causing an issue on like 37 (not sure why)
+    exclude("**/Block.java")
+}
+
+checkstyle {
+    // Specify the version of the Checkstyle tool to use
+    toolVersion = "10.21.0" // Use a recent version of Checkstyle
+
+    isIgnoreFailures = false
+
+    // Point to your custom Checkstyle configuration file
+    // The default location is config/checkstyle/checkstyleMain.xml
+    configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 }
 
 publishing {

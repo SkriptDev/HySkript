@@ -24,9 +24,12 @@ public class EvtPlayerSetupConnect extends SkriptEvent {
             .setHandledContexts(PlayerSetupConnectContext.class)
             .register();
 
-        reg.addContextValue(PlayerSetupConnectContext.class, String.class, true, "name", PlayerSetupConnectContext::getUsername);
-        reg.addContextValue(PlayerSetupConnectContext.class, UUID.class, true, "uuid", PlayerSetupConnectContext::getUuid);
-        reg.addContextValue(PlayerSetupConnectContext.class, String.class, true, "reason", PlayerSetupConnectContext::getReason);
+        reg.addSingleContextValue(PlayerSetupConnectContext.class, String.class,
+            "name", PlayerSetupConnectContext::getUsername);
+        reg.addSingleContextValue(PlayerSetupConnectContext.class, UUID.class,
+            "uuid", PlayerSetupConnectContext::getUuid);
+        reg.addSingleContextValue(PlayerSetupConnectContext.class, String.class,
+            "reason", PlayerSetupConnectContext::getReason);
     }
 
     private static EventRegistration<Void, PlayerSetupConnectEvent> LISTENER;
@@ -55,16 +58,16 @@ public class EvtPlayerSetupConnect extends SkriptEvent {
     private record PlayerSetupConnectContext(
         PlayerSetupConnectEvent event) implements TriggerContext, CancellableContext {
 
-        public String[] getUsername() {
-            return new String[]{this.event.getUsername()};
+        public String getUsername() {
+            return this.event.getUsername();
         }
 
-        public UUID[] getUuid() {
-            return new UUID[]{this.event.getUuid()};
+        public UUID getUuid() {
+            return this.event.getUuid();
         }
 
-        public String[] getReason() {
-            return new String[]{this.event.getReason()};
+        public String getReason() {
+            return this.event.getReason();
         }
 
         @Override

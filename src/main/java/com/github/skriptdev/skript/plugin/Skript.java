@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin;
 
 import com.github.skriptdev.skript.api.skript.ScriptsLoader;
+import com.github.skriptdev.skript.api.skript.addon.AddonLoader;
 import com.github.skriptdev.skript.api.skript.command.ArgUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
@@ -11,17 +12,15 @@ import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.config.Config;
 import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
-import io.github.syst3ms.skriptparser.lang.Structure;
-import io.github.syst3ms.skriptparser.log.ErrorType;
+import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
-import io.github.syst3ms.skriptparser.registration.SkriptEventInfo;
-import io.github.syst3ms.skriptparser.structures.functions.Functions;
 import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 /**
  * Main class for the Skript aspects of HySkript.
@@ -33,52 +32,58 @@ public class Skript extends SkriptAddon {
     private final HySk hySk;
     private final Config skriptConfig;
     private final Path scriptsPath;
-    private final SkriptLogger logger;
     private SkriptRegistration registration;
     private ElementRegistration elementRegistration;
+    private AddonLoader addonLoader;
     private ScriptsLoader scriptsLoader;
 
     Skript(HySk hySk) {
         super("HySkript");
+        long start = System.currentTimeMillis();
         INSTANCE = this;
         this.hySk = hySk;
         this.scriptsPath = hySk.getDataDirectory().resolve("scripts");
-        this.logger = new SkriptLogger();
 
-        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
-        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", this.logger);
-        this.logger.setDebug(this.skriptConfig.getBoolean("debug"));
-
+        Utils.log(" ");
         Utils.log("Setting up HySkript!");
-        setup();
-        this.logger.finalizeLogs();
-        for (LogEntry logEntry : this.logger.close()) {
+        Utils.log(" ");
+
+        // LOAD CONFIG
+        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
+        SkriptLogger logger = new SkriptLogger();
+        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
+        logger.finalizeLogs();
+        for (LogEntry logEntry : logger.close()) {
             Utils.log(null, logEntry);
         }
-        Utils.log("HySkript setup complete!");
+
+        // SETUP SKRIPT
+        setup();
+
+        // ALL DONE
+        Utils.log(" ");
+        long fin = System.currentTimeMillis() - start;
+        Utils.log("HySkript loading completed in %sms!", fin);
+        Utils.log(" ");
     }
 
     private void setup() {
-        ReflectionUtils.init();
-        ArgUtils.init();
+        long start = System.currentTimeMillis();
+        preSetup();
         this.registration = new SkriptRegistration(this);
         this.elementRegistration = new ElementRegistration(this.registration);
         this.elementRegistration.registerElements();
-        ConfigSection effectCommandSection = this.skriptConfig.getConfigSection("effect-commands");
-        if (effectCommandSection != null) {
-            if (effectCommandSection.getBoolean("enabled")) {
-                EffectCommands.register(this,
-                    effectCommandSection.getString("token"),
-                    effectCommandSection.getBoolean("allow-ops"),
-                    effectCommandSection.getString("required-permission"));
-            }
-        }
 
-        // FINALIZE SETUP
-        this.registration.register();
+        // SETUP EFFECT COMMANDS
+        setupEffectCommands();
 
-        printSyntaxCount();
-        Utils.log("HySkript setup complete!");
+        // FINISH SETUP
+        long fin = System.currentTimeMillis() - start;
+        Utils.log("HySkript setup completed in %sms!", fin);
+
+        // LOAD ADDONS
+        this.addonLoader = new AddonLoader();
+        this.addonLoader.loadAddonsFromFolder();
 
         // LOAD VARIABLES
         loadVariables();
@@ -91,59 +96,78 @@ public class Skript extends SkriptAddon {
         Parser.getMainRegistration().getRegisterer().finishedLoading();
     }
 
+    private void preSetup() {
+        ReflectionUtils.init();
+        ArgUtils.init();
+
+        // Set up how HySkript handles IllegalStateExceptions
+        Statement.setIllegalStateHandler(e -> {
+            if (e.getMessage().contains("Assert not in thread!")) {
+                boolean failedInCommand = false;
+                for (StackTraceElement ste : e.getStackTrace()) {
+                    if (ste.getClassName().contains("ScriptCommandBuilder")) {
+                        failedInCommand = true;
+                        break;
+                    }
+                }
+                if (failedInCommand) {
+                    Utils.logToAdmins(Level.WARNING, "A command was executed on the wrong thread, see console for more info.");
+                    Utils.error("A command was executed on the wrong thread!");
+                    Utils.warn("If you have a regular/global command that a player is running, which executes code in a world, consider:");
+                    Utils.warn("  - Using the 'player command' or 'world command' command types.");
+                    Utils.warn("  - Using 'execute in %world%' section.");
+                    Utils.error("Original error message: %s", e.getMessage());
+                } else {
+                    Utils.logToAdmins(Level.WARNING, "Something was executed on the wrong thread.");
+                    if (e.getMessage().contains("World")) {
+                        Utils.error("A world was accessed on the wrong thread!");
+                        Utils.warn("Consider using 'execute in %world%' section.");
+                        Utils.error("Original error message: %s", e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
     public void shutdown() {
+        // SHUTDOWN VARIABLES
         Utils.log("Saving variables...");
         Variables.shutdown();
         Utils.log("Variable saving complete!");
+
+        // SHUTDOWN ADDONS
+        this.addonLoader.shutdownAddons();
     }
 
-    private void printSyntaxCount() {
-        var mainRegistration = Parser.getMainRegistration();
-
-        int structureSize = 0;
-        int eventSize = 0;
-        for (SkriptEventInfo<?> event : this.registration.getEvents()) {
-            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                structureSize++;
-            } else {
-                eventSize++;
+    private void setupEffectCommands() {
+        ConfigSection effectCommandSection = this.skriptConfig.getConfigSection("effect-commands");
+        if (effectCommandSection != null) {
+            if (effectCommandSection.getBoolean("enabled")) {
+                EffectCommands.register(this,
+                    effectCommandSection.getString("token"),
+                    effectCommandSection.getBoolean("allow-ops"),
+                    effectCommandSection.getString("required-permission"));
             }
         }
-        for (SkriptEventInfo<?> event : mainRegistration.getEvents()) {
-            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                structureSize++;
-            } else {
-                eventSize++;
-            }
-        }
-        int effectSize = this.registration.getEffects().size() + mainRegistration.getEffects().size();
-        int expsSize = this.registration.getExpressions().size() + mainRegistration.getExpressions().size();
-        int secSize = this.registration.getSections().size() + mainRegistration.getSections().size();
-        int typeSize = this.registration.getTypes().size() + mainRegistration.getTypes().size();
-        int funcSize = Functions.getAllFunctions().size();
-
-        int total = structureSize + eventSize + effectSize + expsSize + secSize + typeSize + funcSize;
-
-        Utils.log("Loaded HySkript %s elements:", total);
-        Utils.log("- Types: %s", typeSize);
-        Utils.log("- Structures: %s", structureSize);
-        Utils.log("- Events: %s ", eventSize);
-        Utils.log("- Effects: %s", effectSize);
-        Utils.log("- Expressions: %s", expsSize);
-        Utils.log("- Sections: %s", secSize);
-        Utils.log("- Functions: %s", funcSize);
     }
 
     private void loadVariables() {
+        long start = System.currentTimeMillis();
         Utils.log("Loading variables...");
         Variables.registerStorage(JsonVariableStorage.class, "json-database");
         ConfigSection databases = this.skriptConfig.getConfigSection("databases");
         if (databases == null) {
-            this.logger.error("Databases section not found in config.sk", ErrorType.STRUCTURE_ERROR);
+            Utils.error("Databases section not found in config.sk");
             return;
         }
-        Variables.load(this.logger, databases);
-        Utils.log("Finished loading variables!");
+        SkriptLogger skriptLogger = new SkriptLogger();
+        Variables.load(skriptLogger, databases);
+        skriptLogger.finalizeLogs();
+        for (LogEntry logEntry : skriptLogger.close()) {
+            Utils.log(null, logEntry);
+        }
+        long fin = System.currentTimeMillis() - start;
+        Utils.log("Finished loading variables in %sms!", fin);
     }
 
     /**
@@ -173,10 +197,6 @@ public class Skript extends SkriptAddon {
         return this.scriptsPath;
     }
 
-    public SkriptLogger getLogger() {
-        return this.logger;
-    }
-
     /**
      * Get the registration for Skript elements.
      *
@@ -192,6 +212,15 @@ public class Skript extends SkriptAddon {
 
     public ScriptsLoader getScriptsLoader() {
         return this.scriptsLoader;
+    }
+
+    /**
+     * Get an instance of Skript.
+     *
+     * @return Instance of Skript.
+     */
+    public static Skript getInstance() {
+        return INSTANCE;
     }
 
 }

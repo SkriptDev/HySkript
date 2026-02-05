@@ -10,7 +10,6 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.Structure;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.parsing.ParserState;
@@ -45,17 +44,17 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
             return this.command;
         }
 
-        public CommandSender[] getSender() {
-            return new CommandSender[]{this.sender};
+        public CommandSender getSender() {
+            return this.sender;
         }
 
-        public World[] getWorld() {
-            return new World[]{this.world};
+        public World getWorld() {
+            return this.world;
         }
 
-        public Player[] getPlayer() {
-            if (this.player == null && this.sender instanceof Player p) return new Player[]{p};
-            return new Player[]{this.player};
+        public Player getPlayer() {
+            if (this.player == null && this.sender instanceof Player p) return p;
+            return this.player;
         }
 
         @Override
@@ -120,23 +119,23 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
             .since("1.0.0")
             .register();
 
-        registration.newContextValue(ScriptCommandContext.class, Player.class, true,
+        registration.newSingleContextValue(ScriptCommandContext.class, Player.class,
                 "player", ScriptCommandContext::getPlayer)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newContextValue(ScriptCommandContext.class, CommandSender.class, true,
+        registration.newSingleContextValue(ScriptCommandContext.class, CommandSender.class,
                 "sender", ScriptCommandContext::getSender)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newContextValue(ScriptCommandContext.class, World.class, true,
+        registration.newSingleContextValue(ScriptCommandContext.class, World.class,
                 "world", ScriptCommandContext::getWorld)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newContextValue(ScriptCommandContext.class, String.class, true,
-                "command", ct -> new String[]{ct.getCommand()})
+        registration.newSingleContextValue(ScriptCommandContext.class, String.class,
+                "command", ScriptCommandContext::getCommand)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
