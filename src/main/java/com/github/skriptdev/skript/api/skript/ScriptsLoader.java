@@ -60,11 +60,13 @@ public class ScriptsLoader {
             .thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER)); // Then sort by name alphabetically
 
         for (File file : files) {
+            // Skip disabled files and hidden files
+            String fileName = file.getName();
+            if (fileName.startsWith("-") || fileName.startsWith(".")) continue;
             if (file.isDirectory()) {
                 loadedScripts.addAll(loadScriptsInDirectory(receiver, file));
             } else {
-                String fileName = file.getName();
-                if (!fileName.endsWith(".sk") || fileName.startsWith("-")) continue;
+                if (!fileName.endsWith(".sk")) continue;
                 Utils.log(receiver, "Loading script '" + fileName + "'...");
                 List<LogEntry> logEntries = ScriptLoader.loadScript(file.toPath(), false);
                 this.loadedScriptCount++;
