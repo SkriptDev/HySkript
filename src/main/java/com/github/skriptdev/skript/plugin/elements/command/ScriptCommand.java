@@ -63,8 +63,8 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
         }
     }
 
-    public static void register(SkriptRegistration registration) {
-        registration.newEvent(ScriptCommand.class,
+    public static void register(SkriptRegistration reg) {
+        reg.newEvent(ScriptCommand.class,
                 "*[global] command <.+>",
                 "*player command <.+>",
                 "*world command <.+>")
@@ -88,7 +88,8 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
                 "**Entries**:",
                 "- `Description` = The description for your command that will show in the commands gui (optional).",
                 "- `Permission` = The permission required to execute the command (optional).",
-                "- `Aliases` = A list of aliases for the command (optional).")
+                "- `Aliases` = A list of aliases for the command (optional).",
+                "- `Trigger` = The code that will be executed when the command is executed (optional).")
             .examples("command /kill:",
                 "\tdescription: Kill all the players",
                 "\ttrigger:",
@@ -119,22 +120,22 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
             .since("1.0.0")
             .register();
 
-        registration.newSingleContextValue(ScriptCommandContext.class, Player.class,
+        reg.newSingleContextValue(ScriptCommandContext.class, Player.class,
                 "player", ScriptCommandContext::getPlayer)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newSingleContextValue(ScriptCommandContext.class, CommandSender.class,
+        reg.newSingleContextValue(ScriptCommandContext.class, CommandSender.class,
                 "sender", ScriptCommandContext::getSender)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newSingleContextValue(ScriptCommandContext.class, World.class,
+        reg.newSingleContextValue(ScriptCommandContext.class, World.class,
                 "world", ScriptCommandContext::getWorld)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();
 
-        registration.newSingleContextValue(ScriptCommandContext.class, String.class,
+        reg.newSingleContextValue(ScriptCommandContext.class, String.class,
                 "command", ScriptCommandContext::getCommand)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
             .register();

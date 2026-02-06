@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.system.Argument;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -21,6 +22,7 @@ import io.github.syst3ms.skriptparser.lang.CodeSection;
 import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.entries.SectionConfiguration;
+import io.github.syst3ms.skriptparser.lang.entries.SectionLoader;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.parsing.ParserState;
@@ -55,7 +57,7 @@ public class ScriptCommandBuilder {
         .addOptionalKey("permission")
         .addOptionalKey("description")
         .addOptionalList("aliases")
-        .addSection("trigger")
+        .addLoader(new SectionLoader("trigger", true))
         .build();
 
     public ScriptCommandBuilder(int commandType, SkriptLogger logger) {
@@ -92,17 +94,9 @@ public class ScriptCommandBuilder {
 
     public List<Statement> setupCommand(FileSection section, ParserState parserState, SkriptLogger logger) {
         this.sec.loadConfiguration(null, section, parserState, logger);
-        Optional<CodeSection> triggerSec = this.sec.getSection("trigger");
-        if (triggerSec.isEmpty()) {
-            logger.error("Trigger section is missing", ErrorType.SEMANTIC_ERROR);
-            return List.of();
-        }
 
-        CodeSection trigger = triggerSec.get();
-        if (trigger.getItems().isEmpty()) {
-            logger.warn("Trigger section should not be empty.");
-            return List.of();
-        }
+        Optional<CodeSection> triggerSec = this.sec.getSection("trigger");
+        boolean hasTrigger = triggerSec.isPresent();
 
         Optional<String> descOption = this.sec.getValue("description", String.class);
         if (descOption.isEmpty()) {
@@ -114,50 +108,62 @@ public class ScriptCommandBuilder {
             description = "";
         }
 
-        this.hyCommand = switch (this.commandType) {
-            case 1 -> new AbstractPlayerCommand(this.commandName, description) {
-                @Override
-                protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store,
-                                       @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
+        if (hasTrigger) {
+            CodeSection trigger = triggerSec.get();
+            if (trigger.getItems().isEmpty()) {
+                logger.warn("Trigger section should not be empty. Or remove it if you don't need it.");
+                return List.of();
+            }
 
-                    CommandSender sender = commandContext.sender();
-                    Player player = store.getComponent(ref, Player.getComponentType());
-                    ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName, sender, player, world);
-                    createLocalVariables(commandContext, context);
-                    Statement.runAll(trigger, context);
-                    Variables.clearLocalVariables(context);
-                }
-            };
-            case 2 -> new AbstractWorldCommand(this.commandName, description) {
+            this.hyCommand = switch (this.commandType) {
+                case 1 -> new AbstractPlayerCommand(this.commandName, description) {
+                    @Override
+                    protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store,
+                                           @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
 
-                @Override
-                protected void execute(@NotNull CommandContext commandContext, @NotNull World world, @NotNull Store<EntityStore> store) {
-                    ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
-                        commandContext.sender(), null, world);
-                    createLocalVariables(commandContext, context);
-                    Statement.runAll(trigger, context);
-                    Variables.clearLocalVariables(context);
-                }
-            };
-            default -> new AbstractCommand(this.commandName, description) {
-
-                @Override
-                protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
-                    CompletableFuture.runAsync(() -> {
                         CommandSender sender = commandContext.sender();
-                        Player player = null;
-                        if (sender instanceof Player p) player = p;
-                        ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
-                            sender, player, null);
-
+                        Player player = store.getComponent(ref, Player.getComponentType());
+                        ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName, sender, player, world);
                         createLocalVariables(commandContext, context);
                         Statement.runAll(trigger, context);
                         Variables.clearLocalVariables(context);
-                    });
-                    return null;
-                }
+                    }
+                };
+                case 2 -> new AbstractWorldCommand(this.commandName, description) {
+
+                    @Override
+                    protected void execute(@NotNull CommandContext commandContext, @NotNull World world, @NotNull Store<EntityStore> store) {
+                        ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
+                            commandContext.sender(), null, world);
+                        createLocalVariables(commandContext, context);
+                        Statement.runAll(trigger, context);
+                        Variables.clearLocalVariables(context);
+                    }
+                };
+                default -> new AbstractCommand(this.commandName, description) {
+
+                    @Override
+                    protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
+                        CompletableFuture.runAsync(() -> {
+                            CommandSender sender = commandContext.sender();
+                            Player player = null;
+                            if (sender instanceof Player p) player = p;
+                            ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
+                                sender, player, null);
+
+                            createLocalVariables(commandContext, context);
+                            Statement.runAll(trigger, context);
+                            Variables.clearLocalVariables(context);
+                        });
+                        return null;
+                    }
+                };
             };
-        };
+        } else {
+            this.hyCommand = new AbstractCommandCollection(this.commandName, description) {
+
+            };
+        }
         this.args.forEach((key, arg) -> {
             if (arg.isOptional()) {
                 OptionalArg<?> optionalArg = hyCommand.withOptionalArg(key, arg.getDescription(), arg.getType());
@@ -193,7 +199,7 @@ public class ScriptCommandBuilder {
                 }
             }
         });
-        return List.of(trigger);
+        return List.of();
     }
 
     private void setupArg(CommandArg arg) {
