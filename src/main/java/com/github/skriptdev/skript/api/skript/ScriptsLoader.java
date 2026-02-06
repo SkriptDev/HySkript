@@ -48,7 +48,6 @@ public class ScriptsLoader {
         }
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public List<String> loadScriptsInDirectory(IMessageReceiver receiver, File directory) {
         if (directory == null || !directory.isDirectory()) return List.of();
         List<String> loadedScripts = new ArrayList<>();
@@ -113,6 +112,10 @@ public class ScriptsLoader {
             // Run load events after reloading a script
             Parser.getMainRegistration().getRegisterer().finishedLoading(scriptName);
         }
+    }
+
+    public void shutdown() {
+        // TODO clear triggers here
     }
 
 }

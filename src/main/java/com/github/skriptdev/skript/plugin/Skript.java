@@ -9,6 +9,7 @@ import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
+import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.config.Config;
 import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
@@ -130,6 +131,12 @@ public class Skript extends SkriptAddon {
     }
 
     public void shutdown() {
+        // SHUTDOWN LISTENERS
+        EventHandler.shutdown();
+
+        // SHUTDOWN SCRIPTS
+        this.scriptsLoader.shutdown();
+
         // SHUTDOWN VARIABLES
         Utils.log("Saving variables...");
         Variables.shutdown();

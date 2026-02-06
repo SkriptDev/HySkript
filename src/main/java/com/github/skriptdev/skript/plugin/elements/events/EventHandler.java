@@ -73,6 +73,11 @@ public class EventHandler {
         registerGlobalContexts(registration);
     }
 
+    public static void shutdown() {
+        // Shutdown any events that are running (such as a periodical)
+        // Nothing yet for now
+    }
+
     private static void registerGlobalContexts(SkriptRegistration reg) {
         reg.newSingleContextValue(BlockContext.class, Block.class,
                 "block", BlockContext::getBlock)
