@@ -25,7 +25,7 @@ public abstract class HySkriptAddon extends SkriptAddon {
      * Called when the addon starts to load.
      * This is a good time to set up your syntaxes.
      */
-    abstract public void setup();
+    abstract public void start();
 
     /**
      * Called when the addon is shutting down.

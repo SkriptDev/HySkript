@@ -90,7 +90,7 @@ public class AddonLoader {
             }
             if (mainClassIntance instanceof HySkriptAddon addon) {
                 addon.setManifest(manifest);
-                addon.setup();
+                addon.start();
                 this.addonCount++;
                 // Finalize registration and logging
                 for (LogEntry logEntry : addon.getSkriptRegistration().register()) {
