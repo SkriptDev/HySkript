@@ -1,0 +1,40 @@
+# Home Command
+# A little home command where players can set/delete homes and teleport to them
+
+player command /home:
+	description: "Access to your homes"
+	permission: "myscript.homes"
+	sub command /set <name:string:"Name of home to set">:
+		description: "Set a home"
+		permission: "myscript.homes.set"
+		trigger:
+			set {homes::%uuid of player%::%{_name}%} to location of player
+			send "Set home %{_name}% to your location"
+	sub command /delete <name:string:"Name of home to delete">:
+		description: "Delete a home"
+		permission: "myscript.homes.delete"
+		trigger:
+			if {homes::%uuid of player%::%{_name}%} is set:
+				delete {homes::%uuid of player%::%{_name}%}
+				send "Home %{_name}% delete"
+			else:
+				send "No home named %{_name}% was found"
+	sub command /tp <name:string:"Name of home to teleport to">:
+		description: "Teleport to a home"
+		permission: "myscript.homes.teleport"
+		trigger:
+			if {homes::%uuid of player%::%{_name}%} is set:
+				teleport player to {homes::%uuid of player%::%{_name}%}
+				send "Teleport to %{_name}%"
+			else:
+				send "No home named %{_name}% was found"
+	sub command /list:
+		description: "List all your homes"
+		permission: "myscript.homes.list"
+		trigger:
+			if {homes::%uuid of player%::*} is empty:
+				send "You have no homes set"
+			else:
+				send "Your homes:"
+				loop {homes::%uuid of player%::*}:
+					send " - %loop-index%"

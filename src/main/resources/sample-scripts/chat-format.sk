@@ -1,0 +1,5 @@
+# Chat Format
+# A simple way to make your chat look a little nicer
+
+on player chat:
+	set context-message-format to formatted "[<blue>MyServer<white>] <green>%name of context-playerref%<white>: %context-message%"

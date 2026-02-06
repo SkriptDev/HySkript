@@ -1,0 +1,10 @@
+# Join Message
+# Be welcomeing to your players
+
+on player added to world:
+	# This prevents the player joined world message
+	set context-should-broadcast to false
+
+on player ready:
+	# When they actually join, let's send a nice message
+	send formatted "<white>[<color:#11D9AE>MyServer<white>] <color:#F28F0F>Welcome to our server %name of context-player%"
