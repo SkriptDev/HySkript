@@ -5,7 +5,12 @@
   "Description": "Scripting the most out of your Hytale server.",
   "Authors": [
     {
-      "Name": "ShaneBee"
+      "Name": "ShaneBee",
+      "Url": "https://github.com/ShaneBeee"
+    },
+    {
+      "Name": "SkriptDev Contributors",
+      "Url": "https://github.com/SkriptDev/HySkript/graphs/contributors"
     }
   ],
   "Website": "https://github.com/SkriptDev/HySkript",
