@@ -14,12 +14,14 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
+import org.jetbrains.annotations.NotNull;
 
 public class EvtPlayerAddToWorld extends SkriptEvent {
 
     public static void register(SkriptRegistration reg) {
         reg.newEvent(EvtPlayerAddToWorld.class,
                 "player added to world", "add player to world")
+            .setHandledContexts(AddContext.class)
             .name("Player Add To World")
             .description("Called when a player joins a world.")
             .examples("on player added to world:",
@@ -28,6 +30,9 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
             .register();
 
         reg.addSingleContextValue(AddContext.class, World.class, "world", AddContext::getWorld);
+        reg.newSingleContextValue(AddContext.class, Boolean.class, "should-broadcast", AddContext::shouldBroadcast)
+            .addSetter(AddContext::setShouldBroadcast)
+            .register();
     }
 
     private static EventRegistration<String, AddPlayerToWorldEvent> LISTENER;
@@ -49,7 +54,7 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
     }
 
     @Override
-    public String toString(TriggerContext ctx, boolean debug) {
+    public String toString(@NotNull TriggerContext ctx, boolean debug) {
         return "";
     }
 
@@ -61,8 +66,15 @@ public class EvtPlayerAddToWorld extends SkriptEvent {
 
         public Player getPlayer() {
             Holder<EntityStore> holder = this.event.getHolder();
-            Player component = holder.getComponent(Player.getComponentType());
-            return component;
+            return holder.getComponent(Player.getComponentType());
+        }
+
+        public boolean shouldBroadcast() {
+            return this.event.shouldBroadcastJoinMessage();
+        }
+
+        public void setShouldBroadcast(boolean shouldBroadcast) {
+            this.event.setBroadcastJoinMessage(shouldBroadcast);
         }
 
         @Override
