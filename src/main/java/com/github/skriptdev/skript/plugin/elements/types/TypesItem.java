@@ -1,6 +1,5 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.skript.registration.EnumRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.variables.SerializerUtils;
 import com.google.gson.Gson;
@@ -19,16 +18,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypesItem {
 
-    static void register(SkriptRegistration registration) {
+    static void register(SkriptRegistration reg) {
         // Please keep in alphabetical order
-        registration.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
+        reg.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
             .name("Item Component")
             .description("Represents the component of a dropped item.")
             .since("1.0.0")
             .toStringFunction(ic -> String.format("ItemComponent{itemstack=%s}", ic.getItemStack()))
             .serializer(SerializerUtils.getCodecSerializer(ItemComponent.CODEC))
             .register();
-        registration.newType(ItemContainer.class, "itemcontainer", "itemContainer@s")
+        reg.newType(ItemContainer.class, "itemcontainer", "itemContainer@s")
             .name("Item Container")
             .description("Represents an item container within an inventory (such as the armor container).")
             .since("1.0.0")
@@ -64,7 +63,7 @@ public class TypesItem {
                 }
             })
             .register();
-        registration.newType(ItemStack.class, "itemstack", "itemStack@s")
+        reg.newType(ItemStack.class, "itemstack", "itemStack@s")
             .name("Item Stack")
             .description("Represents an item in an inventory slot.")
             .examples("set {_i} to itemstack of Food_Fish_Grilled")
@@ -87,7 +86,7 @@ public class TypesItem {
                 }
             })
             .register();
-        registration.newType(Inventory.class, "inventory", "inventor@y@ies")
+        reg.newType(Inventory.class, "inventory", "inventor@y@ies")
             .name("Inventory")
             .description("Represents an inventory of an entity or block.")
             .since("1.0.0")
@@ -105,7 +104,7 @@ public class TypesItem {
                 }
             })
             .register();
-        EnumRegistry.register(registration, InventoryActionType.class, "inventoryactiontype", "inventoryActionType@s")
+        reg.newEnumType(InventoryActionType.class, "inventoryactiontype", "inventoryActionType@s")
             .name("Inventory Action Type")
             .description("Represents the types of actions that can be performed in an inventory.")
             .since("1.0.0")

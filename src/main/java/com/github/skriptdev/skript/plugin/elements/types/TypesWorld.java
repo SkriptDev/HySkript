@@ -1,6 +1,5 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.skript.registration.EnumRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.command.system.arguments.types.RelativeDoublePosition;
@@ -29,7 +28,7 @@ public class TypesWorld {
             .description("Represents a block position relative to another block position.")
             .since("1.0.0")
             .register();
-        EnumRegistry.register(reg, SoundCategory.class, "soundcategory", "soundcategor@y@ies")
+        reg.newEnumType(SoundCategory.class, "soundcategory", "soundcategor@y@ies")
             .name("Sound Category")
             .description("Represents a sound category.")
             .since("1.0.0")
