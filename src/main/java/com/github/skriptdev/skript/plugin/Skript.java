@@ -126,6 +126,11 @@ public class Skript extends SkriptAddon {
                         Utils.error("Original error message: %s", e.getMessage());
                     }
                 }
+            } else {
+                Utils.error("An error ocrrured while executing a script: %s", e.getMessage());
+                for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                    Utils.error("  - %s", stackTraceElement);
+                }
             }
         });
     }
