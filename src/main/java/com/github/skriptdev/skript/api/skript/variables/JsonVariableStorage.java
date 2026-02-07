@@ -110,7 +110,6 @@ public class JsonVariableStorage extends VariableStorage {
             } catch (InterruptedException e) {
                 // Restore interrupt status and exit
                 Thread.currentThread().interrupt();
-                Utils.error("Variable Save Thread was interrupted, stopping...");
             }
 
         },"HySkript-Variable-Save-Thread");
