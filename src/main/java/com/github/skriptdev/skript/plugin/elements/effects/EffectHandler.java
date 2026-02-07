@@ -16,7 +16,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.other.EffBroadcast;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffCancelEvent;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffDelay;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
-import com.github.skriptdev.skript.plugin.elements.effects.player.EffSendTitle;
+import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendTitle;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkRegenerate;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffExplosion;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffInteraction;
@@ -42,12 +42,12 @@ public class EffectHandler {
         EffDelay.register(registration);
         EffExecuteCommand.register(registration);
         EffSendMessage.register(registration);
+        EffSendTitle.register(registration);
 
         // PLAYER
         EffBan.register(registration);
         EffConnect.register(registration);
         EffKick.register(registration);
-        EffSendTitle.register(registration);
 
         // WORLD
         EffChunkRegenerate.register(registration);
