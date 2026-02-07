@@ -1,5 +1,5 @@
 # Join Message
-# Be welcomeing to your players
+# Be welcoming to your players
 
 on player added to world:
 	# This prevents the player joined world message
