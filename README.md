@@ -9,7 +9,10 @@ Inspired by the legendary Minecraft plugin [**Skript**](https://github.com/Skrip
 Whether you're creating custom commands or complex game mechanics, you can bring your vision to life instantly—no Java knowledge required.
 
 ## Docs/Tutorials:
-Check out our [**wiki**](https://github.com/SkriptDev/HySkript/wiki)
+Docs are available on SkriptHub:  
+[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](https://skripthub.net/hyskript/docs/?addon=HySkript)
+
+You can find some tutorials on our [**Wiki**](https://github.com/SkriptDev/HySkript/wiki)
 
 ## Support:
 You can find us on the [**SkriptHub Discord server**](https://discord.gg/phpWHGU)   
