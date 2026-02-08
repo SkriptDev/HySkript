@@ -64,7 +64,7 @@ public class Skript extends SkriptAddon {
     private void setupConfig() {
         // LOAD CONFIG
         Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
-        SkriptLogger logger = new SkriptLogger();
+        SkriptLogger logger = new SkriptLogger(true);
         this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
         Utils.setDebug(this.skriptConfig.getBoolean("debug"));
         logger.finalizeLogs();
@@ -156,7 +156,7 @@ public class Skript extends SkriptAddon {
             Utils.error("Databases section not found in config.sk");
             return;
         }
-        SkriptLogger skriptLogger = new SkriptLogger();
+        SkriptLogger skriptLogger = new SkriptLogger(true);
         Variables.load(skriptLogger, databases);
         skriptLogger.finalizeLogs();
         for (LogEntry logEntry : skriptLogger.close()) {
