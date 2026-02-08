@@ -191,8 +191,12 @@ public class JsonDocPrinter {
                 if (documentation.isNoDoc()) return;
 
                 BsonDocument expressionDoc = new BsonDocument();
-                String returnType = expressionInfo.getReturnType().getType().getBaseName();
-                expressionDoc.put("return type", new BsonString(returnType));
+
+                // Return Type
+                Type<?> returnType = expressionInfo.getReturnType().getType();
+                String returnTypeName = returnType.getDocumentation().getName();
+                if (returnTypeName == null) returnTypeName = returnType.getBaseName();
+                expressionDoc.put("return type", new BsonString(returnTypeName));
 
                 Class<?> syntaxClass = expressionInfo.getSyntaxClass();
                 if (ExecutableExpression.class.isAssignableFrom(syntaxClass)) {
