@@ -118,7 +118,7 @@ public class JsonVariableStorage extends VariableStorage {
     }
 
     private void loadVariablesFromFile() {
-        Utils.log("Loading variables from file...");
+        Utils.log("Loading variables from '%s'...", this.name);
         AtomicBoolean markForBackup = new AtomicBoolean(false);
 
         try {
@@ -170,15 +170,15 @@ public class JsonVariableStorage extends VariableStorage {
                         Utils.log(" - Loaded " + count.get() + " variables so far...");
                     }
                 });
-                Utils.log("Loaded %s variables from file!", count.get());
+                Utils.log("Loaded %s variables from database '%s'!", count.get(), this.name);
             }
             if (markForBackup.get()) {
-                Utils.warn("Failed to load some variables from file. Creating backup...");
+                Utils.warn("Failed to load some variables from database '%s'. Creating backup...", this.name);
                 Files.copy(this.file.toPath(), this.file.toPath().resolveSibling(this.file.getName() + ".bak"));
             }
 
         } catch (IOException e) {
-            Utils.error("Failed to load variables from file", ErrorType.EXCEPTION);
+            Utils.error("Failed to load variables from database '%s'", this.name);
             throw new RuntimeException(e);
         }
     }
