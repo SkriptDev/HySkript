@@ -191,7 +191,6 @@ public class JsonDocPrinter {
                 if (documentation.isNoDoc()) return;
 
                 BsonDocument expressionDoc = new BsonDocument();
-                printDocumentation("effect-expression", expressionDoc, expressionInfo);
                 String returnType = expressionInfo.getReturnType().getType().getBaseName();
                 expressionDoc.put("return type", new BsonString(returnType));
 
@@ -199,10 +198,13 @@ public class JsonDocPrinter {
                 if (ExecutableExpression.class.isAssignableFrom(syntaxClass)) {
                     // TODO new section on the docs?!?!?!
                     exprsArray.add(expressionDoc);
+                    printDocumentation("executable-expression", expressionDoc, expressionInfo);
                 } else if (ConditionalExpression.class.isAssignableFrom(syntaxClass)) {
                     condArray.add(expressionDoc);
+                    printDocumentation("condition", expressionDoc, expressionInfo);
                 } else {
                     exprsArray.add(expressionDoc);
+                    printDocumentation("expression", expressionDoc, expressionInfo);
 
                 }
             });
