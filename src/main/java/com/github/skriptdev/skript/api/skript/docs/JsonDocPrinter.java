@@ -148,13 +148,14 @@ public class JsonDocPrinter {
                     valuesForThisEvent.add(contextValue);
                 }
             });
-            BsonArray eventValues = eventDoc.getArray("event values", new BsonArray());
+            BsonArray eventValues = eventDoc.getArray("context values", new BsonArray());
             if (!valuesForThisEvent.isEmpty()) {
                 valuesForThisEvent.forEach(contextValue -> {
-                    eventValues.add(new BsonString(contextValue.getPattern().toString()));
+                    eventValues.add(new BsonString("context-" + contextValue.getPattern().toString()));
                 });
 
             }
+            eventDoc.put("context values", eventValues);
             eventsArray.add(eventDoc);
         });
         mainDocs.put("events", eventsArray);
