@@ -20,6 +20,7 @@ public class EffConnect extends Effect {
                 "See [PLAYER REFERRAL](https://support.hytale.com/hc/en-us/articles/45326769420827-Hytale-Server-" +
                     "Manual#multiserver-architecture) for more info.")
             .examples("connect all players to \"https://someserver.net\"")
+            .since("1.0.0")
             .register();
     }
 

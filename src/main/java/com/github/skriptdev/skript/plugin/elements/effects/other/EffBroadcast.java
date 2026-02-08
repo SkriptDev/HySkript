@@ -19,6 +19,7 @@ public class EffBroadcast extends Effect {
             .description("Broadcasts a message to all players in the server or in a specific world.")
             .examples("broadcast \"HELLO EVERYONE!!!\"",
                 "broadcast \"Free Cheese At Spawn\" in world named \"default\"")
+            .since("1.0.0")
             .register();
     }
 
