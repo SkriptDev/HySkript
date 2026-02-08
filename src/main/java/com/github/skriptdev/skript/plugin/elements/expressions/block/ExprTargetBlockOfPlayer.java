@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.block;
 
 import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.skript.config.SkriptConfig;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.component.Ref;
@@ -10,7 +11,6 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.TargetUtil;
-import io.github.syst3ms.skriptparser.config.Config;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
@@ -23,8 +23,8 @@ public class ExprTargetBlockOfPlayer implements Expression<Block> {
     private static int MAX_DISTANCE = 160; // Default from config
 
     public static void register(SkriptRegistration reg) {
-        Config skriptConfig = reg.getSkript().getSkriptConfig();
-        int anInt = skriptConfig.getInt("max-target-block-distance");
+        SkriptConfig skriptConfig = reg.getSkript().getSkriptConfig();
+        int anInt = skriptConfig.getMaxTargetBlockDistance();
         if (anInt > 0) {
             MAX_DISTANCE = anInt;
         } else {

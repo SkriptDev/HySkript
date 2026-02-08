@@ -4,6 +4,7 @@ import com.github.skriptdev.skript.api.skript.ErrorHandler;
 import com.github.skriptdev.skript.api.skript.ScriptsLoader;
 import com.github.skriptdev.skript.api.skript.addon.AddonLoader;
 import com.github.skriptdev.skript.api.skript.command.ArgUtils;
+import com.github.skriptdev.skript.api.skript.config.SkriptConfig;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
@@ -12,7 +13,6 @@ import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
 import io.github.syst3ms.skriptparser.Parser;
-import io.github.syst3ms.skriptparser.config.Config;
 import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
@@ -30,7 +30,7 @@ public class Skript extends SkriptAddon {
 
     public static Skript INSTANCE;
     private final HySk hySk;
-    private Config skriptConfig;
+    private final SkriptConfig skriptConfig;
     private final Path scriptsPath;
     private SkriptRegistration registration;
     private ElementRegistration elementRegistration;
@@ -49,7 +49,7 @@ public class Skript extends SkriptAddon {
         Utils.log(" ");
 
         // LOAD CONFIG
-        setupConfig();
+        this.skriptConfig = new SkriptConfig(this);
 
         // SETUP SKRIPT
         setupSkript();
@@ -59,25 +59,6 @@ public class Skript extends SkriptAddon {
         long fin = System.currentTimeMillis() - start;
         Utils.log("HySkript loading completed in %sms!", fin);
         Utils.log(" ");
-    }
-
-    private void setupConfig() {
-        // LOAD CONFIG
-        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
-        SkriptLogger logger = new SkriptLogger(true);
-        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
-
-        boolean debug = false;
-        // Apparently the config needs to parse by Type,
-        // But Types aren't loaded til later
-        String debugString = this.skriptConfig.getConfigValue("debug", String.class);
-        if (debugString != null && debugString.equalsIgnoreCase("true")) debug = true;
-        Utils.setDebug(debug);
-
-        logger.finalizeLogs();
-        for (LogEntry logEntry : logger.close()) {
-            Utils.log(null, logEntry);
-        }
     }
 
     private void setupSkript() {
@@ -141,7 +122,7 @@ public class Skript extends SkriptAddon {
     }
 
     private void setupEffectCommands() {
-        ConfigSection effectCommandSection = this.skriptConfig.getConfigSection("effect-commands");
+        ConfigSection effectCommandSection = this.skriptConfig.getEffectCommands();
         if (effectCommandSection != null) {
             if (effectCommandSection.getBoolean("enabled")) {
                 EffectCommands.register(this,
@@ -158,9 +139,8 @@ public class Skript extends SkriptAddon {
         long start = System.currentTimeMillis();
         Utils.log("Loading variables...");
         Variables.registerStorage(JsonVariableStorage.class, "json-database");
-        ConfigSection databases = this.skriptConfig.getConfigSection("databases");
+        ConfigSection databases = this.skriptConfig.getDatabases();
         if (databases == null) {
-            Utils.error("Databases section not found in config.sk");
             return;
         }
         SkriptLogger skriptLogger = new SkriptLogger(true);
@@ -187,7 +167,7 @@ public class Skript extends SkriptAddon {
      *
      * @return The Skript configuration.
      */
-    public @NotNull Config getSkriptConfig() {
+    public @NotNull SkriptConfig getSkriptConfig() {
         return this.skriptConfig;
     }
 
