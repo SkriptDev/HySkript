@@ -143,9 +143,10 @@ public class JsonDocPrinter {
 
             BsonDocument eventDoc = new BsonDocument();
 
-            if (!Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                printDocumentation("event", eventDoc, event);
+            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
+                return;
             }
+            printDocumentation("event", eventDoc, event);
 
             AtomicBoolean cancellable = new AtomicBoolean(false);
             event.getContexts().forEach(context -> {
@@ -161,13 +162,14 @@ public class JsonDocPrinter {
                     valuesForThisEvent.add(contextValue);
                 }
             });
-            BsonArray eventValues = eventDoc.getArray("event values", new BsonArray());
+            BsonArray eventValues = eventDoc.getArray("context values", new BsonArray());
             if (!valuesForThisEvent.isEmpty()) {
                 valuesForThisEvent.forEach(contextValue -> {
-                    eventValues.add(new BsonString(contextValue.getPattern().toString()));
+                    eventValues.add(new BsonString("context-" + contextValue.getPattern().toString()));
                 });
 
             }
+            eventDoc.put("context values", eventValues);
             eventsArray.add(eventDoc);
         });
         mainDocs.put("events", eventsArray);
@@ -180,11 +182,13 @@ public class JsonDocPrinter {
             Documentation documentation = event.getDocumentation();
             if (documentation.isNoDoc()) return;
 
-            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                BsonDocument structureDoc = new BsonDocument();
-                printDocumentation("structure", structureDoc, event);
-                structuresArray.add(structureDoc);
+            if (!Structure.class.isAssignableFrom(event.getSyntaxClass())) {
+                return;
             }
+
+            BsonDocument structureDoc = new BsonDocument();
+            printDocumentation("structure", structureDoc, event);
+            structuresArray.add(structureDoc);
         });
 
         mainDocs.put("structures", structuresArray);
@@ -202,18 +206,24 @@ public class JsonDocPrinter {
                 if (documentation.isNoDoc()) return;
 
                 BsonDocument expressionDoc = new BsonDocument();
-                printDocumentation("effect-expression", expressionDoc, expressionInfo);
-                String returnType = expressionInfo.getReturnType().getType().getBaseName();
-                expressionDoc.put("return type", new BsonString(returnType));
+
+                // Return Type
+                Type<?> returnType = expressionInfo.getReturnType().getType();
+                String returnTypeName = returnType.getDocumentation().getName();
+                if (returnTypeName == null) returnTypeName = returnType.getBaseName();
+                expressionDoc.put("return type", new BsonString(returnTypeName));
 
                 Class<?> syntaxClass = expressionInfo.getSyntaxClass();
                 if (ExecutableExpression.class.isAssignableFrom(syntaxClass)) {
                     // TODO new section on the docs?!?!?!
                     exprsArray.add(expressionDoc);
+                    printDocumentation("executable-expression", expressionDoc, expressionInfo);
                 } else if (ConditionalExpression.class.isAssignableFrom(syntaxClass)) {
                     condArray.add(expressionDoc);
+                    printDocumentation("condition", expressionDoc, expressionInfo);
                 } else {
                     exprsArray.add(expressionDoc);
+                    printDocumentation("expression", expressionDoc, expressionInfo);
 
                 }
             });

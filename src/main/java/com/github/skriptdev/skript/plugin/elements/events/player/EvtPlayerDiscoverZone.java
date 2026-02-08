@@ -35,7 +35,7 @@ public class EvtPlayerDiscoverZone extends SystemEvent<EntityEventSystem<EntityS
 
         reg.addSingleContextValue(DiscoverZoneContext.class, String.class,
             "zone-name", DiscoverZoneContext::getZoneName);
-        reg.addSingleContextValue(DiscoverZoneContext.class, boolean.class,
+        reg.addSingleContextValue(DiscoverZoneContext.class, Boolean.class,
             "displaying", DiscoverZoneContext::isDisplaying);
         reg.addSingleContextValue(DiscoverZoneContext.class, String.class,
             "region-name", DiscoverZoneContext::getRegionName);

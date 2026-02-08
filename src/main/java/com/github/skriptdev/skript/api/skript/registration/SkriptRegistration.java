@@ -5,6 +5,7 @@ import com.hypixel.hytale.assetstore.JsonAsset;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import io.github.syst3ms.skriptparser.docs.Documentation;
 import io.github.syst3ms.skriptparser.log.LogEntry;
+import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 import io.github.syst3ms.skriptparser.types.Type;
 import io.github.syst3ms.skriptparser.types.TypeManager;
@@ -28,7 +29,7 @@ import java.util.function.Supplier;
 public class SkriptRegistration extends io.github.syst3ms.skriptparser.registration.SkriptRegistration {
 
     public SkriptRegistration(SkriptAddon registerer) {
-        super(registerer);
+        super(registerer, new SkriptLogger(true));
     }
 
     @Override

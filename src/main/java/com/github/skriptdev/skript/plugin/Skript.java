@@ -30,7 +30,7 @@ public class Skript extends SkriptAddon {
 
     public static Skript INSTANCE;
     private final HySk hySk;
-    private final Config skriptConfig;
+    private Config skriptConfig;
     private final Path scriptsPath;
     private SkriptRegistration registration;
     private ElementRegistration elementRegistration;
@@ -49,16 +49,10 @@ public class Skript extends SkriptAddon {
         Utils.log(" ");
 
         // LOAD CONFIG
-        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
-        SkriptLogger logger = new SkriptLogger();
-        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
-        logger.finalizeLogs();
-        for (LogEntry logEntry : logger.close()) {
-            Utils.log(null, logEntry);
-        }
+        setupConfig();
 
         // SETUP SKRIPT
-        setup();
+        setupSkript();
 
         // ALL DONE
         Utils.log(" ");
@@ -67,14 +61,44 @@ public class Skript extends SkriptAddon {
         Utils.log(" ");
     }
 
-    private void setup() {
+    private void setupConfig() {
+        // LOAD CONFIG
+        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
+        SkriptLogger logger = new SkriptLogger(true);
+        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
+
+        boolean debug = false;
+        // Apparently the config needs to parse by Type,
+        // But Types aren't loaded til later
+        String debugString = this.skriptConfig.getConfigValue("debug", String.class);
+        if (debugString != null && debugString.equalsIgnoreCase("true")) debug = true;
+        Utils.setDebug(debug);
+
+        logger.finalizeLogs();
+        for (LogEntry logEntry : logger.close()) {
+            Utils.log(null, logEntry);
+        }
+    }
+
+    private void setupSkript() {
         long start = System.currentTimeMillis();
-        preSetup();
+
+        // INITIALIZE UTILITIES
+        Utils.debug("Initializing utilities...");
+        ReflectionUtils.init();
+        ArgUtils.init();
+
+        // SETUP REGISTRATION
+        Utils.debug("Setting up registration...");
         this.registration = new SkriptRegistration(this);
         this.elementRegistration = new ElementRegistration(this.registration);
+
+        // REGISTER ELEMENTS
+        Utils.debug("Registering elements...");
         this.elementRegistration.registerElements();
 
         // SETUP EFFECT COMMANDS
+        Utils.debug("Setting up effect commands...");
         setupEffectCommands();
 
         // FINISH SETUP
@@ -86,6 +110,7 @@ public class Skript extends SkriptAddon {
         this.addonLoader.loadAddonsFromFolder();
 
         // SETUP ERROR HANDLER
+        Utils.debug("Setting up error handler...");
         ErrorHandler.init();
 
         // LOAD VARIABLES
@@ -97,11 +122,6 @@ public class Skript extends SkriptAddon {
 
         // FINALIZE SCRIPT LOADING
         Parser.getMainRegistration().getRegisterer().finishedLoading();
-    }
-
-    private void preSetup() {
-        ReflectionUtils.init();
-        ArgUtils.init();
     }
 
     public void shutdown() {
@@ -129,6 +149,8 @@ public class Skript extends SkriptAddon {
                     effectCommandSection.getBoolean("allow-ops"),
                     effectCommandSection.getString("required-permission"));
             }
+        } else {
+            Utils.debug("Effect commands section is missing in config.sk");
         }
     }
 
@@ -141,7 +163,7 @@ public class Skript extends SkriptAddon {
             Utils.error("Databases section not found in config.sk");
             return;
         }
-        SkriptLogger skriptLogger = new SkriptLogger();
+        SkriptLogger skriptLogger = new SkriptLogger(true);
         Variables.load(skriptLogger, databases);
         skriptLogger.finalizeLogs();
         for (LogEntry logEntry : skriptLogger.close()) {
