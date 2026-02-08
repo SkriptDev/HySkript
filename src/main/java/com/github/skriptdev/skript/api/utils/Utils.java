@@ -1,7 +1,8 @@
 package com.github.skriptdev.skript.api.utils;
 
-import com.github.skriptdev.skript.plugin.HySk;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.console.ConsoleSender;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -20,6 +21,18 @@ public class Utils {
 
     private static boolean DEBUG = false;
     private static final Message CORE_PREFIX = TinyMsg.parse("<color:736E6E>[<gradient:07CAE5:0DD22B>HySkript<color:736E6E>] ");
+    private static final HytaleLogger LOGGER = HytaleLogger.get(MessageUtil.toAnsiString(
+        TinyMsg.parse("<gradient:07CAE5:0DD22B>HySkript<color:736E6E><reset>|P")).toAnsi());
+
+
+    public static HytaleLogger getLogger() {
+        return LOGGER;
+    }
+
+    public static HytaleLogger getAddonLogger(String addonName) {
+        return HytaleLogger.get(MessageUtil.toAnsiString(
+            TinyMsg.parse("<gradient:07CAE5:0DD22B>HySkript<color:736E6E><reset>|" + addonName + "|A")).toAnsi());
+    }
 
     /**
      * Send a message to a receiver.
@@ -50,8 +63,8 @@ public class Utils {
         if (args.length > 0) {
             message = String.format(message, args);
         }
-        if (receiver == null) {
-            HySk.getInstance().getLogger().at(level).log(message);
+        if (receiver == null || receiver instanceof ConsoleSender) {
+            LOGGER.at(level).log(message);
         } else {
             Color color = level == Level.SEVERE ? Color.RED : level == Level.WARNING ?
                 Color.YELLOW : level == Level.FINE ? Color.PINK : Color.WHITE;

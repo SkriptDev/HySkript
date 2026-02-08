@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.api.skript.addon;
 
+import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import fi.sulku.hytale.TinyMsg;
@@ -19,7 +20,7 @@ public abstract class HySkriptAddon extends SkriptAddon {
 
     public HySkriptAddon(String name) {
         super(name);
-        this.hytaleLogger = HytaleLogger.get("HySkript|" + name + "|A");
+        this.hytaleLogger = Utils.getAddonLogger(name);
     }
 
     /**
@@ -54,7 +55,8 @@ public abstract class HySkriptAddon extends SkriptAddon {
         if (description != null) info.add(TinyMsg.parse("Description: <color:#FADD89>" + description));
 
         @Nullable String[] authors = this.manifest.getAuthors();
-        if (authors != null) info.add(TinyMsg.parse("Authors: <color:#FADD89>" + String.join("<reset>, <color:#FADD89>", authors)));
+        if (authors != null)
+            info.add(TinyMsg.parse("Authors: <color:#FADD89>" + String.join("<reset>, <color:#FADD89>", authors)));
 
         String website = this.manifest.getWebsite();
         if (website != null) info.add(TinyMsg.parse("Website: <color:#0CE8C3><link:" + website + ">" + website));
