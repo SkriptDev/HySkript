@@ -1,6 +1,5 @@
 package com.github.skriptdev.skript.api.hytale;
 
-import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
@@ -85,12 +84,9 @@ public class EntityUtils {
             return;
         }
         Nameplate component = store.getComponent(reference, Nameplate.getComponentType());
-        Utils.log("Attempting to set name");
         if (component != null) {
-            Utils.log("Nameplate found, changing");
             component.setText(name);
         } else {
-            Utils.log("No nameplate found, creating");
             Nameplate n = new Nameplate(name);
             store.addComponent(reference, Nameplate.getComponentType(), n);
         }
