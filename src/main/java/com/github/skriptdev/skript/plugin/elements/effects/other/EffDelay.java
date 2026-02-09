@@ -57,6 +57,7 @@ public class EffDelay extends Effect {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
+        parseContext.getParserState().setDelayed(true);
         this.pattern = matchedPattern;
         this.isConditional = matchedPattern > 1;
         switch (matchedPattern) {

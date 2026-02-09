@@ -14,7 +14,8 @@ public class EffCancelEvent extends Effect {
     public static void register(SkriptRegistration registration) {
         registration.newEffect(EffCancelEvent.class, "cancel event", "uncancel event")
             .name("Cancel Event")
-            .description("Cancels/uncancels the current event.")
+            .description("Cancels/uncancels the current event.",
+                "**Reminder**: This effect cannot be used after a delay.")
             .examples("on chat:",
                 "\tcancel event")
             .since("1.0.0")
@@ -25,6 +26,10 @@ public class EffCancelEvent extends Effect {
 
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, ParseContext parseContext) {
+        if (parseContext.getParserState().isDelayed()) {
+            parseContext.getLogger().error("Cannot cancel an event after a delay.", ErrorType.SEMANTIC_ERROR);
+            return false;
+        }
         this.cancel = matchedPattern == 0;
         for (Class<? extends TriggerContext> currentContext : parseContext.getParserState().getCurrentContexts()) {
             if (!CancellableContext.class.isAssignableFrom(currentContext)) {

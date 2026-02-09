@@ -30,6 +30,7 @@ public class SecExecuteInWorld extends CodeSection {
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
         this.world = (Expression<World>) expressions[0];
+        parseContext.getParserState().setDelayed(true);
         return true;
     }
 
