@@ -68,6 +68,12 @@ public class EntityUtils {
         return entity.getLegacyDisplayName();
     }
 
+    public static @NotNull String getVariableName(Entity entity) {
+        UUID uuid = getUUID(entity);
+        if (uuid == null) return "<unknown>";
+        return uuid.toString();
+    }
+
     /**
      * Set the name of an {@link Entity}.
      *

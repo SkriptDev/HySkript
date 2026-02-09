@@ -165,6 +165,10 @@ public class Block {
             this.getType().getId(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.world.getName());
     }
 
+    public String toVariableNameString() {
+        return String.format("%s_%s_%s_%s_%s", this.world.getName(), this.getType().getId(), this.pos.getX(), this.pos.getY(), this.pos.getZ());
+    }
+
     @Override
     public String toString() {
         return "Block{" +

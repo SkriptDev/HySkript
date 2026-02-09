@@ -17,6 +17,7 @@ import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgumentType;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
+import com.hypixel.hytale.server.core.util.MessageUtil;
 import io.github.syst3ms.skriptparser.types.changers.TypeSerializer;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
@@ -70,6 +71,7 @@ public class TypesServer {
                     return Message.CODEC.decode(decode, new ExtraInfo());
                 }
             })
+            .toStringFunction(m -> MessageUtil.toAnsiString(m).toAnsi())
             .register();
         registration.newEnumType(NotificationStyle.class, "notificationstyle", "notificationStyle@s")
             .name("Notification Style")
@@ -179,6 +181,7 @@ public class TypesServer {
                     return new Location(world, position, rotation);
                 }
             })
+            .toStringFunction(Location::toString)
             .since("1.0.0")
             .register();
     }

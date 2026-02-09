@@ -12,6 +12,7 @@ public class TypesBlock {
             .description("Represents a block in a world.")
             .since("1.0.0")
             .toStringFunction(Block::toTypeString)
+            .toVariableNameFunction(Block::toVariableNameString)
             .register();
         reg.newEnumType(InteractionType.class, "interactiontype", "interactiontype@s")
             .name("Interaction Type")

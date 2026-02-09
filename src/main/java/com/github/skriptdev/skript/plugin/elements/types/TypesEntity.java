@@ -16,6 +16,8 @@ import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import io.github.syst3ms.skriptparser.types.changers.Changer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class TypesEntity {
 
     static void register(SkriptRegistration reg) {
@@ -26,7 +28,6 @@ public class TypesEntity {
             .toStringFunction(ActiveEntityEffect::toString)
             .register();
         reg.newType(Entity.class, "entity", "entit@y@ies")
-            .toStringFunction(EntityUtils::getName)
             .name("Entity")
             .description("Represents any Entity in the game, including Players and NPCs.")
             .since("1.0.0")
@@ -50,18 +51,22 @@ public class TypesEntity {
                     }
                 }
             })
+            .toStringFunction(EntityUtils::getName)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(LivingEntity.class, "livingentity", "livingEntit@y@ies")
             .name("Living Entity")
             .description("Represents any living entity in the game, including players and mobs.")
             .since("1.0.0")
             .toStringFunction(EntityUtils::getName)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(NPCEntity.class, "npcentity", "npcEntit@y@ies")
             .name("NPC Entity")
             .description("Represents an NPC entity in the game.")
             .since("1.0.0")
             .toStringFunction(NPCRegistry::stringify)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(NPCRegistry.NPCRole.class, "npcrole", "npcrole@s")
             .name("NPC Role")
@@ -70,6 +75,7 @@ public class TypesEntity {
             .usage(NPCRegistry.getTypeUsage())
             .since("1.0.0")
             .toStringFunction(NPCRegistry.NPCRole::name)
+            .toVariableNameFunction(r -> "npc_role:" + r.name().toLowerCase())
             .supplier(NPCRegistry::iterator)
             .literalParser(NPCRegistry::parse)
             .register();

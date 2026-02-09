@@ -17,6 +17,7 @@ public class TypesWorld {
             .since("1.0.0")
             .toStringFunction(worldChunk -> "chunk (x=" + worldChunk.getX() + ",z=" + worldChunk.getZ() +
                 ") in world '" + worldChunk.getWorld().getName() + "'")
+            .toVariableNameFunction(worldChunk -> "chunk:" + worldChunk.getWorld().getName() + ":" + worldChunk.getX() + ":" + worldChunk.getZ())
             .register();
         reg.newType(RelativeDoublePosition.class, "relativeposition", "relativePosition@s")
             .name("Relative Position")
@@ -38,6 +39,7 @@ public class TypesWorld {
             .description("Represents a world in the game.")
             .since("1.0.0")
             .toStringFunction(World::getName)
+            .toVariableNameFunction(w -> "world:" + w.getName())
             .register();
         reg.newType(Zone.class, "zone", "zone@s")
             .name("Zone")
