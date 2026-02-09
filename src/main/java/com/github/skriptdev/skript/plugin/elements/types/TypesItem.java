@@ -16,6 +16,8 @@ import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class TypesItem {
 
     static void register(SkriptRegistration reg) {
@@ -71,6 +73,11 @@ public class TypesItem {
             .toStringFunction(itemStack -> {
                 String quantity = itemStack.getQuantity() == 1 ? "" : itemStack.getQuantity() + " of ";
                 return "itemstack of " + quantity + itemStack.getItem().getId();
+            })
+            .toVariableNameFunction(itemStack -> {
+                int quantity = itemStack.getQuantity();
+                String id = itemStack.getItem().getId().toLowerCase(Locale.ROOT);
+                return "itemstack:" + quantity + ":" + id;
             })
             .serializer(new TypeSerializer<>() {
                 @Override

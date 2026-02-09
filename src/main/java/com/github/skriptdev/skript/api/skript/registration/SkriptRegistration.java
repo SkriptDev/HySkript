@@ -1,11 +1,12 @@
 package com.github.skriptdev.skript.api.skript.registration;
 
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.github.skriptdev.skript.plugin.Skript;
 import com.hypixel.hytale.assetstore.JsonAsset;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import io.github.syst3ms.skriptparser.docs.Documentation;
 import io.github.syst3ms.skriptparser.log.LogEntry;
-import io.github.syst3ms.skriptparser.registration.SkriptAddon;
+import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.types.Type;
 import io.github.syst3ms.skriptparser.types.TypeManager;
 import io.github.syst3ms.skriptparser.types.changers.Arithmetic;
@@ -17,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,8 +27,15 @@ import java.util.function.Supplier;
  */
 public class SkriptRegistration extends io.github.syst3ms.skriptparser.registration.SkriptRegistration {
 
-    public SkriptRegistration(SkriptAddon registerer) {
-        super(registerer);
+    private final Skript skript;
+
+    public SkriptRegistration(Skript registerer) {
+        super(registerer, new SkriptLogger(true));
+        this.skript = registerer;
+    }
+
+    public Skript getSkript() {
+        return this.skript;
     }
 
     @Override
@@ -61,7 +68,8 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
         private final Class<C> assetClass;
         private final String baseName;
         private final String pattern;
-        private Function<? super C, String> toStringFunction = o -> Objects.toString(o, TypeManager.NULL_REPRESENTATION);
+        private Function<? super C, String> toStringFunction;
+        private Function<? super C, String> toVariableNameFunction;
         private final Function<String, ? extends C> literalParser;
         @Nullable
         private Changer<? super C> defaultChanger;
@@ -83,7 +91,8 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
             assetMap.getAssetMap().forEach((key, value) -> this.assetStoreValues.put(key.toLowerCase(Locale.ROOT), value));
             this.supplier = () -> assetStoreValues.values().stream().iterator();
             this.literalParser = s -> this.assetStoreValues.get(s.toLowerCase(Locale.ROOT).replace(" ", "_"));
-
+            this.toStringFunction = JsonAsset::getId;
+            this.toVariableNameFunction = c -> baseName + ":" + c.getId().toLowerCase(Locale.ROOT).replace(" ", "_");
         }
 
         /**
@@ -92,6 +101,11 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
          */
         public AssetStoreRegistrar<C, K> toStringFunction(Function<? super C, String> toStringFunction) {
             this.toStringFunction = c -> c == null ? TypeManager.NULL_REPRESENTATION : toStringFunction.apply(c);
+            return this;
+        }
+
+        public AssetStoreRegistrar<C, K> toVariableNameFunction(Function<? super C, String> toVariableNameFunction) {
+            this.toVariableNameFunction = toVariableNameFunction;
             return this;
         }
 
@@ -166,7 +180,8 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
          * Adds this type to the list of currently registered syntaxes
          */
         public void register() {
-            AssetStoreType<C, K> assetStoreType = new AssetStoreType<>(assetClass, baseName, pattern, literalParser, toStringFunction,
+            AssetStoreType<C, K> assetStoreType = new AssetStoreType<>(assetClass, baseName, pattern, literalParser,
+                toStringFunction, toVariableNameFunction,
                 defaultChanger, arithmetic, documentation, serializer, this.supplier);
             newTypes = true;
             types.add(assetStoreType);
@@ -176,10 +191,11 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
     public static class AssetStoreType<C extends JsonAsset<K>, K extends String> extends Type<C> {
 
         public AssetStoreType(Class<C> c, String baseName, String pattern, Function<String, ? extends C> literalParser,
-                              Function<? super C, String> toStringFunction, Changer<? super C> defaultChanger,
+                              Function<? super C, String> toStringFunction,
+                              Function<? super C, String> toVariableNameFunction, Changer<? super C> defaultChanger,
                               Arithmetic<C, ?> arithmetic, Documentation documentation, TypeSerializer<C> serializer,
                               Supplier<Iterator<C>> supplier) {
-            super(c, baseName, pattern, literalParser, toStringFunction, defaultChanger,
+            super(c, baseName, pattern, literalParser, toStringFunction, toVariableNameFunction, defaultChanger,
                 arithmetic, documentation, serializer, supplier);
         }
     }
@@ -203,6 +219,7 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
         private final String pattern;
 
         private Function<? super E, String> toStringFunction;
+        private Function<? super E, String> toVariableNameFunction;
         private final Function<String, ? extends E> literalParser;
         @Nullable
         private Changer<? super E> defaultChanger;
@@ -225,6 +242,7 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
             this.supplier = () -> this.values.values().iterator();
             this.literalParser = s -> this.values.get(s.toLowerCase(Locale.ROOT).replace(" ", "_"));
             this.toStringFunction = e -> e.name().toLowerCase(Locale.ROOT);
+            this.toVariableNameFunction = e -> this.baseName + ":" + e.name().toLowerCase(Locale.ROOT).replace(" ", "_");
         }
 
 
@@ -234,6 +252,11 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
          */
         public EnumRegistrar<E> toStringFunction(Function<? super E, String> toStringFunction) {
             this.toStringFunction = c -> c == null ? TypeManager.NULL_REPRESENTATION : toStringFunction.apply(c);
+            return this;
+        }
+
+        public EnumRegistrar<E> toVariableNameFunction(Function<? super E, String> toVariableNameFunction) {
+            this.toVariableNameFunction = toVariableNameFunction;
             return this;
         }
 
@@ -313,7 +336,8 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
          * Adds this type to the list of currently registered syntaxes
          */
         public void register() {
-            EnumType<E> enumType = new EnumType<>(this.enumClass, baseName, pattern, literalParser, toStringFunction,
+            EnumType<E> enumType = new EnumType<>(this.enumClass, baseName, pattern, literalParser,
+                toStringFunction, toVariableNameFunction,
                 defaultChanger, arithmetic, documentation, serializer, this.supplier);
             newTypes = true;
             types.add(enumType);
@@ -322,10 +346,11 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
 
     public static class EnumType<E extends Enum<E>> extends Type<E> {
         public EnumType(Class<E> c, String baseName, String pattern, Function<String, ? extends E> literalParser,
-                        Function<? super E, String> toStringFunction, Changer<? super E> defaultChanger,
+                        Function<? super E, String> toStringFunction, Function<? super E, String> toVariableNameFunction,
+                        Changer<? super E> defaultChanger,
                         Arithmetic<E, ?> arithmetic, Documentation documentation, TypeSerializer<E> serializer,
                         Supplier<Iterator<E>> supplier) {
-            super(c, baseName, pattern, literalParser, toStringFunction, defaultChanger,
+            super(c, baseName, pattern, literalParser, toStringFunction, toVariableNameFunction, defaultChanger,
                 arithmetic, documentation, serializer, supplier);
         }
     }

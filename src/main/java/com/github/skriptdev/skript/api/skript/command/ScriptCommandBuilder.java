@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.api.skript.command;
 
 import com.github.skriptdev.skript.plugin.HySk;
+import com.github.skriptdev.skript.plugin.Skript;
 import com.github.skriptdev.skript.plugin.elements.command.ScriptCommand.PlayerScriptCommandContext;
 import com.github.skriptdev.skript.plugin.elements.command.ScriptCommand.ScriptCommandContext;
 import com.github.skriptdev.skript.plugin.elements.command.ScriptCommand.WorldScriptCommandContext;
@@ -44,6 +45,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ScriptCommandBuilder {
 
+    private static final boolean CAN_GENERATE_PERMISSION_DEFAULT = Skript.getInstance().getSkriptConfig().getCommandsGeneratePermissions();
+
     public static ScriptCommandBuilder create(int commandType, SkriptLogger logger) {
         return new ScriptCommandBuilder(commandType, logger);
     }
@@ -56,6 +59,7 @@ public class ScriptCommandBuilder {
     private AbstractCommand hyCommand;
 
     private final SectionConfiguration sec = new SectionConfiguration.Builder()
+        .addOptionalLiteral("can-generate-permission", Boolean.class)
         .addOptionalKey("permission")
         .addOptionalKey("description")
         .addOptionalList("aliases")
@@ -111,6 +115,9 @@ public class ScriptCommandBuilder {
             description = "";
         }
 
+        Boolean canGeneratePermission = this.sec.getValue("can-generate-permission", Boolean.class)
+            .orElse(CAN_GENERATE_PERMISSION_DEFAULT);
+
         if (hasTrigger) {
             CodeSection trigger = triggerSec.get();
             if (trigger.getItems().isEmpty()) {
@@ -120,6 +127,11 @@ public class ScriptCommandBuilder {
 
             this.hyCommand = switch (commandType) {
                 case 1 -> new AbstractPlayerCommand(this.commandName, description) {
+                    @Override
+                    protected boolean canGeneratePermission() {
+                        return canGeneratePermission;
+                    }
+
                     @Override
                     protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store,
                                            @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
@@ -134,6 +146,10 @@ public class ScriptCommandBuilder {
                     }
                 };
                 case 2 -> new AbstractWorldCommand(this.commandName, description) {
+                    @Override
+                    protected boolean canGeneratePermission() {
+                        return canGeneratePermission;
+                    }
 
                     @Override
                     protected void execute(@NotNull CommandContext commandContext, @NotNull World world,
@@ -147,7 +163,10 @@ public class ScriptCommandBuilder {
                     }
                 };
                 default -> new AbstractCommand(this.commandName, description) {
-
+                    @Override
+                    protected boolean canGeneratePermission() {
+                        return canGeneratePermission;
+                    }
                     @Override
                     protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
                         CompletableFuture.runAsync(() -> {
@@ -167,7 +186,10 @@ public class ScriptCommandBuilder {
             };
         } else {
             this.hyCommand = new AbstractCommandCollection(this.commandName, description) {
-
+                @Override
+                protected boolean canGeneratePermission() {
+                    return canGeneratePermission;
+                }
             };
         }
         this.args.forEach((key, arg) -> {

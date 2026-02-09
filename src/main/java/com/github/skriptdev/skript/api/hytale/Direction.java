@@ -44,6 +44,10 @@ public enum Direction {
         return this.name;
     }
 
+    public String getVariableName() {
+        return "direction:" + this.name.toLowerCase(Locale.ROOT);
+    }
+
     private static Location create(Location location, Number offset, int x, int y, int z) {
         double value = offset.doubleValue();
         Vector3d add = location.getPosition().add(x * value, y * value, z * value);

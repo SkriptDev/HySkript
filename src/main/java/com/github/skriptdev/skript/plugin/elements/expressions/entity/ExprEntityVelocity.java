@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.ChangeVelocityType;
@@ -43,7 +43,7 @@ public class ExprEntityVelocity implements Expression<Vector3d> {
         Vector3d[] velocities = new Vector3d[entityArray.length];
 
         for (int i = 0; i < entityArray.length; i++) {
-            Velocity component = EntityComponentUtils.getComponent(entityArray[i], Velocity.getComponentType());
+            Velocity component = EntityUtils.getComponent(entityArray[i], Velocity.getComponentType());
             if (component == null) continue;
             velocities[i] = component.getVelocity();
         }
@@ -67,7 +67,7 @@ public class ExprEntityVelocity implements Expression<Vector3d> {
         }
 
         for (Entity entity : this.entities.getArray(ctx)) {
-            Velocity component = EntityComponentUtils.getComponent(entity, Velocity.getComponentType());
+            Velocity component = EntityUtils.getComponent(entity, Velocity.getComponentType());
             if (component == null) continue;
 
             switch (changeMode) {

@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entityeffect;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -48,7 +48,7 @@ public class ExprActiveEntityEffects implements Expression<ActiveEntityEffect> {
         List<ActiveEntityEffect> effects = new ArrayList<>();
 
         for (LivingEntity entity : this.entities.getArray(ctx)) {
-            EffectControllerComponent component = EntityComponentUtils.getComponent(entity, EffectControllerComponent.getComponentType());
+            EffectControllerComponent component = EntityUtils.getComponent(entity, EffectControllerComponent.getComponentType());
             if (component == null) continue;
 
             component.getActiveEffects().forEach(effects::add);
@@ -83,7 +83,7 @@ public class ExprActiveEntityEffects implements Expression<ActiveEntityEffect> {
             if (reference == null) continue;
 
             Store<EntityStore> store = reference.getStore();
-            EffectControllerComponent component = EntityComponentUtils.getComponent(livingEntity,
+            EffectControllerComponent component = EntityUtils.getComponent(livingEntity,
                 EffectControllerComponent.getComponentType());
             if (component == null) continue;
 

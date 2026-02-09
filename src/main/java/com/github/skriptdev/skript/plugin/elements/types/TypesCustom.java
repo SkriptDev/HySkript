@@ -12,6 +12,7 @@ public class TypesCustom {
             .usage(Direction.getUsageString())
             .literalParser(Direction::parse)
             .toStringFunction(Direction::getName)
+            .toVariableNameFunction(Direction::getVariableName)
             .since("1.0.0")
             .register();
     }

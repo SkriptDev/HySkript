@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.conditions;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
@@ -37,7 +37,7 @@ public class CondPlayerIsCrouching extends ConditionalExpression {
     @Override
     public boolean check(@NotNull TriggerContext ctx) {
         return this.players.check(ctx, player -> {
-            MovementStatesComponent component = EntityComponentUtils.getMovementStatesComponent(player);
+            MovementStatesComponent component = EntityUtils.getMovementStatesComponent(player);
             if (component == null) return false;
 
             return component.getMovementStates().crouching;

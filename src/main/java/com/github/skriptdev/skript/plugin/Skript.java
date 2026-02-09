@@ -4,6 +4,7 @@ import com.github.skriptdev.skript.api.skript.ErrorHandler;
 import com.github.skriptdev.skript.api.skript.ScriptsLoader;
 import com.github.skriptdev.skript.api.skript.addon.AddonLoader;
 import com.github.skriptdev.skript.api.skript.command.ArgUtils;
+import com.github.skriptdev.skript.api.skript.config.SkriptConfig;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
@@ -11,8 +12,7 @@ import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
-import io.github.syst3ms.skriptparser.Parser;
-import io.github.syst3ms.skriptparser.config.Config;
+import com.hypixel.hytale.server.core.event.events.BootEvent;
 import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
@@ -30,7 +30,7 @@ public class Skript extends SkriptAddon {
 
     public static Skript INSTANCE;
     private final HySk hySk;
-    private final Config skriptConfig;
+    private final SkriptConfig skriptConfig;
     private final Path scriptsPath;
     private SkriptRegistration registration;
     private ElementRegistration elementRegistration;
@@ -49,16 +49,10 @@ public class Skript extends SkriptAddon {
         Utils.log(" ");
 
         // LOAD CONFIG
-        Path skriptConfigPath = hySk.getDataDirectory().resolve("config.sk");
-        SkriptLogger logger = new SkriptLogger();
-        this.skriptConfig = new Config(skriptConfigPath, "/config.sk", logger);
-        logger.finalizeLogs();
-        for (LogEntry logEntry : logger.close()) {
-            Utils.log(null, logEntry);
-        }
+        this.skriptConfig = new SkriptConfig(this);
 
         // SETUP SKRIPT
-        setup();
+        setupSkript();
 
         // ALL DONE
         Utils.log(" ");
@@ -67,14 +61,25 @@ public class Skript extends SkriptAddon {
         Utils.log(" ");
     }
 
-    private void setup() {
+    private void setupSkript() {
         long start = System.currentTimeMillis();
-        preSetup();
+
+        // INITIALIZE UTILITIES
+        Utils.debug("Initializing utilities...");
+        ReflectionUtils.init();
+        ArgUtils.init();
+
+        // SETUP REGISTRATION
+        Utils.debug("Setting up registration...");
         this.registration = new SkriptRegistration(this);
         this.elementRegistration = new ElementRegistration(this.registration);
+
+        // REGISTER ELEMENTS
+        Utils.debug("Registering elements...");
         this.elementRegistration.registerElements();
 
         // SETUP EFFECT COMMANDS
+        Utils.debug("Setting up effect commands...");
         setupEffectCommands();
 
         // FINISH SETUP
@@ -86,6 +91,7 @@ public class Skript extends SkriptAddon {
         this.addonLoader.loadAddonsFromFolder();
 
         // SETUP ERROR HANDLER
+        Utils.debug("Setting up error handler...");
         ErrorHandler.init();
 
         // LOAD VARIABLES
@@ -96,12 +102,11 @@ public class Skript extends SkriptAddon {
         this.scriptsLoader.loadScripts(null, this.scriptsPath, false);
 
         // FINALIZE SCRIPT LOADING
-        Parser.getMainRegistration().getRegisterer().finishedLoading();
-    }
-
-    private void preSetup() {
-        ReflectionUtils.init();
-        ArgUtils.init();
+        this.hySk.getEventRegistry().register(BootEvent.class, event -> {
+            Utils.debug("Hytale finished booting, starting post-load triggers...");
+            // Start any post-load triggers after Hytale finishes booting.
+            getAddons().forEach(SkriptAddon::finishedLoading);
+        });
     }
 
     public void shutdown() {
@@ -121,7 +126,7 @@ public class Skript extends SkriptAddon {
     }
 
     private void setupEffectCommands() {
-        ConfigSection effectCommandSection = this.skriptConfig.getConfigSection("effect-commands");
+        ConfigSection effectCommandSection = this.skriptConfig.getEffectCommands();
         if (effectCommandSection != null) {
             if (effectCommandSection.getBoolean("enabled")) {
                 EffectCommands.register(this,
@@ -129,6 +134,8 @@ public class Skript extends SkriptAddon {
                     effectCommandSection.getBoolean("allow-ops"),
                     effectCommandSection.getString("required-permission"));
             }
+        } else {
+            Utils.debug("Effect commands section is missing in config.sk");
         }
     }
 
@@ -136,12 +143,11 @@ public class Skript extends SkriptAddon {
         long start = System.currentTimeMillis();
         Utils.log("Loading variables...");
         Variables.registerStorage(JsonVariableStorage.class, "json-database");
-        ConfigSection databases = this.skriptConfig.getConfigSection("databases");
+        ConfigSection databases = this.skriptConfig.getDatabases();
         if (databases == null) {
-            Utils.error("Databases section not found in config.sk");
             return;
         }
-        SkriptLogger skriptLogger = new SkriptLogger();
+        SkriptLogger skriptLogger = new SkriptLogger(true);
         Variables.load(skriptLogger, databases);
         skriptLogger.finalizeLogs();
         for (LogEntry logEntry : skriptLogger.close()) {
@@ -165,7 +171,7 @@ public class Skript extends SkriptAddon {
      *
      * @return The Skript configuration.
      */
-    public @NotNull Config getSkriptConfig() {
+    public @NotNull SkriptConfig getSkriptConfig() {
         return this.skriptConfig;
     }
 

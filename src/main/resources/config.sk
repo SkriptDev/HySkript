@@ -1,7 +1,22 @@
 # HySkript Config
 
+hyskript-version: $pluginVersion
+# Do not change this value manually.
+# This is automatically updated when you update HySkript.
+# This is used to update the config if it's outdated.
+
 debug: false
 # Whether or not to enable debug mode (maybe print more verbose logs to console).
+
+max-target-block-distance: 160
+# The maximum distance from a Player to a block to be considered a target block.
+# Default 160 = 5 chunks
+# Increasing this amount could cause performance issues, so test carefully.
+
+commands-generate-permissions: true
+# Hytale by default generates permissions for all commands.
+# If you want to disable this, set this to false.
+# You can also disable it per command in the command entries.
 
 # Effect commands allow you to execute effects in chat.
 effect-commands:
@@ -12,7 +27,7 @@ effect-commands:
     # Whether or not ops can use effect commands.
     # If false, they will require the permission specified below in 'required-permission'.
 
-    required-permission: hyskript.effect-commands
+    required-permission: skript.hyskript.effect-commands
     # The permission required to use effect commands (if allow-ops is false).
 
     token: !

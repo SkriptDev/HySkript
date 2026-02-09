@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypesEntity {
 
-    @SuppressWarnings("removal") // LivingEntity::getLegacyDisplayName
     static void register(SkriptRegistration reg) {
         reg.newType(ActiveEntityEffect.class, "activeentityeffect", "activeEntityEffect@s")
             .name("Active Entity Effect")
@@ -26,7 +26,6 @@ public class TypesEntity {
             .toStringFunction(ActiveEntityEffect::toString)
             .register();
         reg.newType(Entity.class, "entity", "entit@y@ies")
-            .toStringFunction(Entity::toString) // TODO get its name or something
             .name("Entity")
             .description("Represents any Entity in the game, including Players and NPCs.")
             .since("1.0.0")
@@ -50,18 +49,22 @@ public class TypesEntity {
                     }
                 }
             })
+            .toStringFunction(EntityUtils::getName)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(LivingEntity.class, "livingentity", "livingEntit@y@ies")
             .name("Living Entity")
             .description("Represents any living entity in the game, including players and mobs.")
             .since("1.0.0")
-            .toStringFunction(LivingEntity::getLegacyDisplayName)
+            .toStringFunction(EntityUtils::getName)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(NPCEntity.class, "npcentity", "npcEntit@y@ies")
             .name("NPC Entity")
             .description("Represents an NPC entity in the game.")
             .since("1.0.0")
             .toStringFunction(NPCRegistry::stringify)
+            .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
         reg.newType(NPCRegistry.NPCRole.class, "npcrole", "npcrole@s")
             .name("NPC Role")
@@ -70,6 +73,7 @@ public class TypesEntity {
             .usage(NPCRegistry.getTypeUsage())
             .since("1.0.0")
             .toStringFunction(NPCRegistry.NPCRole::name)
+            .toVariableNameFunction(r -> "npc_role:" + r.name().toLowerCase())
             .supplier(NPCRegistry::iterator)
             .literalParser(NPCRegistry::parse)
             .register();

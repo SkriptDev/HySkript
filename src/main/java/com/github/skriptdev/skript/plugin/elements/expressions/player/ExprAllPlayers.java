@@ -23,6 +23,7 @@ public class ExprAllPlayers implements Expression<Player> {
                 "loop all players in world of player:",
                 "loop all players:",
                 "kill all players")
+            .since("1.0.0")
             .register();
     }
 

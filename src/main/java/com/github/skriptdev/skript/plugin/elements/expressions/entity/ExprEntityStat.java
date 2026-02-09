@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -58,7 +58,7 @@ public class ExprEntityStat implements Expression<Number> {
         List<Number> values = new ArrayList<>();
 
         for (LivingEntity livingEntity : this.entities.getArray(ctx)) {
-            EntityStatMap entityStatMap = EntityComponentUtils.getEntityStatMap(livingEntity);
+            EntityStatMap entityStatMap = EntityUtils.getEntityStatMap(livingEntity);
             if (entityStatMap == null) continue;
 
             EntityStatValue entityStatValue = entityStatMap.get(statIndex);
@@ -88,7 +88,7 @@ public class ExprEntityStat implements Expression<Number> {
             newValue = 0f;
         }
         for (LivingEntity entity : this.entities.getArray(ctx)) {
-            EntityStatMap statMap = EntityComponentUtils.getEntityStatMap(entity);
+            EntityStatMap statMap = EntityUtils.getEntityStatMap(entity);
             if (statMap == null) continue;
 
             if (changeMode == ChangeMode.RESET) {
