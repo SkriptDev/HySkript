@@ -113,10 +113,11 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
                 "- Description = The description of the argument, this is show in the command GUI (optional).",
                 "",
                 "**Entries**:",
-                "- `Description` = The description for your command that will show in the commands gui (optional).",
-                "- `Permission` = The permission required to execute the command (optional).",
-                "- `Aliases` = A list of aliases for the command (optional).",
-                "- `Trigger` = The code that will be executed when the command is executed (optional).")
+                "- `description` = The description for your command that will show in the commands gui (optional).",
+                "- `permission` = The permission required to execute the command (optional).",
+                "- `can-generate-permission` = Whether the command should generate a permission based on the command name (optional, default true).",
+                "- `aliases` = A list of aliases for the command (optional).",
+                "- `trigger` = The code that will be executed when the command is executed (optional).")
             .examples("command /kill:",
                 "\tdescription: Kill all the players",
                 "\ttrigger:",
