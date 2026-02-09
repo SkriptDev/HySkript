@@ -16,8 +16,6 @@ import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import io.github.syst3ms.skriptparser.types.changers.Changer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class TypesEntity {
 
     static void register(SkriptRegistration reg) {

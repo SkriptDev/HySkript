@@ -17,7 +17,8 @@ public class TypesWorld {
             .since("1.0.0")
             .toStringFunction(worldChunk -> "chunk (x=" + worldChunk.getX() + ",z=" + worldChunk.getZ() +
                 ") in world '" + worldChunk.getWorld().getName() + "'")
-            .toVariableNameFunction(worldChunk -> "chunk:" + worldChunk.getWorld().getName() + ":" + worldChunk.getX() + ":" + worldChunk.getZ())
+            .toVariableNameFunction(worldChunk -> "chunk:" + worldChunk.getWorld().getName() +
+                ":" + worldChunk.getX() + ":" + worldChunk.getZ())
             .register();
         reg.newType(RelativeDoublePosition.class, "relativeposition", "relativePosition@s")
             .name("Relative Position")
