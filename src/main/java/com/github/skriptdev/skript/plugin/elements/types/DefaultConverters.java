@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -33,7 +33,7 @@ public class DefaultConverters {
             World world = entity.getWorld();
             if (world == null) return Optional.empty();
 
-            TransformComponent component = EntityComponentUtils.getComponent(entity, TransformComponent.getComponentType());
+            TransformComponent component = EntityUtils.getComponent(entity, TransformComponent.getComponentType());
             if (component == null) return Optional.empty();
 
             Vector3d pos = component.getPosition();
@@ -47,7 +47,7 @@ public class DefaultConverters {
             World world = entity.getWorld();
             if (world == null) return Optional.empty();
 
-            TransformComponent component = EntityComponentUtils.getComponent(entity, TransformComponent.getComponentType());
+            TransformComponent component = EntityUtils.getComponent(entity, TransformComponent.getComponentType());
             if (component == null) return Optional.empty();
 
             Vector3d pos = component.getPosition();

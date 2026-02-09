@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
@@ -26,7 +26,7 @@ public class TypesEntity {
             .toStringFunction(ActiveEntityEffect::toString)
             .register();
         reg.newType(Entity.class, "entity", "entit@y@ies")
-            .toStringFunction(EntityComponentUtils::getName)
+            .toStringFunction(EntityUtils::getName)
             .name("Entity")
             .description("Represents any Entity in the game, including Players and NPCs.")
             .since("1.0.0")
@@ -55,7 +55,7 @@ public class TypesEntity {
             .name("Living Entity")
             .description("Represents any living entity in the game, including players and mobs.")
             .since("1.0.0")
-            .toStringFunction(EntityComponentUtils::getName)
+            .toStringFunction(EntityUtils::getName)
             .register();
         reg.newType(NPCEntity.class, "npcentity", "npcEntit@y@ies")
             .name("NPC Entity")

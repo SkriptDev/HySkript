@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -27,7 +27,7 @@ public class ExprUUID extends PropertyExpression<Object, UUID> {
     public @Nullable UUID getProperty(@NotNull Object owner) {
         return switch (owner) {
             case PlayerRef playerRef -> playerRef.getUuid();
-            case Entity entity -> EntityComponentUtils.getUUID(entity);
+            case Entity entity -> EntityUtils.getUUID(entity);
             case World world -> world.getWorldConfig().getUuid();
             default -> null;
         };

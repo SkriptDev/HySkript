@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.player;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
@@ -52,7 +52,7 @@ public class ExprPlayerPermissions implements Expression<String> {
         PermissionProvider provider = PermissionsModule.get().getFirstPermissionProvider();
         for (Object o : this.permissables.getArray(ctx)) {
             if (o instanceof Player player) {
-                UUID uuid = EntityComponentUtils.getUUID(player);
+                UUID uuid = EntityUtils.getUUID(player);
                 if (uuid == null) continue;
                 permissions.addAll(provider.getUserPermissions(uuid));
             } else if (o instanceof PlayerRef playerRef) {
@@ -86,7 +86,7 @@ public class ExprPlayerPermissions implements Expression<String> {
         PermissionProvider provider = PermissionsModule.get().getFirstPermissionProvider();
         for (Object permissible : this.permissables.getArray(ctx)) {
             if (permissible instanceof Player player) {
-                UUID uuid = EntityComponentUtils.getUUID(player);
+                UUID uuid = EntityUtils.getUUID(player);
                 if (uuid == null) continue;
                 permChange(changeMode, provider, uuid, permissions);
             } else if (permissible instanceof PlayerRef playerRef) {

@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.effects.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
@@ -108,12 +108,12 @@ public class EffDropItem extends Effect {
         if (world.isInThread()) {
             world.execute(() -> {
                 for (ItemStack itemStack : itemStacks) {
-                    EntityComponentUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
+                    EntityUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
                 }
             });
         } else {
             for (ItemStack itemStack : itemStacks) {
-                EntityComponentUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
+                EntityUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
             }
         }
     }

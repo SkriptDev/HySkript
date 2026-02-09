@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -45,7 +45,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
     @Override
     public @Nullable Number getProperty(@NotNull LivingEntity entity) {
-        EntityStatMap entityStatMap = EntityComponentUtils.getEntityStatMap(entity);
+        EntityStatMap entityStatMap = EntityUtils.getEntityStatMap(entity);
         if (entityStatMap == null) return null;
         EntityStatValue health = entityStatMap.get(HEALTH_STAT_INDEX);
         if (health == null) return null;
@@ -74,7 +74,7 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
         Runnable healthRunnable = () -> {
 
-            EntityStatMap statMap = EntityComponentUtils.getEntityStatMap(entity);
+            EntityStatMap statMap = EntityUtils.getEntityStatMap(entity);
             if (statMap == null) return;
 
             if (changeMode == ChangeMode.RESET) {

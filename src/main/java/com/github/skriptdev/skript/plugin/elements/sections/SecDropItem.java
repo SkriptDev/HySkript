@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.sections;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
@@ -135,7 +135,7 @@ public class SecDropItem extends CodeSection {
         setNext(null);
 
         Runnable dropRunnable = () -> {
-            Pair<Entity, ItemComponent> pair = EntityComponentUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
+            Pair<Entity, ItemComponent> pair = EntityUtils.dropItem(store, itemStack, location, velocity, pickupDelay);
             ItemComponentContext itemContext = new ItemComponentContext(pair.getFirst(), pair.getSecond());
 
             // Copy variables from the previous context into our section context

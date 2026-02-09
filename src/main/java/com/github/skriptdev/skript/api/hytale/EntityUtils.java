@@ -10,7 +10,6 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.entity.Entity;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
@@ -31,7 +30,7 @@ import java.util.UUID;
  * Quick utility class for accessing entity components.
  */
 @SuppressWarnings("UnusedReturnValue")
-public class EntityComponentUtils {
+public class EntityUtils {
 
     /**
      * Get the UUID of an {@link Entity}
@@ -158,7 +157,7 @@ public class EntityComponentUtils {
 
         store.addEntity(itemEntityHolder, AddReason.SPAWN);
 
-        return new Pair<>(EntityUtils.getEntity(itemEntityHolder), itemComponent);
+        return new Pair<>(com.hypixel.hytale.server.core.entity.EntityUtils.getEntity(itemEntityHolder), itemComponent);
     }
 
 }

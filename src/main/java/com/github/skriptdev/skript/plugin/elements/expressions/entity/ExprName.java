@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -28,7 +28,7 @@ public class ExprName extends PropertyExpression<Object, String> {
         return switch (object) {
             case PlayerRef playerRef -> playerRef.getUsername();
             case Player player -> player.getDisplayName();
-            case Entity entity -> EntityComponentUtils.getName(entity);
+            case Entity entity -> EntityUtils.getName(entity);
             case World world -> world.getName();
             default -> null;
         };

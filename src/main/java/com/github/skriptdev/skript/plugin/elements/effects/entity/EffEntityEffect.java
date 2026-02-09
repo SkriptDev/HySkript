@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.effects.entity;
 
-import com.github.skriptdev.skript.api.hytale.EntityComponentUtils;
+import com.github.skriptdev.skript.api.hytale.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -60,7 +60,7 @@ public class EffEntityEffect extends Effect {
         int index = EntityEffect.getAssetMap().getIndex(entityEffect.getId());
 
         for (LivingEntity entity : this.entities.getArray(ctx)) {
-            EffectControllerComponent component = EntityComponentUtils.getComponent(entity, EffectControllerComponent.getComponentType());
+            EffectControllerComponent component = EntityUtils.getComponent(entity, EffectControllerComponent.getComponentType());
             if (component == null) continue;
 
             Ref<EntityStore> reference = entity.getReference();
