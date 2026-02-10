@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Builder for Script Commands.
@@ -171,14 +172,29 @@ public class ScriptCommandBuilder {
                     protected @Nullable CompletableFuture<Void> execute(@NotNull CommandContext commandContext) {
                         CompletableFuture.runAsync(() -> {
                             CommandSender sender = commandContext.sender();
-                            Player player = null;
-                            if (sender instanceof Player p) player = p;
-                            ScriptCommandContext context = new ScriptCommandContext(ScriptCommandBuilder.this.commandName,
-                                sender);
 
-                            createLocalVariables(commandContext, context);
-                            Statement.runAll(trigger, context);
-                            Variables.clearLocalVariables(context);
+                            AtomicReference<ScriptCommandContext> context = new AtomicReference<>();
+
+                            Runnable code = () -> {
+                                createLocalVariables(commandContext, context.get());
+                                Statement.runAll(trigger, context.get());
+                                Variables.clearLocalVariables(context.get());
+                            };
+
+                            if (sender instanceof Player player && player.getWorld() != null) {
+                                // If a player runs the command, run it in their world
+                                context.set(new PlayerScriptCommandContext(commandName, player));
+                                World world = player.getWorld();
+                                if (world.isInThread()) {
+                                    code.run();
+                                } else {
+                                    world.execute(code);
+                                }
+                            } else {
+                                // Otherwise run as normal
+                                context.set(new ScriptCommandContext(commandName, sender));
+                                code.run();
+                            }
                         });
                         return null;
                     }
