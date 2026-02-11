@@ -1,5 +1,8 @@
 package com.github.skriptdev.skript.api.skript.testing;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -13,9 +16,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestRunnerMain {
+
+    public static final String GREEN = "\u001B[92m";
+    public static final String LIGHT_GREY = "\u001B[37m";
+    public static final String RED = "\u001B[91m";
+    public static final String RESET = "\u001B[0m";
 
     private static String serverVersion;
     private static String assetPath;
@@ -103,7 +111,7 @@ public class TestRunnerMain {
             int exitCode = process.waitFor();
 
             // Read results written by the plugin (no Gson required).
-            Path resultsPath = Path.of("run/testServer/mods/skript_HySkript/test-results.properties");
+            Path resultsPath = Path.of("run/testServer/mods/skript_HySkript/test-results.json");
             if (!Files.exists(resultsPath)) {
                 throw new IllegalStateException(
                     "Test results file not found at " + resultsPath.toAbsolutePath() +
@@ -111,30 +119,40 @@ public class TestRunnerMain {
                 );
             }
 
-            Properties props = new Properties();
-            try (var reader = Files.newBufferedReader(resultsPath, StandardCharsets.UTF_8)) {
-                props.load(reader);
+            Gson gson = new Gson();
+            TestResults results;
+
+            try (BufferedReader reader = Files.newBufferedReader(resultsPath, StandardCharsets.UTF_8)) {
+                results = gson.fromJson(reader, TestResults.class);
+
+                System.out.println("Successfully loaded results from: " + resultsPath.getFileName());
+            } catch (Exception e) {
+                System.err.println("Could not read test results: " + e.getMessage());
+                e.printStackTrace();
+                return;
             }
 
+            AtomicInteger failureCount = new AtomicInteger();
             List<String> errors = new ArrayList<>();
-
-            props.forEach((k, value) -> {
-                String key = k.toString();
-                if (!key.equalsIgnoreCase("failure.count") && key.startsWith("failure.")) {
-                    String[] split = key.split("\\.", 2);
-                    errors.add(" - [" + split[1] + "]: " + value);
-                }
+            results.getFailureMap().forEach((test, errorList) -> {
+                failureCount.incrementAndGet();
+                errorList.forEach(error ->
+                    errors.add(" - " + RED + test + LIGHT_GREY + ": " + error + RESET));
             });
 
-            int failureCount = Integer.parseInt(props.getProperty("failure.count", "0"));
-            if (!errors.isEmpty()) {
-                System.err.println("Test failures:");
-                errors.forEach(System.err::println);
+            System.out.println("Succeeded:");
+            results.getSuccessMap().forEach((test, success) ->
+                System.out.println(" - " + GREEN + test + RESET));
+
+
+            System.out.println("Failed:");
+            if (failureCount.get() > 0) {
+                errors.forEach(System.out::println);
             } else {
-                System.out.println( "\u001B[32m" + "**All tests passed!**" + "\u001B[0m");
+                System.out.println(" - none");
             }
 
-            System.exit(failureCount);
+            System.exit(failureCount.get());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

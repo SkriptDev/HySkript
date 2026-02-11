@@ -18,7 +18,7 @@ val hytaleVersion = "2026.02.06-aa1b071c2"
 // Location of the Hytale Server Assets
 // This is used in testing
 // Change this to wherever you have it on your computer
-val assetLocation= "/Users/ShaneBee/Desktop/Server/Hytale/Assets/Assets.zip"
+val assetLocation = "/Users/ShaneBee/Desktop/Server/Hytale/Assets/Assets.zip"
 
 repositories {
     mavenCentral()
@@ -31,12 +31,18 @@ repositories {
 dependencies {
     compileOnly("com.hypixel.hytale:Server:${hytaleVersion}")
     compileOnly("org.jetbrains:annotations:26.0.2")
-    implementation("com.github.SkriptDev:skript-parser:1.0.7") {
+    implementation("com.github.SkriptDev:skript-parser:1.0.7-test") {
         isTransitive = false
     }
     implementation("com.github.Zoltus:TinyMessage:2.0.1") {
         isTransitive = false
     }
+}
+
+// This is used to enable Gson in the test environment via HytaleServer
+val testRunnerClasspath by configurations.creating {
+    extendsFrom(configurations.compileOnly.get())
+    isCanBeResolved = true
 }
 
 tasks {
@@ -50,10 +56,10 @@ tasks {
     register<JavaExec>("testRunner") {
         dependsOn("jar")
         group = "application"
-        description = "Runs the test runner"
         mainClass.set("com.github.skriptdev.skript.api.skript.testing.TestRunnerMain")
-        classpath = sourceSets["main"].runtimeClasspath
         args(hytaleVersion, assetLocation)
+
+        classpath = sourceSets["main"].runtimeClasspath + testRunnerClasspath
     }
     processResources {
         filesNotMatching("assets/**") {
