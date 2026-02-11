@@ -11,16 +11,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class TestResults {
 
     private boolean success = true;
     private int failCount = 0;
-    private final Map<String, List<String>> successMap = new HashMap<>();
-    private final Map<String, List<String>> failureMap = new HashMap<>();
+    private final Map<String, List<String>> successMap = new TreeMap<>();
+    private final Map<String, List<String>> failureMap = new TreeMap<>();
 
     public boolean isSuccess() {
         return this.success;
@@ -53,6 +53,7 @@ public class TestResults {
             // We don't care about success if other tests failed in that test
             this.successMap.remove(test);
         });
+
     }
 
     public void clear() {
