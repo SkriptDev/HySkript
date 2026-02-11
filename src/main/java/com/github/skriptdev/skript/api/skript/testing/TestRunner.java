@@ -30,7 +30,6 @@ public class TestRunner {
         Runnable runTestsRunnable = () -> {
             Utils.log("Running tests in world 'default'...");
             runTests();
-            Utils.log("Finished running tests!");
         };
         Runnable loadTestsRunnable = () -> {
             Utils.log("Loading test scripts...");
@@ -54,16 +53,19 @@ public class TestRunner {
         TestContext testContext = new TestContext(TEST_RESULTS);
         TriggerMap.callTriggersByContext(testContext);
 
+        TEST_RESULTS.process();
+
         if (TEST_RESULTS.isSuccess()) {
             Message message = TinyMsg.parse("<green>All tests passed!");
             Utils.log(MessageUtil.toAnsiString(message).toAnsi());
         } else {
-            Utils.error("Some tests failed!");
+            Utils.error(TEST_RESULTS.getFailCount() + " tests failed!");
             TEST_RESULTS.getFailureMap().forEach((test, failure) -> {
                 Utils.error(" - [" + test + "]: " + failure);
             });
         }
 
+        Utils.log("Finished running tests!");
         TEST_RESULTS.printToProperties();
         TEST_RESULTS.clear();
 

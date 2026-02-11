@@ -14,9 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestRunnerMain {
 
@@ -132,27 +129,24 @@ public class TestRunnerMain {
                 return;
             }
 
-            AtomicInteger failureCount = new AtomicInteger();
-            List<String> errors = new ArrayList<>();
-            results.getFailureMap().forEach((test, errorList) -> {
-                failureCount.incrementAndGet();
-                errorList.forEach(error ->
-                    errors.add(" - " + RED + test + LIGHT_GREY + ": " + error + RESET));
-            });
-
             System.out.println("Succeeded:");
-            results.getSuccessMap().forEach((test, success) ->
-                System.out.println(" - " + GREEN + test + RESET));
-
-
-            System.out.println("Failed:");
-            if (failureCount.get() > 0) {
-                errors.forEach(System.out::println);
+            if (!results.getSuccessMap().isEmpty()) {
+                results.getSuccessMap().forEach((test, _) ->
+                    System.out.println(" - " + GREEN + test + RESET));
             } else {
                 System.out.println(" - none");
             }
 
-            System.exit(failureCount.get());
+            System.out.println("Failed:");
+            if (results.getFailCount() > 0) {
+                results.getFailureMap().forEach((test, errorList) ->
+                    errorList.forEach(error ->
+                        System.out.println(" - " + RED + test + LIGHT_GREY + ": " + error + RESET)));
+            } else {
+                System.out.println(" - none");
+            }
+
+            System.exit(results.getFailCount());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

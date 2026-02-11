@@ -5,3 +5,5 @@ test "Basic HySkript Test":
 	spawn a sheep at {_spawn}:
 		set {_sheep} to event-spawned-entity
 		assert {_sheep} is set with "The sheep entity should be set"
+
+	assert 1 = 2 with "This should fail"

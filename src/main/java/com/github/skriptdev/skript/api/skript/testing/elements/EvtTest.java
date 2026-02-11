@@ -32,7 +32,7 @@ public class EvtTest extends SkriptEvent {
     public boolean check(TriggerContext triggerContext) {
         if (!(triggerContext instanceof TestContext context)) return false;
         context.setTestSubject(this.testSubject);
-        Utils.logColored("<light_purple>Testing: \"" + this.testSubject + "\"");
+        Utils.logColored("<light_purple>Running test: <white>'<gray>" + this.testSubject + "<white>'");
         return true;
     }
 
