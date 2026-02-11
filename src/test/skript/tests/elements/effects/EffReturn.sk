@@ -1,0 +1,8 @@
+function testFunc(s: string) :: string:
+	return "this is a test %{_s}%"
+
+test "EffReturn":
+	stop
+	# Broken function... TODO gotta check it out
+	set {_a} to testFunc("blah")
+	assert {_a} is "this is a test blah" with "The function should return the value"
