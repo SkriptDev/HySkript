@@ -23,15 +23,16 @@ import java.util.concurrent.TimeUnit;
 
 public class TestRunner {
 
-    private static final TestResults TEST_RESULTS = new TestResults();
+    private final TestResults testResults = new TestResults();
 
     @SuppressWarnings("DataFlowIssue")
-    public static void start() {
+    public void start() {
         Runnable runTestsRunnable = () -> {
             Utils.log("Running tests in world 'default'...");
             runTests();
         };
         Runnable loadTestsRunnable = () -> {
+            Utils.log("Testing has started!");
             Utils.log("Loading test scripts...");
             loadTests();
             Utils.log("Finished loading test scripts!");
@@ -41,46 +42,47 @@ public class TestRunner {
 
             world.execute(runTestsRunnable);
         };
-        HytaleServer.SCHEDULED_EXECUTOR.schedule(loadTestsRunnable, 2, TimeUnit.SECONDS);
+
+        // Delay start to make sure the server has finished loading
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(loadTestsRunnable, 1, TimeUnit.SECONDS);
     }
 
-    private static void loadTests() {
+    private void loadTests() {
         Path path = Path.of(TestProperties.TEST_SCRIPTS_FOLDER);
         loadScripts(path);
     }
 
-    private static void runTests() {
-        TestContext testContext = new TestContext(TEST_RESULTS);
+    private void runTests() {
+        TestContext testContext = new TestContext(this.testResults);
         TriggerMap.callTriggersByContext(testContext);
 
-        TEST_RESULTS.process();
+        this.testResults.process();
 
-        if (TEST_RESULTS.isSuccess()) {
+        if (this.testResults.isSuccess()) {
             Message message = TinyMsg.parse("<green>All tests passed!");
             Utils.log(MessageUtil.toAnsiString(message).toAnsi());
         } else {
-            Utils.error(TEST_RESULTS.getFailCount() + " tests failed!");
-            TEST_RESULTS.getFailureMap().forEach((test, failure) -> {
-                Utils.error(" - [" + test + "]: " + failure);
-            });
+            Utils.error(this.testResults.getFailCount() + " tests failed!");
+            this.testResults.getFailureMap().forEach((test, failure) ->
+                Utils.error(" - [" + test + "]: " + failure));
         }
 
         Utils.log("Finished running tests!");
-        TEST_RESULTS.printToProperties();
-        TEST_RESULTS.clear();
+        this.testResults.printToProperties();
+        this.testResults.clear();
 
         Runnable shutdownServer = () -> HytaleServer.get().shutdownServer();
         HytaleServer.SCHEDULED_EXECUTOR.schedule(shutdownServer, 2, TimeUnit.SECONDS);
     }
 
-    private static void loadScripts(Path directory) {
+    private void loadScripts(Path directory) {
         File scriptsDirectory = directory.toFile();
         Utils.log("Loading test directory '" + scriptsDirectory.getAbsolutePath() + "'...");
         List<String> scriptNames = loadScriptsInDirectory(scriptsDirectory);
         Utils.log("Loaded " + scriptNames.size() + " scripts!");
     }
 
-    private static List<String> loadScriptsInDirectory(File directory) {
+    private List<String> loadScriptsInDirectory(File directory) {
         if (directory == null || !directory.isDirectory()) return List.of();
 
         List<String> loadedScripts = new ArrayList<>();
@@ -104,8 +106,8 @@ public class TestRunner {
                 List<LogEntry> logEntries = ScriptLoader.loadScript(file.toPath(), false);
                 for (LogEntry logEntry : logEntries) {
                     Utils.log(null, logEntry);
-                    if (logEntry.getType()  == LogType.ERROR) {
-                        TEST_RESULTS.addFailure("Parsing Error:" + fileName,  logEntry.getMessage());
+                    if (logEntry.getType() == LogType.ERROR) {
+                        this.testResults.addFailure("Parsing Error:" + fileName, logEntry.getMessage());
                     }
                 }
                 loadedScripts.add(fileName.substring(0, fileName.length() - 3));

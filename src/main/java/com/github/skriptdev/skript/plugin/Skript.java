@@ -108,12 +108,13 @@ public class Skript extends SkriptAddon {
             Utils.debug("Hytale finished booting, starting post-load triggers...");
             // Start any post-load triggers after Hytale finishes booting.
             getAddons().forEach(SkriptAddon::finishedLoading);
-        });
 
-        // RUN TESTS
-        if (TestProperties.ENABLED) {
-            TestRunner.start();
-        }
+            // RUN TESTS
+            if (TestProperties.ENABLED) {
+                TestRunner testRunner = new TestRunner();
+                testRunner.start();
+            }
+        });
     }
 
     public void shutdown() {
