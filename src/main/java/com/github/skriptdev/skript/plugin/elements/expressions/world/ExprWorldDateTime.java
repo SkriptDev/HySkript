@@ -13,6 +13,7 @@ import io.github.syst3ms.skriptparser.util.SkriptDate;
 import io.github.syst3ms.skriptparser.util.Time;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,10 +27,13 @@ public class ExprWorldDateTime implements Expression<Object> {
         reg.newExpression(ExprWorldDateTime.class, Object.class, true,
                 "world (:time|date) (in|of) %world%")
             .name("World Date/Time")
-            .description("Get/set the date or time of a world.")
+            .description("Get/set the date or time of a world.",
+                "You can also add/remove a duration to the time/date.")
             .examples("set {_date} to world date of world of player",
                 "set {_time} to world time of world of player",
-                "set world time of world of player to 12:00 pm")
+                "set world time of world of player to 12:00 pm",
+                "add 3 hours to world time of world of player",
+                "add 1 year to world date of world of player")
             .since("INSERT VERSION")
             .register();
     }
@@ -68,6 +72,8 @@ public class ExprWorldDateTime implements Expression<Object> {
         if (mode == ChangeMode.SET) {
             if (this.isTime) return Optional.of(new Class<?>[]{Time.class});
             return Optional.of(new Class<?>[]{SkriptDate.class});
+        } else if (mode == ChangeMode.ADD || mode == ChangeMode.REMOVE) {
+            return Optional.of(new Class<?>[]{Duration.class});
         }
         return Optional.empty();
     }
@@ -84,15 +90,27 @@ public class ExprWorldDateTime implements Expression<Object> {
         WorldTimeResource worldTimeResource = store.getResource(WorldTimeResource.getResourceType());
 
 
-        if (this.isTime && changeWith[0] instanceof Time time) {
-            double dayTime = (double) time.toMillis() / 1000 / 60 / 60 / 24;
-            worldTimeResource.setDayTime(dayTime, world, store);
-        } else if (!this.isTime && changeWith[0] instanceof SkriptDate date) {
-            LocalDateTime localDateTime = date.toLocalDateTime();
-            Instant instant = Instant.ofEpochMilli(localDateTime
-                .toInstant(ZoneOffset.UTC.getRules().getOffset(localDateTime))
-                .toEpochMilli());
-            worldTimeResource.setGameTime(instant, world, store);
+        if (changeMode == ChangeMode.SET) {
+            if (this.isTime && changeWith[0] instanceof Time time) {
+                double dayTime = (double) time.toMillis() / 1000 / 60 / 60 / 24;
+                worldTimeResource.setDayTime(dayTime, world, store);
+            } else if (!this.isTime && changeWith[0] instanceof SkriptDate date) {
+                LocalDateTime localDateTime = date.toLocalDateTime();
+                Instant instant = Instant.ofEpochMilli(localDateTime
+                    .toInstant(ZoneOffset.UTC.getRules().getOffset(localDateTime))
+                    .toEpochMilli());
+                worldTimeResource.setGameTime(instant, world, store);
+            }
+        } else if (changeMode == ChangeMode.ADD || changeMode == ChangeMode.REMOVE) {
+            if (changeWith[0] instanceof Duration duration) {
+                Instant newTime;
+                if (changeMode == ChangeMode.ADD) {
+                    newTime = worldTimeResource.getGameTime().plus(duration);
+                } else {
+                    newTime = worldTimeResource.getGameTime().minus(duration);
+                }
+                worldTimeResource.setGameTime(newTime, world, store);
+            }
         }
     }
 
