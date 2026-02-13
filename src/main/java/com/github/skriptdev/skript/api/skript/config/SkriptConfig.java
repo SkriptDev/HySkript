@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -91,13 +92,31 @@ public class SkriptConfig {
         this.commandsGeneratePermissions = this.config.getBoolean("commands-generate-permissions", true);
 
         // Setup Date/Time formats
-        String time = this.config.getString("default-time-format", "HH:mm:ss");
+        String defaultTime = "HH:mm:ss";
+        String time = this.config.getString("default-time-format", defaultTime);
         if (time != null) {
-            Time.setDefaultTimeFormat(time);
+            try {
+                // Validate the pattern before using it
+                DateTimeFormatter.ofPattern(time);
+                Time.setDefaultTimeFormat(time);
+            } catch (IllegalArgumentException e) {
+                logger.error("Invalid default time format: '" + time + "' Reason: '" + e.getMessage() + "'",
+                    ErrorType.STRUCTURE_ERROR);
+                Time.setDefaultTimeFormat(defaultTime);
+            }
         }
-        String date = this.config.getString("default-date-format", "EEEE dd MMMM yyyy HH:mm:ss");
+        String defaultDate = "EEEE dd MMMM yyyy HH:mm:ss";
+        String date = this.config.getString("default-date-format", defaultDate);
         if (date != null) {
-            SkriptDate.setDefaultDateFormat(date);
+            try {
+                // Validate the pattern before using it
+                DateTimeFormatter.ofPattern(date);
+                SkriptDate.setDefaultDateFormat(date);
+            } catch (IllegalArgumentException e) {
+                logger.error("Invalid default date format: '" + date + "' Reason: '" + e.getMessage() + "'",
+                    ErrorType.STRUCTURE_ERROR);
+                SkriptDate.setDefaultDateFormat(defaultDate);
+            }
         }
 
         logger.finalizeLogs();
