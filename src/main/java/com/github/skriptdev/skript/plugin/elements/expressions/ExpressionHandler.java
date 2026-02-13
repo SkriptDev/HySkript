@@ -53,6 +53,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayer
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerRespawnLocations;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprConsole;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprChunkAtLocation;
+import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprEnvironmentAtLocation;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprRelativePositionResolve;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorld;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldOf;
@@ -128,6 +129,7 @@ public class ExpressionHandler {
 
         // WORLD
         ExprChunkAtLocation.register(registration);
+        ExprEnvironmentAtLocation.register(registration);
         ExprRelativePositionResolve.register(registration);
         ExprWorld.register(registration);
         ExprWorldDateTime.register(registration);
