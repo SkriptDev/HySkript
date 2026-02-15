@@ -6,11 +6,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.protocol.InventoryActionType;
-import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
+import com.hypixel.hytale.server.core.inventory.container.EmptyItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import io.github.syst3ms.skriptparser.types.changers.TypeSerializer;
 import org.bson.BsonDocument;
@@ -23,6 +24,29 @@ public class TypesItem {
 
     static void register(SkriptRegistration reg) {
         // Please keep in alphabetical order
+        reg.newType(Inventory.class, "inventory", "inventor@y@ies")
+            .name("Inventory")
+            .description("Represents an inventory of an entity or block.")
+            .since("1.0.0")
+            .toStringFunction(Inventory::toString)
+            .serializer(new TypeSerializer<>() {
+                @Override
+                public JsonElement serialize(@NotNull Gson gson, @NotNull Inventory value) {
+                    BsonDocument encode = Inventory.CODEC.encode(value, new ExtraInfo());
+                    return gson.fromJson(encode.toJson(), JsonElement.class);
+                }
+
+                @Override
+                public Inventory deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
+                    return Inventory.CODEC.decode(BsonDocument.parse(element.toString()), new ExtraInfo());
+                }
+            })
+            .register();
+        reg.newEnumType(InventoryActionType.class, "inventoryactiontype", "inventoryActionType@s")
+            .name("Inventory Action Type")
+            .description("Represents the types of actions that can be performed in an inventory.")
+            .since("1.0.0")
+            .register();
         reg.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
             .name("Item Component")
             .description("Represents the component of a dropped item.")
@@ -39,9 +63,12 @@ public class TypesItem {
                 @Override
                 public JsonElement serialize(@NotNull Gson gson, @NotNull ItemContainer value) {
                     BsonDocument document;
-                    if (value instanceof CombinedItemContainer cic) {
-                        document = CombinedItemContainer.CODEC.encode(cic, new ExtraInfo()).asDocument();
-                        document.put("type", new BsonString("combined"));
+                    if (value instanceof EmptyItemContainer eic) {
+                        document = CombinedItemContainer.CODEC.encode(eic, new ExtraInfo()).asDocument();
+                        document.put("type", new BsonString("empty"));
+                    } else if (value instanceof SimpleItemContainer sic) {
+                        document = CombinedItemContainer.CODEC.encode(sic, new ExtraInfo()).asDocument();
+                        document.put("type", new BsonString("simple"));
                     } else {
                         document = ItemContainer.CODEC.encode(value, new ExtraInfo()).asDocument();
                         document.put("type", new BsonString("container"));
@@ -56,12 +83,13 @@ public class TypesItem {
                     String type = parse.getString("type").getValue();
                     if (type == null) return null;
 
-                    if (type.equals("combined")) {
-                        return CombinedItemContainer.CODEC.decode(parse, new ExtraInfo());
-                    } else if (type.equals("container")) {
-                        return ItemContainer.CODEC.decode(parse, new ExtraInfo());
-                    }
-                    return null;
+                    return switch (type) {
+                        // "combined" stays as it was an old thing we used (backwards compatability)
+                        case "container", "combined" -> CombinedItemContainer.CODEC.decode(parse, new ExtraInfo());
+                        case "empty" -> EmptyItemContainer.CODEC.decode(parse, new ExtraInfo());
+                        case "simple" -> SimpleItemContainer.CODEC.decode(parse, new ExtraInfo());
+                        default -> null;
+                    };
                 }
             })
             .register();
@@ -92,34 +120,6 @@ public class TypesItem {
                     return ItemStack.CODEC.decode(BsonDocument.parse(element.toString()), new ExtraInfo());
                 }
             })
-            .register();
-        reg.newType(Inventory.class, "inventory", "inventor@y@ies")
-            .name("Inventory")
-            .description("Represents an inventory of an entity or block.")
-            .since("1.0.0")
-            .toStringFunction(Inventory::toString)
-            .serializer(new TypeSerializer<>() {
-                @Override
-                public JsonElement serialize(@NotNull Gson gson, @NotNull Inventory value) {
-                    BsonDocument encode = Inventory.CODEC.encode(value, new ExtraInfo());
-                    return gson.fromJson(encode.toJson(), JsonElement.class);
-                }
-
-                @Override
-                public Inventory deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
-                    return Inventory.CODEC.decode(BsonDocument.parse(element.toString()), new ExtraInfo());
-                }
-            })
-            .register();
-        reg.newEnumType(InventoryActionType.class, "inventoryactiontype", "inventoryActionType@s")
-            .name("Inventory Action Type")
-            .description("Represents the types of actions that can be performed in an inventory.")
-            .since("1.0.0")
-            .register();
-        reg.newEnumType(Page.class, "page", "page@s")
-            .name("Page")
-            .description("Represents a page type of an inventory.")
-            .since("INSERT VERSION")
             .register();
     }
 
