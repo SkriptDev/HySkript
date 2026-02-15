@@ -23,11 +23,13 @@ public class TestRunnerMain {
     public static final String RESET = "\u001B[0m";
 
     private static String serverVersion;
+    private static String pluginVersion;
     private static String assetPath;
 
     static void main(String[] args) {
         serverVersion = args[0];
-        assetPath = args[1];
+        pluginVersion = args[1];
+        assetPath = args[2];
 
         System.out.println("Downloading Hytale Server...");
         downloadHytaleServer();
@@ -81,8 +83,8 @@ public class TestRunnerMain {
         File file = new File("run/testServer/mods");
         file.mkdirs();
         try {
-            Files.copy(Path.of("build/libs/HySkript-1.0.0-pre-release-3.jar"),
-                Path.of("run/testServer/mods/HySkript-1.0.0-pre-release-3.jar"),
+            Files.copy(Path.of("build/libs/HySkript-" + pluginVersion + ".jar"),
+                Path.of("run/testServer/mods/HySkript-" + pluginVersion + ".jar"),
                 StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);

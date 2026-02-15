@@ -57,7 +57,7 @@ tasks {
         dependsOn("jar")
         group = "application"
         mainClass.set("com.github.skriptdev.skript.api.skript.testing.TestRunnerMain")
-        args(hytaleVersion, assetLocation)
+        args(hytaleVersion, projectVersion, assetLocation)
 
         classpath = sourceSets["main"].runtimeClasspath + testRunnerClasspath
     }
