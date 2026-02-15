@@ -33,6 +33,7 @@ public class TypesPlayer {
             .description("Represents a reference to a player in the game.")
             .since("1.0.0")
             .toStringFunction(PlayerRef::getUsername)
+            .toVariableNameFunction(playerRef -> playerRef.getUuid().toString())
             .register();
     }
 
