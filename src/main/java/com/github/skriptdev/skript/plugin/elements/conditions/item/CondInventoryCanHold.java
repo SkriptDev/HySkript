@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.conditions;
+package com.github.skriptdev.skript.plugin.elements.conditions.item;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.inventory.Inventory;

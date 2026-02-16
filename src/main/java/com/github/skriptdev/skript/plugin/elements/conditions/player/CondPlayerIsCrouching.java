@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.conditions;
+package com.github.skriptdev.skript.plugin.elements.conditions.player;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;

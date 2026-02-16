@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.conditions;
+package com.github.skriptdev.skript.plugin.elements.conditions.player;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
