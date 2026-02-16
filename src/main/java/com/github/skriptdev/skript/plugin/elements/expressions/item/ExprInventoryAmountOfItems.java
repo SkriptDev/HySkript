@@ -17,13 +17,13 @@ public class ExprInventoryAmountOfItems implements Expression<Number> {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(ExprInventoryAmountOfItems.class, Number.class, true,
-                "item amount of %items/itemstacks% in %inventory/itemcontainer%")
+                "(amount|number) of %items/itemstacks% in %inventory/itemcontainer%")
             .name("Inventory Item Count")
             .description("Get the amount of a certain Item/ItemStack in an Inventory/ItemContainer.",
                 "If you pass in an Item, it will compare the Item types of ItemStacks in the inventory.",
                 "If you pass in an ItemStack, it will direct compare that the ItemStacks are the same " +
                     "(ie: same durability, max durability, metadata, etc), excluding stack size.")
-            .examples("set {_amount} to item amount of ingredient_stick in inventory of player")
+            .examples("set {_amount} to amount of ingredient_stick in inventory of player")
             .since("INSERT VERSION")
             .register();
     }
