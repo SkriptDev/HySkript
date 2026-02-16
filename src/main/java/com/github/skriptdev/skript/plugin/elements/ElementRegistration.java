@@ -6,18 +6,16 @@ import com.github.skriptdev.skript.api.skript.testing.elements.ElementHandler;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.elements.command.ScriptCommand;
 import com.github.skriptdev.skript.plugin.elements.command.ScriptSubCommand;
-import com.github.skriptdev.skript.plugin.elements.types.DefaultComparators;
-import com.github.skriptdev.skript.plugin.elements.types.DefaultConverters;
 import com.github.skriptdev.skript.plugin.elements.conditions.ConditionHandler;
 import com.github.skriptdev.skript.plugin.elements.effects.EffectHandler;
 import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
 import com.github.skriptdev.skript.plugin.elements.expressions.ExpressionHandler;
 import com.github.skriptdev.skript.plugin.elements.functions.DefaultFunctions;
 import com.github.skriptdev.skript.plugin.elements.sections.SectionHandler;
+import com.github.skriptdev.skript.plugin.elements.types.DefaultComparators;
+import com.github.skriptdev.skript.plugin.elements.types.DefaultConverters;
 import com.github.skriptdev.skript.plugin.elements.types.Types;
 import io.github.syst3ms.skriptparser.Parser;
-import io.github.syst3ms.skriptparser.lang.Structure;
-import io.github.syst3ms.skriptparser.registration.SkriptEventInfo;
 import io.github.syst3ms.skriptparser.structures.functions.Functions;
 
 public class ElementRegistration {
@@ -77,22 +75,8 @@ public class ElementRegistration {
     private void printSyntaxCount() {
         var mainRegistration = Parser.getMainRegistration();
 
-        int structureSize = 0;
-        int eventSize = 0;
-        for (SkriptEventInfo<?> event : this.registration.getEvents()) {
-            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                structureSize++;
-            } else {
-                eventSize++;
-            }
-        }
-        for (SkriptEventInfo<?> event : mainRegistration.getEvents()) {
-            if (Structure.class.isAssignableFrom(event.getSyntaxClass())) {
-                structureSize++;
-            } else {
-                eventSize++;
-            }
-        }
+        int structureSize = this.registration.getStructures().size() + mainRegistration.getStructures().size();
+        int eventSize = this.registration.getEvents().size() + mainRegistration.getEvents().size();
         int effectSize = this.registration.getEffects().size() + mainRegistration.getEffects().size();
         int expsSize = this.registration.getExpressions().size() + mainRegistration.getExpressions().size();
         int secSize = this.registration.getSections().size() + mainRegistration.getSections().size();
