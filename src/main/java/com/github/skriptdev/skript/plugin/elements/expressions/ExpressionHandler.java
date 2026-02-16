@@ -29,6 +29,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventor
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemContainer;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStack;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStackQuantity;
+import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStackWithQuantity;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemType;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemsInInventory;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprCast;
@@ -109,6 +110,7 @@ public class ExpressionHandler {
         ExprItemsInInventory.register(registration);
         ExprItemStack.register(registration);
         ExprItemStackQuantity.register(registration);
+        ExprItemStackWithQuantity.register(registration);
         ExprItemType.register(registration);
 
         // OTHER
