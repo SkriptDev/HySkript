@@ -1,0 +1,11 @@
+test "CondEntityIsTameable":
+	set {_loc} to world spawn of event-world
+	spawn a sheep at {_loc}:
+		set {_sheep} to event-spawned-entity
+
+	assert {_sheep} is tameable with "A sheep should be tameable"
+
+	spawn a Skeleton_Knight at {_loc}:
+		set {_skel} to event-spawned-entity
+
+	assert {_skel} is not tameable with "A skeleton shouldn't be tameable"

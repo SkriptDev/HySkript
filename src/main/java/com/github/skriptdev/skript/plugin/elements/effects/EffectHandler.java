@@ -10,6 +10,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.entity.EffFreeze;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffKill;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffShoot;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffSpawnEntity;
+import com.github.skriptdev.skript.plugin.elements.effects.entity.EffTame;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffConnect;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffExecuteCommand;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendMessage;
@@ -42,6 +43,7 @@ public class EffectHandler {
         EffKill.register(registration);
         EffShoot.register(registration);
         EffSpawnEntity.register(registration);
+        EffTame.register(registration);
         EffTeleport.register(registration);
 
         // OTHER
