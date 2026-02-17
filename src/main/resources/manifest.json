@@ -14,7 +14,7 @@
     }
   ],
   "Website": "https://github.com/SkriptDev/HySkript",
-  "ServerVersion": ">=$hytaleVersion",
+  "ServerVersion": "$hytaleVersion",
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
