@@ -9,7 +9,10 @@ import com.github.skriptdev.skript.plugin.elements.conditions.entity.CondEntityI
 import com.github.skriptdev.skript.plugin.elements.conditions.entity.CondEntityIsTamed;
 import com.github.skriptdev.skript.plugin.elements.conditions.item.CondInventoryCanHold;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerHasPermission;
-import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerIsCrouching;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementCrouching;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementJumping;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementOnGround;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementCanFly;
 
 public class ConditionHandler {
 
@@ -28,7 +31,10 @@ public class ConditionHandler {
 
         // PLAYER
         CondPlayerHasPermission.register(registration);
-        CondPlayerIsCrouching.register(registration);
+        CondPlayerMovementCanFly.register(registration);
+        CondPlayerMovementCrouching.register(registration);
+        CondPlayerMovementJumping.register(registration);
+        CondPlayerMovementOnGround.register(registration);
     }
 
 }

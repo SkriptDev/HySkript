@@ -13,6 +13,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprHighest
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetBlockOfPlayer;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementBaseSpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityScale;
 import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectDuration;
@@ -59,6 +60,9 @@ import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprAllPla
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprChatMessage;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprGameMode;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerClientViewRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementJumpForce;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementMass;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementSwimJumpForce;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerPermissionGroup;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerPermissions;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerRespawnLocations;
@@ -147,6 +151,10 @@ public class ExpressionHandler {
         ExprChatMessage.register(registration);
         ExprGameMode.register(registration);
         ExprPlayerClientViewRadius.register(registration);
+        ExprPlayerMovementBaseSpeed.register(registration);
+        ExprPlayerMovementJumpForce.register(registration);
+        ExprPlayerMovementMass.register(registration);
+        ExprPlayerMovementSwimJumpForce.register(registration);
         ExprPlayerPermissionGroup.register(registration);
         ExprPlayerPermissions.register(registration);
         ExprPlayerRespawnLocations.register(registration);
