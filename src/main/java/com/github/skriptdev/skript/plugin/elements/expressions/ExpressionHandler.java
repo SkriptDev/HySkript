@@ -14,6 +14,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetB
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityScale;
 import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectDuration;
 import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffects;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHealth;
@@ -95,6 +96,7 @@ public class ExpressionHandler {
         ExprEntitiesInRadius.register(registration);
         ExprEntityHeadRotation.register(registration);
         ExprEntityHealth.register(registration);
+        ExprEntityScale.register(registration);
         ExprEntityStat.register(registration);
         ExprEntityVelocity.register(registration);
         ExprHeldItem.register(registration);
