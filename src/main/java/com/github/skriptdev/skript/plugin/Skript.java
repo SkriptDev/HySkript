@@ -11,7 +11,6 @@ import com.github.skriptdev.skript.api.skript.testing.TestRunner;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
-import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
 import com.hypixel.hytale.server.core.event.events.BootEvent;
