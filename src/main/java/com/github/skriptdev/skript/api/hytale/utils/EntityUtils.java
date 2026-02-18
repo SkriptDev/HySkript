@@ -126,18 +126,18 @@ public class EntityUtils {
      *
      * @param entity     Entity to get component from
      * @param type       Component type to get
-     * @param <ECS_TYPE> EntityStore Type
+     * @param <ECS> EntityStore Type
      * @param <T>        Type of returned component
      * @return Component from entity if available otherwise will create/add a new one
      */
     @SuppressWarnings("unchecked")
-    public static <ECS_TYPE, T extends Component<ECS_TYPE>> @NotNull T ensureAndGetComponent(Entity entity, ComponentType<ECS_TYPE, T> type) {
-        Ref<ECS_TYPE> reference = (Ref<ECS_TYPE>) entity.getReference();
+    public static <ECS, T extends Component<ECS>> @NotNull T ensureAndGetComponent(Entity entity, ComponentType<ECS, T> type) {
+        Ref<ECS> reference = (Ref<ECS>) entity.getReference();
         if (reference == null) {
             throw new IllegalStateException("Entity '" + entity + "' does not have a reference");
         }
 
-        Store<ECS_TYPE> store = reference.getStore();
+        Store<ECS> store = reference.getStore();
         return store.ensureAndGetComponent(reference, type);
     }
 
