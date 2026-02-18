@@ -60,6 +60,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprAllPla
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprChatMessage;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprGameMode;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerClientViewRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementFlySpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementJumpForce;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementMass;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementSwimJumpForce;
@@ -152,6 +153,7 @@ public class ExpressionHandler {
         ExprGameMode.register(registration);
         ExprPlayerClientViewRadius.register(registration);
         ExprPlayerMovementBaseSpeed.register(registration);
+        ExprPlayerMovementFlySpeed.register(registration);
         ExprPlayerMovementJumpForce.register(registration);
         ExprPlayerMovementMass.register(registration);
         ExprPlayerMovementSwimJumpForce.register(registration);
