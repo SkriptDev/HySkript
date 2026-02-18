@@ -32,6 +32,9 @@ This way the team can discuss with you whether or not we want this in HySkript.
 - We won't accept PRs that are just string-based changes. Your PR contribution should be code-based. (If you find a typo, report it and/or let one of the team members know.)
 - If a class seems outdated (in terms of formatting) please do not reformat the entire class for small changes (it makes PRs really difficult to read).
 - Don't break any current syntaxes (ie: removing/changing a pattern with a breaking change).
+- No chained expressions. These are really hard on the parser.
+  - Think of regular Skript and their ItemType chains
+  - Ex: `diamond sword of unbreaking 3 named "name" with lore "lore" with custom model data 1 .....`
 
 ## Code Style:
 ### Formatting:
