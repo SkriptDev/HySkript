@@ -18,6 +18,37 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypesEntity {
 
+    private static final Changer<Entity> ENTITY_CHANGER = new Changer<>() {
+        @Override
+        public Class<?>[] acceptsChange(@NotNull ChangeMode mode) {
+            if (mode == ChangeMode.DELETE) return new Class<?>[] {Entity.class};
+            return null;
+        }
+
+        @Override
+        public void change(Entity @NotNull [] toChange, Object @NotNull [] changeWith, @NotNull ChangeMode mode) {
+            if (mode != ChangeMode.DELETE) return;
+            for (Entity entity : toChange) {
+                // Don't allow deleting players
+                if (entity instanceof Player) continue;
+
+                Ref<EntityStore> ref = entity.getReference();
+                if (ref == null) continue;
+
+                World world = entity.getWorld();
+                if (world == null) continue;
+
+                Runnable run = () -> world.getEntityStore().getStore().removeEntity(ref, RemoveReason.REMOVE);
+                // Ensure run on the correct thread
+                if (world.isInThread()) {
+                    run.run();
+                } else {
+                    world.execute(run);
+                }
+            }
+        }
+    };
+
     static void register(SkriptRegistration reg) {
         reg.newType(ActiveEntityEffect.class, "activeentityeffect", "activeEntityEffect@s")
             .name("Active Entity Effect")
@@ -29,26 +60,7 @@ public class TypesEntity {
             .name("Entity")
             .description("Represents any Entity in the game, including Players and NPCs.")
             .since("1.0.0")
-            .defaultChanger(new Changer<>() {
-                @Override
-                public Class<?>[] acceptsChange(@NotNull ChangeMode mode) {
-                    if (mode == ChangeMode.DELETE) return new Class<?>[] {Entity.class};
-                    return null;
-                }
-
-                @Override
-                public void change(Entity @NotNull [] toChange, Object @NotNull [] changeWith, @NotNull ChangeMode mode) {
-                    if (mode != ChangeMode.DELETE) return;
-                    for (Entity entity : toChange) {
-                        if (entity instanceof Player) continue;
-                        Ref<EntityStore> reference = entity.getReference();
-                        if (reference == null) continue;
-                        World world = entity.getWorld();
-                        if (world == null) continue;
-                        world.getEntityStore().getStore().removeEntity(reference, RemoveReason.REMOVE);
-                    }
-                }
-            })
+            .defaultChanger(ENTITY_CHANGER)
             .toStringFunction(EntityUtils::getName)
             .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
@@ -56,6 +68,7 @@ public class TypesEntity {
             .name("Living Entity")
             .description("Represents any living entity in the game, including players and mobs.")
             .since("1.0.0")
+            .defaultChanger(ENTITY_CHANGER)
             .toStringFunction(EntityUtils::getName)
             .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
@@ -63,6 +76,7 @@ public class TypesEntity {
             .name("NPC Entity")
             .description("Represents an NPC entity in the game.")
             .since("1.0.0")
+            .defaultChanger(ENTITY_CHANGER)
             .toStringFunction(NPCRegistry::stringify)
             .toVariableNameFunction(EntityUtils::getVariableName)
             .register();
