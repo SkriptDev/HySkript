@@ -9,15 +9,15 @@ import io.github.syst3ms.skriptparser.lang.properties.ConditionalType;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyConditional;
 import org.jetbrains.annotations.NotNull;
 
-public class CondPlayerMovementJumping extends PropertyConditional<Player> {
+public class CondPlayerMovementWalking extends PropertyConditional<Player> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newPropertyConditional(CondPlayerMovementJumping.class,
-                "players", ConditionalType.BE, "jumping")
-            .name("Player Movement - Jumping")
-            .description("Checks if the player is jumping.")
-            .examples("if player is jumping:",
-                "\tmessage \"You are jumping!\"")
+        reg.newPropertyConditional(CondPlayerMovementWalking.class,
+                "players", ConditionalType.BE, "walking")
+            .name("Player Movement - Walking")
+            .description("Checks if the player is walking.")
+            .examples("if player is walking:",
+                "\tmessage \"You are walking!\"")
             .since("INSERT VERSION")
             .register();
     }
@@ -28,7 +28,7 @@ public class CondPlayerMovementJumping extends PropertyConditional<Player> {
             MovementStatesComponent component = EntityUtils.getMovementStatesComponent(player);
 
             assert component != null;
-            return component.getMovementStates().jumping;
+            return component.getMovementStates().walking;
         }, isNegated());
     }
 

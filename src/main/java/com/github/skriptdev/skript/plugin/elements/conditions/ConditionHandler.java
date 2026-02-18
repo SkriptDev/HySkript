@@ -10,13 +10,24 @@ import com.github.skriptdev.skript.plugin.elements.conditions.entity.CondEntityI
 import com.github.skriptdev.skript.plugin.elements.conditions.item.CondInventoryCanHold;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerHasPermission;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementCrouching;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementFalling;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementFlying;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementIdle;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementJumping;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementOnGround;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementCanFly;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementRunning;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementSitting;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementSleeping;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementSprinting;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementSwimming;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementWalking;
 
 public class ConditionHandler {
 
     public static void register(SkriptRegistration registration) {
+        // Please keep in alphabetical order
+
         // BLOCK
         CondBlockIsSolid.register(registration);
 
@@ -33,8 +44,17 @@ public class ConditionHandler {
         CondPlayerHasPermission.register(registration);
         CondPlayerMovementCanFly.register(registration);
         CondPlayerMovementCrouching.register(registration);
+        CondPlayerMovementFalling.register(registration);
+        CondPlayerMovementFlying.register(registration);
+        CondPlayerMovementIdle.register(registration);
         CondPlayerMovementJumping.register(registration);
         CondPlayerMovementOnGround.register(registration);
+        CondPlayerMovementRunning.register(registration);
+        CondPlayerMovementSitting.register(registration);
+        CondPlayerMovementSleeping.register(registration);
+        CondPlayerMovementSprinting.register(registration);
+        CondPlayerMovementSwimming.register(registration);
+        CondPlayerMovementWalking.register(registration);
     }
 
 }
