@@ -33,6 +33,7 @@ import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerUseBlo
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtBoot;
 import com.github.skriptdev.skript.plugin.elements.events.server.EvtShutdown;
 import com.github.skriptdev.skript.plugin.elements.events.skript.EvtLoad;
+import com.github.skriptdev.skript.plugin.elements.events.world.EvtAtWorldTime;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -74,6 +75,9 @@ public class EventHandler {
 
         // SKRIPT
         EvtLoad.register(registration);
+
+        // WORLD
+        EvtAtWorldTime.register(registration);
 
         // CONTEXT
         registerGlobalContexts(registration);
