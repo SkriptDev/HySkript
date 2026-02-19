@@ -45,6 +45,26 @@ public class PlayerUtils {
     }
 
     /**
+     * Get all PlayerRefs in a specific world or all worlds.
+     *
+     * @param world World to get PlayerRefs from (can be null to get PlayerRefs from all worlds)
+     * @return List of PlayerRefs
+     */
+    public static List<PlayerRef> getPlayerRefs(@Nullable World world) {
+        if (world != null) {
+            if (!world.isInThread()) {
+                return !world.isStarted() ? List.of() : CompletableFuture.supplyAsync(() -> getPlayerRefs(world), world).join();
+            } else {
+                return new ArrayList<>(world.getPlayerRefs());
+            }
+        } else {
+            List<PlayerRef> players = new ArrayList<>();
+            Universe.get().getWorlds().forEach((s, world1) -> players.addAll(getPlayerRefs(world1)));
+            return players;
+        }
+    }
+
+    /**
      * Get a PlayerRef from a Player.
      *
      * @param player Player to get PlayerRef from
