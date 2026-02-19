@@ -38,10 +38,10 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
             .register();
 
         reg.newSingleContextValue(PlayerPickupItemContext.class, ItemStack.class,
-            "itemstack", PlayerPickupItemContext::getItemStack)
+                "itemstack", PlayerPickupItemContext::getItemStack)
             .register();
         reg.newSingleContextValue(PlayerPickupItemContext.class, Item.class,
-            "item", PlayerPickupItemContext::getItem)
+                "item", PlayerPickupItemContext::getItem)
             .register();
     }
 
@@ -94,7 +94,9 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
         }
 
         @Override
-        public void onEntityRemoved(@NotNull Holder<EntityStore> holder, @NotNull RemoveReason removeReason, @NotNull Store<EntityStore> store) {
+        public void onEntityRemoved(@NotNull Holder<EntityStore> holder,
+                                    @NotNull RemoveReason removeReason,
+                                    @NotNull Store<EntityStore> store) {
             ItemComponent component = holder.getComponent(ItemComponent.getComponentType());
             if (component == null || !component.isRemovedByPlayerPickup()) return;
 
