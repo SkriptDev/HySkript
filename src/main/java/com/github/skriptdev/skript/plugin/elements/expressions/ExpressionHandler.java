@@ -15,6 +15,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActive
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityComponents;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStamina;
+import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemQuality;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerDefenseLevel;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementBaseSpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
@@ -125,6 +126,7 @@ public class ExpressionHandler {
         ExprInventorySlot.register(registration);
         ExprInventorySlots.register(registration);
         ExprItemContainer.register(registration);
+        ExprItemQuality.register(registration);
         ExprItemsInInventory.register(registration);
         ExprItemStack.register(registration);
         ExprItemStackName.register(registration);

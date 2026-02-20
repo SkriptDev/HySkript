@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.asset.type.item.config.BlockGroup;
 import com.hypixel.hytale.server.core.asset.type.item.config.CraftingRecipe;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.item.config.ItemQuality;
 import com.hypixel.hytale.server.core.asset.type.item.config.ResourceType;
 import com.hypixel.hytale.server.core.asset.type.projectile.config.Projectile;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -116,6 +117,13 @@ public class TypesAssetStore {
                     return Item.CODEC.decode(BsonDocument.parse(element.toString()), new ExtraInfo());
                 }
             })
+            .register();
+        reg.newAssetStoreType(ItemQuality.class, ItemQuality.getAssetMap(),
+                "itemquality", "itemQuality@s")
+            .name("Item Quality")
+            .description("Represents the quality of items in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(ItemQuality::getId)
             .register();
         reg.newAssetStoreType(Projectile.class, Projectile.getAssetMap(), "projectile", "projectile@s")
             .name("Projectile")
