@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
+import com.github.skriptdev.skript.api.skript.event.LocationContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.SystemEvent;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
@@ -10,11 +11,13 @@ import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.HolderSystem;
+import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.PickupItemComponent;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
@@ -66,7 +69,8 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
         return "player pickup item";
     }
 
-    private record PlayerPickupItemContext(ItemComponent itemComponent, Player player) implements PlayerContext {
+    private record PlayerPickupItemContext(ItemComponent itemComponent, PickupItemComponent pickupComponent, Player player)
+        implements PlayerContext, LocationContext {
 
         @Override
         public Player getPlayer() {
@@ -82,9 +86,17 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
         }
 
         @Override
+        public Location getLocation() {
+            World world = this.player.getWorld();
+            assert world != null;
+            return new Location(world.getName(), this.pickupComponent.getStartPosition());
+        }
+
+        @Override
         public String getName() {
             return "player pickup item context";
         }
+
     }
 
     public static class PlayerPickupItemSystem extends HolderSystem<EntityStore> {
@@ -109,7 +121,7 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
             Player player = store.getComponent(targetRef, Player.getComponentType());
             if (player == null) return;
 
-            TriggerMap.callTriggersByContext(new PlayerPickupItemContext(component, player));
+            TriggerMap.callTriggersByContext(new PlayerPickupItemContext(component, pickupComp, player));
         }
 
         @Override
