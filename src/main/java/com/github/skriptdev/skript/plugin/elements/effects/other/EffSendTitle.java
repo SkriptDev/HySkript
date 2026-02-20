@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 public class EffSendTitle extends Effect {
 
     public static void register(SkriptRegistration reg) {
-        reg.newEffect(EffSendTitle.class, "send [:major] title %string/message% to %players/playerrefs/worlds%",
-                "send [:major] title %string/message% with (subtitle|secondary title) %string/message% to %players/playerrefs/worlds%")
+        reg.newEffect(EffSendTitle.class, "send [:major] title %message/string% to %players/playerrefs/worlds%",
+                "send [:major] title %message/string% with (subtitle|secondary title) %message/string% to %players/playerrefs/worlds%")
             .name("Send Title")
             .description("Sends a title to players/worlds with an optional subtitle.",
-                    "The title can be major or minor, depending on the syntax used.",
-                "Not sure what `major` is for, it doesn't seem to do anything different.")
+                "The title can be major or minor, depending on the syntax used.",
+                "A major title has a little bit bigger frame.")
             .examples("send major title \"Hello World!\" to player")
             .since("1.0.0")
             .register();
