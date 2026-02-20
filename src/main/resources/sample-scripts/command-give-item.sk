@@ -1,0 +1,15 @@
+# GIVE ITEM
+# A simple command to give a player an item
+
+# Command Options:
+# /give ingredient_stick
+# /give ingredient_stick 3
+
+player command /give <item:item:"An item to give to yourself"> [<amount:integer:"Amount of item">]:
+	trigger:
+		# Set the default amount to 1 if not already set
+		set {_amount} to {_amount} ? 1
+
+		# Give a new ItemStack to the player
+		add itemstack of {_amount} of {_item} to inventory of player
+		send "You gave yourself %{_amount}% of %{_item}%" to player
