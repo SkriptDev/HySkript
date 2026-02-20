@@ -13,6 +13,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprHighest
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetBlockOfPlayer;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityComponents;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStamina;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerDefenseLevel;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementBaseSpeed;
@@ -101,6 +102,7 @@ public class ExpressionHandler {
         // ENTITY
         ExprActiveSlot.register(registration);
         ExprEntitiesInRadius.register(registration);
+        ExprEntityComponents.register(registration);
         ExprEntityHeadRotation.register(registration);
         ExprEntityHealth.register(registration);
         ExprEntityScale.register(registration);
