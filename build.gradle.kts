@@ -9,11 +9,16 @@ java.sourceCompatibility = JavaVersion.VERSION_25
 
 group = "com.github.SkriptDev"
 val projectVersion = "1.0.0"
-val hytaleVersion = "2026.02.06-aa1b071c2"
+val hytaleVersion = "2026.02.19-1a311a592"
 // You can find Hytale versions on their maven repo:
 // https://maven.hytale.com/release/com/hypixel/hytale/Server/maven-metadata.xml
 // https://maven.hytale.com/pre-release/com/hypixel/hytale/Server/maven-metadata.xml
 // (Pre-releases shouldn't be used for production)
+
+// Location of the Hytale Server Assets
+// This is used in testing
+// Change this to wherever you have it on your computer
+val assetLocation = "/Users/ShaneBee/Desktop/Server/Hytale/Assets/Assets.zip"
 
 repositories {
     mavenCentral()
@@ -26,12 +31,18 @@ repositories {
 dependencies {
     compileOnly("com.hypixel.hytale:Server:${hytaleVersion}")
     compileOnly("org.jetbrains:annotations:26.0.2")
-    implementation("com.github.SkriptDev:skript-parser:1.0.8") {
+    implementation("com.github.SkriptDev:skript-parser:1.0.9") {
         isTransitive = false
     }
     implementation("com.github.Zoltus:TinyMessage:2.0.1") {
         isTransitive = false
     }
+}
+
+// This is used to enable Gson in the test environment via HytaleServer
+val testRunnerClasspath by configurations.creating {
+    extendsFrom(configurations.compileOnly.get())
+    isCanBeResolved = true
 }
 
 tasks {
@@ -41,6 +52,14 @@ tasks {
             include("HySkript-*.jar")
             destinationDir = file("/Users/ShaneBee/Desktop/Server/Hytale/Creative/mods/")
         }
+    }
+    register<JavaExec>("testRunner") {
+        dependsOn("jar")
+        group = "application"
+        mainClass.set("com.github.skriptdev.skript.api.skript.testing.TestRunnerMain")
+        args(hytaleVersion, projectVersion, assetLocation)
+
+        classpath = sourceSets["main"].runtimeClasspath + testRunnerClasspath
     }
     processResources {
         filesNotMatching("assets/**") {
@@ -71,7 +90,8 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
         exclude(
             "com/github/skriptdev/skript/plugin/elements",
-            "com/github/skriptdev/skript/plugin/command"
+            "com/github/skriptdev/skript/plugin/command",
+            "com/github/skriptdev/skript/api/skript/testing/elements"
         )
         (options as StandardJavadocDocletOptions).links(
             "https://javadoc.io/doc/org.jetbrains/annotations/latest/",

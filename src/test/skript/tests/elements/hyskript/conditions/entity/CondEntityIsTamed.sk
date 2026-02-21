@@ -1,0 +1,12 @@
+test "CondEntityIsTamed":
+	set {_loc} to world spawn of event-world
+	spawn a sheep at {_loc}:
+		set {_sheep} to event-spawned-entity
+
+	assert {_sheep} is not tamed with "The sheep shouldn't be tamed"
+
+	spawn a tamed_sheep at {_loc}:
+		set {_sheep} to event-spawned-entity
+
+	assert {_sheep} is tamed with "The sheep should be tamed"
+

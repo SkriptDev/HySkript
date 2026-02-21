@@ -1,0 +1,9 @@
+test "EffTame":
+	set {_loc} to world spawn of event-world
+	spawn a sheep at {_loc}:
+		set {_e} to event-spawned-entity
+		tame {_e}
+
+	wait 5 tick
+	# assert {_e} is tamed with "The sheep should be tamed now, but found '%npc role of {_e}%'"
+	# TODO broken, chunk loading issue

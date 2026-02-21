@@ -1,5 +1,7 @@
 package com.github.skriptdev.skript.api.hytale.utils;
 
+import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
+import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
@@ -20,6 +22,9 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatsModule;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.Role;
+import com.hypixel.hytale.server.npc.systems.RoleChangeSystem;
 import io.github.syst3ms.skriptparser.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -99,7 +104,7 @@ public class EntityUtils {
     }
 
     /**
-     * Get a component from an Entity
+     * Get a component from an Entity.
      *
      * @param entity     Entity to get component from
      * @param type       Component type to get
@@ -114,6 +119,61 @@ public class EntityUtils {
 
         Store<ECS_TYPE> store = reference.getStore();
         return store.getComponent(reference, type);
+    }
+
+    /**
+     * Get a component from an Entity or create it if not present.
+     *
+     * @param entity Entity to get component from
+     * @param type   Component type to get
+     * @param <ECS>  EntityStore Type
+     * @param <T>    Type of returned component
+     * @return Component from entity if available otherwise will create/add a new one
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> @NotNull T ensureAndGetComponent(Entity entity, ComponentType<ECS, T> type) {
+        Ref<ECS> reference = (Ref<ECS>) entity.getReference();
+        if (reference == null) {
+            throw new IllegalStateException("Entity '" + entity + "' does not have a reference");
+        }
+
+        Store<ECS> store = reference.getStore();
+        return store.ensureAndGetComponent(reference, type);
+    }
+
+    /**
+     * Put a component on an Entity.
+     *
+     * @param entity    Entity to add component to
+     * @param type      Type of component to add
+     * @param component Component to add
+     * @param <ECS>     EntityStore Type
+     * @param <T>       Type of component
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> void putComponent(Entity entity, ComponentType<ECS, T> type, Component<ECS> component) {
+        Ref<ECS> reference = (Ref<ECS>) entity.getReference();
+        if (reference == null) {
+            throw new IllegalStateException("Entity '" + entity + "' does not have a reference");
+        }
+        reference.getStore().addComponent(reference, type, (T) component);
+    }
+
+    /**
+     * Try to remove a component from an Entity.
+     *
+     * @param entity Entity to remove component from
+     * @param type   Type of component to remove
+     * @param <ECS>  Store type
+     * @param <T>    Component type
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> void tryRemoveComponent(Entity entity, ComponentType<ECS, T> type) {
+        Ref<ECS> reference = (Ref<ECS>) entity.getReference();
+        if (reference == null) {
+            throw new IllegalStateException("Entity '" + entity + "' does not have a reference");
+        }
+        reference.getStore().tryRemoveComponent(reference, type);
     }
 
     /**
@@ -171,6 +231,56 @@ public class EntityUtils {
         store.addEntity(itemEntityHolder, AddReason.SPAWN);
 
         return new Pair<>(com.hypixel.hytale.server.core.entity.EntityUtils.getEntity(itemEntityHolder), itemComponent);
+    }
+
+    public static boolean isTameable(NPCEntity npcEntity) {
+        Role role = npcEntity.getRole();
+        if (role == null) return false;
+
+        String roleName = role.getRoleName();
+        if (roleName.contains("Tamed_")) {
+            return true;
+        }
+        // I know this is hacky, but Hytale doesn't have any API for taming
+        // Maybe we'll get lucky and Hytale will create API for this
+        NPCRegistry.NPCRole parse = NPCRegistry.parse("tamed_" + roleName);
+        return parse != null;
+    }
+
+    public static boolean isTamed(NPCEntity npcEntity) {
+        Role role = npcEntity.getRole();
+        if (role == null) return false;
+
+        // I know this is hacky, but Hytale doesn't have any API for taming
+        // Maybe we'll get lucky and Hytale will create API for this
+        String roleName = role.getRoleName();
+        return roleName.startsWith("Tamed_");
+    }
+
+    public static void setTamed(NPCEntity npcEntity, boolean tamed) {
+        if (!isTameable(npcEntity)) {
+            return;
+        }
+        if ((tamed && isTamed(npcEntity)) || (!tamed && !isTamed(npcEntity))) {
+            return;
+        }
+        Ref<EntityStore> reference = npcEntity.getReference();
+        if (reference == null) return;
+
+        Store<EntityStore> store = reference.getStore();
+
+        // I know this is hacky, but Hytale doesn't have any API for taming
+        // Maybe we'll get lucky and Hytale will create API for this
+        Role currentRole = npcEntity.getRole();
+        if (currentRole == null || currentRole.isRoleChangeRequested()) return;
+
+        String roleName = currentRole.getRoleName();
+        roleName = tamed ? "Tamed_" + roleName : roleName.replace("Tamed_", "");
+
+        NPCRegistry.NPCRole parse = NPCRegistry.parse(roleName);
+
+        Utils.log("Changing role to %s", parse.name());
+        RoleChangeSystem.requestRoleChange(reference, currentRole, parse.index(), true, store);
     }
 
 }

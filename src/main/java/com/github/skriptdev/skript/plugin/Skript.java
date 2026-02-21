@@ -6,10 +6,11 @@ import com.github.skriptdev.skript.api.skript.addon.AddonLoader;
 import com.github.skriptdev.skript.api.skript.command.ArgUtils;
 import com.github.skriptdev.skript.api.skript.config.SkriptConfig;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.api.skript.testing.TestProperties;
+import com.github.skriptdev.skript.api.skript.testing.TestRunner;
 import com.github.skriptdev.skript.api.skript.variables.JsonVariableStorage;
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
-import com.github.skriptdev.skript.plugin.command.EffectCommands;
 import com.github.skriptdev.skript.plugin.elements.ElementRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.EventHandler;
 import com.hypixel.hytale.server.core.event.events.BootEvent;
@@ -78,10 +79,6 @@ public class Skript extends SkriptAddon {
         Utils.debug("Registering elements...");
         this.elementRegistration.registerElements();
 
-        // SETUP EFFECT COMMANDS
-        Utils.debug("Setting up effect commands...");
-        setupEffectCommands();
-
         // FINISH SETUP
         long fin = System.currentTimeMillis() - start;
         Utils.log("HySkript setup completed in %sms!", fin);
@@ -106,6 +103,12 @@ public class Skript extends SkriptAddon {
             Utils.debug("Hytale finished booting, starting post-load triggers...");
             // Start any post-load triggers after Hytale finishes booting.
             getAddons().forEach(SkriptAddon::finishedLoading);
+
+            // RUN TESTS
+            if (TestProperties.ENABLED) {
+                TestRunner testRunner = new TestRunner();
+                testRunner.start();
+            }
         });
     }
 
@@ -123,20 +126,6 @@ public class Skript extends SkriptAddon {
 
         // SHUTDOWN ADDONS
         this.addonLoader.shutdownAddons();
-    }
-
-    private void setupEffectCommands() {
-        ConfigSection effectCommandSection = this.skriptConfig.getEffectCommands();
-        if (effectCommandSection != null) {
-            if (effectCommandSection.getBoolean("enabled")) {
-                EffectCommands.register(this,
-                    effectCommandSection.getString("token"),
-                    effectCommandSection.getBoolean("allow-ops"),
-                    effectCommandSection.getString("required-permission"));
-            }
-        } else {
-            Utils.debug("Effect commands section is missing in config.sk");
-        }
     }
 
     private void loadVariables() {
@@ -189,7 +178,7 @@ public class Skript extends SkriptAddon {
      *
      * @return The Skript registration.
      */
-    public @NotNull io.github.syst3ms.skriptparser.registration.SkriptRegistration getSkriptRegistration() {
+    public @NotNull SkriptRegistration getSkriptRegistration() {
         return this.registration;
     }
 

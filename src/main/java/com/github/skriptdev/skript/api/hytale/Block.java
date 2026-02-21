@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.api.hytale;
 
-import com.github.skriptdev.skript.api.utils.Utils;
+import com.github.skriptdev.skript.api.hytale.utils.StoreUtils;
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
@@ -8,14 +9,25 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
+import com.hypixel.hytale.server.core.entity.LivingEntity;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.blockhealth.BlockHealth;
+import com.hypixel.hytale.server.core.modules.blockhealth.BlockHealthChunk;
+import com.hypixel.hytale.server.core.modules.blockhealth.BlockHealthModule;
+import com.hypixel.hytale.server.core.modules.interaction.BlockHarvestUtils;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.ChunkColumn;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Represents a block in a world.
@@ -137,7 +149,6 @@ public class Block {
                     if (fluidLevel <= 0) fluidLevel = (byte) fluid.getMaxFluidLevel();
                 }
                 fluidLevel = (byte) Math.clamp((int) fluidLevel, 0, fluid.getMaxFluidLevel());
-                Utils.log("Set fluid level to %s", fluidLevel);
                 fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, fluidLevel);
             }
             return chunk;
@@ -146,6 +157,75 @@ public class Block {
 
     public void breakBlock(int settings) {
         this.world.breakBlock(this.pos.getX(), this.pos.getY(), this.pos.getZ(), settings);
+    }
+
+    public void damage(@Nullable LivingEntity performer, @Nullable ItemStack itemStack, float damage) {
+        WorldChunk chunk = this.world.getChunk(ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ()));
+        if (chunk == null) return;
+
+        Ref<ChunkStore> ref = chunk.getReference();
+        Store<ChunkStore> chunkStore = this.world.getChunkStore().getStore();
+        CommandBuffer<EntityStore> commandBuffer = StoreUtils.getCommandBuffer(this.world.getEntityStore().getStore());
+
+        if (performer == null) {
+            BlockHarvestUtils.performBlockDamage(
+                this.pos,
+                null,
+                null,
+                damage,
+                0,
+                ref,
+                commandBuffer,
+                chunkStore);
+        } else {
+            BlockHarvestUtils.performBlockDamage(
+                performer,
+                performer.getReference(),
+                this.pos,
+                itemStack,
+                null,
+                null, // TODO figure out how to get this
+                false,
+                damage,
+                0,
+                ref,
+                commandBuffer,
+                chunkStore);
+        }
+    }
+
+    public float getBlockHealth() {
+        WorldChunk chunk = this.world.getChunk(ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ()));
+        if (chunk == null) return 0;
+
+        Ref<ChunkStore> ref = chunk.getReference();
+        Store<ChunkStore> chunkStore = this.world.getChunkStore().getStore();
+
+        BlockHealthChunk component = chunkStore.getComponent(ref, BlockHealthModule.get().getBlockHealthChunkComponentType());
+        if (component == null) return 0;
+
+        return component.getBlockHealth(this.pos);
+    }
+
+    public void setBlockHealth(float health) {
+        WorldChunk chunk = this.world.getChunk(ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ()));
+        if (chunk == null) return;
+
+        Ref<ChunkStore> ref = chunk.getReference();
+        Store<ChunkStore> chunkStore = this.world.getChunkStore().getStore();
+        BlockHealthChunk component = chunkStore.getComponent(ref, BlockHealthModule.get().getBlockHealthChunkComponentType());
+        if (component == null) return;
+
+        Map<Vector3i, BlockHealth> blockHealthMap = component.getBlockHealthMap();
+        BlockHealth blockHealth = blockHealthMap.getOrDefault(this.pos, new BlockHealth());
+        blockHealth.setHealth(health);
+        blockHealthMap.put(this.pos, blockHealth);
+
+        if (!blockHealth.isDestroyed()) {
+            Predicate<PlayerRef> filter = (player) -> true;
+            world.getNotificationHandler().updateBlockDamage(this.pos.getX(), this.pos.getY(),
+                this.pos.getZ(), blockHealth.getHealth(), health, filter);
+        }
     }
 
     public @NotNull World getWorld() {

@@ -1,0 +1,14 @@
+# JOIN WELCOME/KIT
+# A simple welcome message and kit for newbies
+
+on player ready:
+	if player has played before:
+		send title "Welcome back %name of player%" to player
+	else:
+		send title "Welcome %name of player%" with secondary title "Our server is awesome!" to player
+		set {_i::1} to itemstack of 10 of food_kebab_meat
+		set {_i::2} to itemstack of tool_hatchet_crude
+		set {_i::3} to itemstack of weapon_daggers_crude
+		set {_i::4} to itemstack of furniture_crude_bed
+
+		add {_i::*} to inventory of player

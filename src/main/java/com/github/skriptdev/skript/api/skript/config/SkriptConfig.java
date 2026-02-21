@@ -8,6 +8,8 @@ import io.github.syst3ms.skriptparser.config.Config.ConfigSection;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.log.LogEntry;
 import io.github.syst3ms.skriptparser.log.SkriptLogger;
+import io.github.syst3ms.skriptparser.util.SkriptDate;
+import io.github.syst3ms.skriptparser.util.Time;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -18,13 +20,14 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Config for Skript
+ * Config for HySkript
  */
 public class SkriptConfig {
 
@@ -87,6 +90,34 @@ public class SkriptConfig {
 
         // Set up commands generate permissions
         this.commandsGeneratePermissions = this.config.getBoolean("commands-generate-permissions", true);
+
+        // Setup Date/Time formats
+        String defaultTime = "HH:mm:ss";
+        String time = this.config.getString("default-time-format", defaultTime);
+        if (time != null) {
+            try {
+                // Validate the pattern before using it
+                DateTimeFormatter.ofPattern(time);
+                Time.setDefaultTimeFormat(time);
+            } catch (IllegalArgumentException e) {
+                logger.error("Invalid default time format: '" + time + "' Reason: '" + e.getMessage() + "'",
+                    ErrorType.STRUCTURE_ERROR);
+                Time.setDefaultTimeFormat(defaultTime);
+            }
+        }
+        String defaultDate = "EEEE dd MMMM yyyy HH:mm:ss";
+        String date = this.config.getString("default-date-format", defaultDate);
+        if (date != null) {
+            try {
+                // Validate the pattern before using it
+                DateTimeFormatter.ofPattern(date);
+                SkriptDate.setDefaultDateFormat(date);
+            } catch (IllegalArgumentException e) {
+                logger.error("Invalid default date format: '" + date + "' Reason: '" + e.getMessage() + "'",
+                    ErrorType.STRUCTURE_ERROR);
+                SkriptDate.setDefaultDateFormat(defaultDate);
+            }
+        }
 
         logger.finalizeLogs();
         for (LogEntry logEntry : logger.close()) {

@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.asset.type.item.config.BlockGroup;
 import com.hypixel.hytale.server.core.asset.type.item.config.CraftingRecipe;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.item.config.ItemQuality;
 import com.hypixel.hytale.server.core.asset.type.item.config.ResourceType;
 import com.hypixel.hytale.server.core.asset.type.projectile.config.Projectile;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -117,12 +118,26 @@ public class TypesAssetStore {
                 }
             })
             .register();
+        reg.newAssetStoreType(ItemQuality.class, ItemQuality.getAssetMap(),
+                "itemquality", "itemQuality@s")
+            .name("Item Quality")
+            .description("Represents the quality of items in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(ItemQuality::getId)
+            .register();
         reg.newAssetStoreType(Projectile.class, Projectile.getAssetMap(), "projectile", "projectile@s")
             .name("Projectile")
             .description("Represents the types of projectiles in the game.")
             .since("1.0.0")
             .toStringFunction(Projectile::getId)
             .register();
+//        reg.newAssetStoreType(ProjectileConfig.class, ProjectileConfig.getAssetMap(),
+//                "projectileconfig", "projectileConfig@s")
+//            .name("Projectile Config")
+//            .description("")
+//            .since("INSERT VERSION")
+//            .toStringFunction(ProjectileConfig::getId)
+//            .register();
         reg.newAssetStoreType(ResourceType.class, ResourceType.getAssetMap(), "resourcetype", "resourceType@s")
             .name("Resource Type")
             .description("Represents the types of resources in the game, such as woods and stones.")

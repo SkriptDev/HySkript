@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.conditions;
+package com.github.skriptdev.skript.plugin.elements.conditions.player;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class CondHasPermission extends ConditionalExpression {
+public class CondPlayerHasPermission extends ConditionalExpression {
 
     public static void register(SkriptRegistration registration) {
-        registration.newExpression(CondHasPermission.class, Boolean.class, true,
+        registration.newExpression(CondPlayerHasPermission.class, Boolean.class, true,
                 "%players/playerrefs/uuid% (has|have) permission %strings%",
                 "%players/playerrefs/uuid% (don't|do not|doesn't|does not) (has|have) permission %strings%")
             .name("Permission")
