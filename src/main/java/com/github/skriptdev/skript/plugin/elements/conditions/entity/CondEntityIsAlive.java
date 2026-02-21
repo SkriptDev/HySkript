@@ -22,7 +22,7 @@ public class CondEntityIsAlive extends PropertyConditional<LivingEntity> {
             .description("Check if a LivingEntity is alive/dead.")
             .examples("if player is alive:",
                 "\tkill player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

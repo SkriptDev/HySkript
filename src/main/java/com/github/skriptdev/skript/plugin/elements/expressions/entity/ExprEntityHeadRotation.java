@@ -17,7 +17,7 @@ public class ExprEntityHeadRotation extends PropertyExpression<Entity, Vector3f>
             .name("Entity Head Rotation")
             .description("Get the head rotation of an entity.")
             .examples("set {_rot} to head rotation of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

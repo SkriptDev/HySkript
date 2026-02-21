@@ -21,7 +21,7 @@ public class ExprPlayerClientViewRadius extends PropertyExpression<Player, Numbe
             .examples("set client view radius of player to 5",
                 "add 1 to client view radius of all players",
                 "remove 2 from client view radius of {_p}")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

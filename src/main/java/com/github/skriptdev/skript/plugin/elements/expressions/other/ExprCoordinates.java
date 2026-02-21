@@ -26,7 +26,7 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
                 "add 10 to y coord of {_loc}",
                 "subtract 15 from z coord of {_loc}",
                 "set x coord of {_vec} to 22")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

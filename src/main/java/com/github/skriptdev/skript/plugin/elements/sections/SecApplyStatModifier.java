@@ -42,7 +42,7 @@ public class SecApplyStatModifier extends CodeSection {
                 "\tvalue: 5",
                 "\ttarget: max",
                 "\ttype: multiplicative")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

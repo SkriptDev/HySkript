@@ -21,7 +21,7 @@ public class ExprLocationRotation implements Expression<Vector3f> {
                 "Do note that setting the rotation of a location will not rotate an entity it may be attached to.")
             .examples("set rotation of {_loc} to vector3f(0, 10, 0)",
                 "set {_rot} to rotation of location of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

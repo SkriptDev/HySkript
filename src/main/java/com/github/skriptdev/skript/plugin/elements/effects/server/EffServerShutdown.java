@@ -14,7 +14,7 @@ public class EffServerShutdown extends Effect {
         reg.newEffect(EffServerShutdown.class, "shutdown server")
             .name("Shutdown Server")
             .description("Shuts down the server.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

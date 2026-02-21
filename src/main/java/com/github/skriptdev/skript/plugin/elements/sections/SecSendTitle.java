@@ -45,7 +45,7 @@ public class SecSendTitle extends CodeSection {
                 "\tfade_in: 1 tick",
                 "\tfade_out: 1 tick",
                 "\tduration: 1 minute")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

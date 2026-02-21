@@ -23,7 +23,7 @@ public class ExprPlayerMovementBaseSpeed extends PropertyExpression<Player, Numb
                 "This is not persistent. Default = 5.5")
             .examples("set base speed of player to 10",
                 "reset base speed of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

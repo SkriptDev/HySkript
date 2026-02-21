@@ -18,7 +18,7 @@ public class CondPlayerMovementIdle extends PropertyConditional<Player> {
             .description("Checks if the player is idle/doing nothing.")
             .examples("if player is idling:",
                 "\tmessage \"You are idling!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

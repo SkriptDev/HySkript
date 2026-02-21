@@ -16,7 +16,7 @@ public class CondBlockIsSolid extends PropertyConditional<Object> {
             .name("Block is Solid")
             .description("Check if a Block/BlockType is solid.")
             .examples("if target block of player is solid:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

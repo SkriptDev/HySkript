@@ -18,7 +18,7 @@ public class CondPlayerMovementWalking extends PropertyConditional<Player> {
             .description("Checks if the player is walking.")
             .examples("if player is walking:",
                 "\tmessage \"You are walking!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

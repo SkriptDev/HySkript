@@ -20,7 +20,7 @@ public class ExprLocationOffset implements Expression<Location> {
             .description("Returns a location offset by a vector.")
             .examples("teleport player to (location of player offset by vector3i(0, 10, 0) # Teleports them 10 blocks up",
                 "set {_loc} to {_loc} ~ vector3d(0, -1.5, 0)")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

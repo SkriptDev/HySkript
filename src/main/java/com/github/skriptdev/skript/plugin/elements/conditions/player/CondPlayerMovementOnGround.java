@@ -17,7 +17,7 @@ public class CondPlayerMovementOnGround extends PropertyConditional<Player> {
             .name("Player Movement - On Ground")
             .description("Check if a player is on the ground.")
             .description("if player is on ground:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

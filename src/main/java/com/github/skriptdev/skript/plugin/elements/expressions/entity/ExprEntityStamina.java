@@ -31,7 +31,7 @@ public class ExprEntityStamina extends PropertyExpression<LivingEntity, Number> 
                 "set stamina of player to 20",
                 "if stamina of player is greater than 0:",
                 "\treset stamina of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

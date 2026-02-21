@@ -18,7 +18,7 @@ public class CondPlayerMovementJumping extends PropertyConditional<Player> {
             .description("Checks if the player is jumping.")
             .examples("if player is jumping:",
                 "\tmessage \"You are jumping!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -23,7 +23,7 @@ public class ExprWorldTPS extends PropertyExpression<World, Number> {
                 "add 5 to world tps of {_world}",
                 "remove 10 from world tps of world of player",
                 "reset world tps of all worlds")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

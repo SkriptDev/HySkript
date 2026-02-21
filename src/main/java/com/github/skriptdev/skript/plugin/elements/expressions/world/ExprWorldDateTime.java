@@ -34,7 +34,7 @@ public class ExprWorldDateTime implements Expression<Object> {
                 "set world time of world of player to 12:00 pm",
                 "add 3 hours to world time of world of player",
                 "add 1 year to world date of world of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

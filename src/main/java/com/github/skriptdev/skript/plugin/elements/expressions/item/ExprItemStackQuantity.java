@@ -16,7 +16,7 @@ public class ExprItemStackQuantity extends PropertyExpression<ItemStack, Number>
                 "This cannot be set (Yes, Silly... I know!).")
             .examples("set {_amount} to stack size of {_itmstack}",
                 "if item quanity of {_itme} > 1:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

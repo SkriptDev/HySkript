@@ -23,7 +23,7 @@ public class ExprPlayerMovementMass extends PropertyExpression<Player, Number> {
                 "This is not persistent.")
             .examples("set mass of player to 10",
                 "reset mass of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

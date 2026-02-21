@@ -21,7 +21,7 @@ public class ExprPlayerDefenseLevel extends PropertyExpression<Player, Number> {
             .experimental("This internally uses some really janky code, and may change in the future.")
             .examples("if armor defense level of player < 10:",
                 "\tkill player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

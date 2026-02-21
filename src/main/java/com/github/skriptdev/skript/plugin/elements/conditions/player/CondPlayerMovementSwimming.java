@@ -18,7 +18,7 @@ public class CondPlayerMovementSwimming extends PropertyConditional<Player> {
             .description("Checks if the player is swimming.")
             .examples("if player is swimming:",
                 "\tmessage \"You are swimming!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

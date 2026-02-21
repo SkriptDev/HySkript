@@ -21,7 +21,7 @@ public class EffRemoveStatModifier extends Effect {
             .description("Removes an entity stat modifier from the specified entities.",
                 "The key will be the key used to apply the modifier.")
             .examples("remove health entity stat modifier with key \"MyKey\" from all players")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -18,7 +18,7 @@ public class CondPlayerMovementSitting extends PropertyConditional<Player> {
             .description("Checks if the player is sitting.")
             .examples("if player is sitting:",
                 "\tmessage \"You are sitting!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

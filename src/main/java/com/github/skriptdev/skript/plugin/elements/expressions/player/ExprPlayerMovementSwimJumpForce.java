@@ -23,7 +23,7 @@ public class ExprPlayerMovementSwimJumpForce extends PropertyExpression<Player, 
                 "This is not persistent. Default = 10.0")
             .examples("set swim jump force of player to 5",
                 "reset swim jump force of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

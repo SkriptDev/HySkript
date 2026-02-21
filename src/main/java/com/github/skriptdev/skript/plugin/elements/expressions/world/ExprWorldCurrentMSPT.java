@@ -22,7 +22,7 @@ public class ExprWorldCurrentMSPT implements Expression<Number> {
             .description("Represents the active MSPT (milliseconds per tick) of a world.",
                 "This would be how long it's taking each tick to process.")
             .examples("if current mspt of world of player > 20:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

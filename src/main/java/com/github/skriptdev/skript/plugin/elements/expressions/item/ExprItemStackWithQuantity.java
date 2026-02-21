@@ -15,7 +15,7 @@ public class ExprItemStackWithQuantity implements Expression<ItemStack> {
             .name("ItemStack with Quantity")
             .description("Returns a copy ItemStack with the new quantity.")
             .examples("set {_item} to held item of player with quanity 10")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

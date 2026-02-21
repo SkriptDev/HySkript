@@ -36,7 +36,7 @@ public class EvtAtWorldTime extends SkriptEvent implements StartOnLoadEvent {
                 "Internally this is handled by the minute.")
             .examples("at 10:00 pm in world \"default\":",
                 "\tkill all players in event-world")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

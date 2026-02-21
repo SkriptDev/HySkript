@@ -18,7 +18,7 @@ public class CondPlayerMovementSleeping extends PropertyConditional<Player> {
             .description("Checks if the player is sleeping.")
             .examples("if player is sleeping:",
                 "\tmessage \"You are sleeping!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

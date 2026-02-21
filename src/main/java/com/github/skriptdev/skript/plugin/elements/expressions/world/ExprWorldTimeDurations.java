@@ -20,7 +20,7 @@ public class ExprWorldTimeDurations extends PropertyExpression<World, Duration> 
                 "These values are from a GamePlayConfig but can be overridden in your World config.",
                 "**Note**: Currently these cannot be set via code.")
             .examples("set {_Day} to world daytime duration of world of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

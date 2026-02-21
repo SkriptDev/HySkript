@@ -25,7 +25,7 @@ public class EffOpenItemContainer extends Effect {
                 "You can optionally choose a page type to use (Default is Bench).",
                 "Don't use the `custom` page, it'll kick the player.")
             .examples("open storage item container of inventory of player to player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

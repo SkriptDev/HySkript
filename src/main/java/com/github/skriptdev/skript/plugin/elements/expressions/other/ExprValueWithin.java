@@ -24,7 +24,7 @@ public class ExprValueWithin implements Expression<Object> {
             .name("Value Within")
             .description("Gets the value within another object, such as a variable.")
             .examples("delete entity within {_e}")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

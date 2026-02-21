@@ -18,7 +18,7 @@ public class CondPlayerMovementSprinting extends PropertyConditional<Player> {
             .description("Checks if the player is sprinting.")
             .examples("if player is sprinting:",
                 "\tmessage \"You are sprinting!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

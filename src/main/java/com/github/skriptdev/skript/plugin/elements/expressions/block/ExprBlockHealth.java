@@ -22,7 +22,7 @@ public class ExprBlockHealth implements Expression<Number> {
                 "The values range from 0 to 1")
             .examples("set block health of target block of player to 0.5",
                 "if block health of {_block} > 0:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -37,7 +37,7 @@ public class EvtPlayerPickupItem extends SystemEvent<EvtPlayerPickupItem.PlayerP
                 "Sadly this cannot be cancelled... maybe in the future.")
             .examples("on player pickup item:",
                 "\tsend \"You picked up %event-item%!\" to event-player\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newSingleContextValue(PlayerPickupItemContext.class, ItemStack.class,

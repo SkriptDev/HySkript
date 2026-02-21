@@ -19,7 +19,7 @@ public class ExprWorldCurrentTPS implements Expression<Number> {
             .name("World Current TPS")
             .description("Represents the active TPS of a world (how well the world is ticking).")
             .examples("if current tps of world of player < 20:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

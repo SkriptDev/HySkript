@@ -18,7 +18,7 @@ public class CondPlayerMovementRunning extends PropertyConditional<Player> {
             .description("Checks if the player is running.")
             .examples("if player is running:",
                 "\tmessage \"You are running!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

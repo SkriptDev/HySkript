@@ -34,7 +34,7 @@ public class EvtPlayerSwitchActiveSlot extends SystemEvent<EntityEventSystem<Ent
             .description("Called when a player switches their active slot.")
             .experimental("This event doesn't appear to actually get called by the server for hotbar.")
             .examples("")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newSingleContextValue(SwitchSlotContext.class, Number.class,

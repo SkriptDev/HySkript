@@ -30,7 +30,7 @@ public class EffRide extends Effect {
             .description("Make an entity ride/mount an entity/block, or make them stop riding.")
             .experimental("Currently block mounting is not working. " +
                 "Steering does not appear to work (At least on the sheep I tested on).")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

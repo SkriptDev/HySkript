@@ -19,7 +19,7 @@ public class EffTame extends Effect {
                 "This will only work on tameable entities.")
             .examples("tame target entity of player",
                 "untame all entities in radius 5 around player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

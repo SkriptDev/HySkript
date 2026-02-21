@@ -122,7 +122,7 @@ public class TypesAssetStore {
                 "itemquality", "itemQuality@s")
             .name("Item Quality")
             .description("Represents the quality of items in the game.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .toStringFunction(ItemQuality::getId)
             .register();
         reg.newAssetStoreType(Projectile.class, Projectile.getAssetMap(), "projectile", "projectile@s")
@@ -135,7 +135,7 @@ public class TypesAssetStore {
 //                "projectileconfig", "projectileConfig@s")
 //            .name("Projectile Config")
 //            .description("")
-//            .since("INSERT VERSION")
+//            .since("1.1.0")
 //            .toStringFunction(ProjectileConfig::getId)
 //            .register();
         reg.newAssetStoreType(ResourceType.class, ResourceType.getAssetMap(), "resourcetype", "resourceType@s")

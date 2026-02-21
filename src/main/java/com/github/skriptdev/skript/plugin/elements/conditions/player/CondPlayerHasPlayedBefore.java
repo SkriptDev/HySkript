@@ -19,7 +19,7 @@ public class CondPlayerHasPlayedBefore extends PropertyConditional<Player> {
             .examples("on player ready:",
                 "\tif player has not played before:",
                 "\t\tadd itemstack of 10 of food_kebab_meat to inventory of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

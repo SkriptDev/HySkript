@@ -24,7 +24,7 @@ public class ExprInventoryAmountOfItems implements Expression<Number> {
                 "If you pass in an ItemStack, it will direct compare that the ItemStacks are the same " +
                     "(ie: same durability, max durability, metadata, etc), excluding stack size.")
             .examples("set {_amount} to amount of ingredient_stick in inventory of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -24,7 +24,7 @@ public class ExprHighestBlock implements Expression<Object> {
             .description("Get the highest block/y coord/location at a location.",
                 "This represents the highest solid block generated at a location.")
             .examples("teleport player to highest block location at location of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

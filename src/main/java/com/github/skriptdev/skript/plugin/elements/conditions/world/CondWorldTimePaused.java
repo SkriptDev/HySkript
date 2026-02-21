@@ -24,7 +24,7 @@ public class CondWorldTimePaused extends ConditionalExpression {
             .examples("set gametime of world(\"default\") is paused to false",
                 "if game time of world of player is paused:",
                 "\tset gametime of world of player is paused to false")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
     }

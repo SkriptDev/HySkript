@@ -24,7 +24,7 @@ public class CondChunkIsLoaded extends ConditionalExpression {
             .description("Check if a chunk is loaded at a location.")
             .examples("if chunk at {_loc} is loaded:",
                 "\tteleport player to {_loc}")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

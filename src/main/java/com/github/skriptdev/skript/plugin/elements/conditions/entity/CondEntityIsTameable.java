@@ -18,7 +18,7 @@ public class CondEntityIsTameable extends PropertyConditional<LivingEntity> {
             .description("Check if an entity is tameable.")
             .experimental("Hytale is just adding taming, so this may change in the future.")
             .examples("if target entity of player is tameable:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

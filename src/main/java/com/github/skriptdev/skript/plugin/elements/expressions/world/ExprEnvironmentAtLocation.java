@@ -30,7 +30,7 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
             .description("Get/set the environment at a location or within a cuboid of 2 locations.")
             .examples("set environment at location of player to Env_Zone1_Forests",
                 "set environment within {_loc1} and {_loc2} to Env_Zone3_Tundra")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

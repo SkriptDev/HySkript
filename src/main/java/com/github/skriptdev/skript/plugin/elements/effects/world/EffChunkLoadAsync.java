@@ -29,7 +29,7 @@ public class EffChunkLoadAsync extends Effect {
             .examples("async load chunk at {_loc}",
                 "async load chunk at {_loc} and keep loaded",
                 "set blocktype of block at {_loc} to rock_stone")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

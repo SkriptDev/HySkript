@@ -26,7 +26,7 @@ public class CondPlayerMovementFlying extends PropertyConditional<Player> {
             .examples("if player is flying:",
                 "\tmessage \"You shouldn't be flying!\"",
                 "\tset player is flying to false")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

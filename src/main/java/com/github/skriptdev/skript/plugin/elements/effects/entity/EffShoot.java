@@ -27,7 +27,7 @@ public class EffShoot extends Effect {
                 "make %livingentity% shoot %projectileconfig% in direction %vector3d%")
             .name("Shoot")
             .description("Make a LivingEntity shoot a projectile.")
-            .since("INSERT VERSION");
+            .since("1.1.0");
         //.register();
     }
 

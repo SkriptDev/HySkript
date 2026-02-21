@@ -20,7 +20,7 @@ public class ExprItemStackName extends PropertyExpression<Object, String> {
             .name("Item Name/Description")
             .description("Get the name/description of an Item/ItemStack.",
                 "These currently cannot be set.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -28,7 +28,7 @@ public class ExprPlayerMovementFlySpeed extends PropertyExpression<Player, Numbe
             .examples("set fly speed of player to 20",
                 "add 2 to horizontal fly speed of player",
                 "reset vertical fly speed of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

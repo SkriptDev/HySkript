@@ -125,7 +125,7 @@ public class TypesItem {
         reg.newEnumType(Page.class, "page", "page@s")
             .name("Page")
             .description("Represents a page type of an inventory window.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

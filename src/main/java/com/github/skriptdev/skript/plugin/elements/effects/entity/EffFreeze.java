@@ -22,7 +22,7 @@ public class EffFreeze extends Effect {
                 "This doesn't appear to work on players.")
             .examples("freeze entities in radius 10 around player",
                 "unfreeze {_e}")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

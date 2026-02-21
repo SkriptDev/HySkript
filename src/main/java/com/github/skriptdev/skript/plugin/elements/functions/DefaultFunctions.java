@@ -46,7 +46,7 @@ public class DefaultFunctions {
             .name("Date")
             .description("Creates a new Date with the given parameters.")
             .examples("set {_date} to date(2026, 1, 1)")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newJavaFunction("dateTime", SkriptDate.class, true)
@@ -72,7 +72,7 @@ public class DefaultFunctions {
             .description("Creates a new Date with a time with the given parameters.",
                 "Reminder this is on a 24 hour clock.")
             .examples("set {_date} to dateTime(2026, 1, 1, 12, 30, 0)")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newJavaFunction("time", Time.class, true)
@@ -90,7 +90,7 @@ public class DefaultFunctions {
             .description("Creates a new Time with the given parameters.",
                 "Reminder this is on a 24 hour clock.")
             .examples("set {_time} to time(12, 0, 0)")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 
@@ -134,7 +134,7 @@ public class DefaultFunctions {
             .description("Create a new inventory with the given ItemContainer sizes.",
                 "This inventory will not have click events due to no owner.",
                 "See the `inventoryWithOwner` function for that.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newJavaFunction("inventoryWithOwner", Inventory.class, true)
@@ -156,7 +156,7 @@ public class DefaultFunctions {
             .name("Inventory with Owner")
             .description("Create a new inventory with the given ItemContainer capacities and an owner.",
                 "The owner is used for registered click events.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
 
         reg.newJavaFunction("itemContainer", ItemContainer.class, true)
@@ -177,35 +177,35 @@ public class DefaultFunctions {
             .executeSingle(params -> Math.abs(((Number) params[0][0]).doubleValue()))
             .name("Math - Absolute")
             .description("Returns the absolute (always positive) value of a number.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
         reg.newJavaFunction("ceil", Number.class, true)
             .parameter("number", Number.class)
             .executeSingle(params -> Math.ceil(((Number) params[0][0]).doubleValue()))
             .name("Math - Ceiling")
             .description("Returns the ceiling (rounded up) value of a decimal point number.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
         reg.newJavaFunction("cos", Number.class, true)
             .parameter("number", Number.class)
             .executeSingle(params -> Math.cos(((Number) params[0][0]).doubleValue()))
             .name("Math - Cosine")
             .description("Retuns the cosine of an angle.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
         reg.newJavaFunction("floor", Number.class, true)
             .parameter("number", Number.class)
             .executeSingle(params -> Math.floor(((Number) params[0][0]).doubleValue()))
             .name("Math - Floor")
             .description("Returns the floor (rounded down) value of a decimal point number.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
         reg.newJavaFunction("sin", Number.class, true)
             .parameter("number", Number.class)
             .executeSingle(params -> Math.sin(((Number) params[0][0]).doubleValue()))
             .name("Math - Sine")
             .description("Retuns the sine of an angle.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

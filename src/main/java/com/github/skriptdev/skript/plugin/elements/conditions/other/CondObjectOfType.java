@@ -20,7 +20,7 @@ public class CondObjectOfType extends ConditionalExpression {
             .description("Checks if the objects are of the specified types.")
             .examples("if {var} is a Player:",
                 "if {var} is an Entity:")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

@@ -20,7 +20,7 @@ public class CondEntityIsFrozen extends PropertyConditional<LivingEntity> {
             "frozen")
             .name("Entity is Frozen")
             .description("Checks if the living entities are frozen.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

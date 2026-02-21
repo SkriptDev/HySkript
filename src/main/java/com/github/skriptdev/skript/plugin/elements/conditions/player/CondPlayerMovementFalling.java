@@ -18,7 +18,7 @@ public class CondPlayerMovementFalling extends PropertyConditional<Player> {
             .description("Checks if the player is falling.")
             .examples("if player is falling:",
                 "\tmessage \"You are falling!\"")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

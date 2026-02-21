@@ -26,7 +26,7 @@ public class CondPlayerMovementCanFly extends PropertyConditional<Player> {
             .examples("if player can fly:",
                 "set player can fly to false",
                 "reset player can fly")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

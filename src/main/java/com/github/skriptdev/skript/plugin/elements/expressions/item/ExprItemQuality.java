@@ -15,7 +15,7 @@ public class ExprItemQuality extends PropertyExpression<Object, ItemQuality> {
                 "item quality", "items/itemstacks")
             .name("Item Quality")
             .description("Returns the quality of an Item/ItemStack.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

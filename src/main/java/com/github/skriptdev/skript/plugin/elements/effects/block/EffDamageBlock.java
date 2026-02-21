@@ -24,7 +24,7 @@ public class EffDamageBlock extends Effect {
                 "make player block damage {_block} by 10",
                 "make player block damage target block of player by 10 using hotbar item of player")
             .experimental("Currently the ItemStack thing doesn't work.")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

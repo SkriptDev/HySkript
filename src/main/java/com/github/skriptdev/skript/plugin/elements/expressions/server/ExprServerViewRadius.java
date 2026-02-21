@@ -20,7 +20,7 @@ public class ExprServerViewRadius implements Expression<Number> {
             .examples("set server view radius to 10",
                 "add 1 to server view radius",
                 "remove 3 from server view radius")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 

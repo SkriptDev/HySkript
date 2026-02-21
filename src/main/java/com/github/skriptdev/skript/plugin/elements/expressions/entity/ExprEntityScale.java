@@ -25,7 +25,7 @@ public class ExprEntityScale extends PropertyExpression<Entity, Number> {
                 "add 0.1 to scale of target entity of player",
                 "remove 0.5 from scale of {_entity}",
                 "reset scale of player")
-            .since("INSERT VERSION")
+            .since("1.1.0")
             .register();
     }
 
