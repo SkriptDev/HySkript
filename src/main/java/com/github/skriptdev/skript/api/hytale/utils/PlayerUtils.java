@@ -117,7 +117,8 @@ public class PlayerUtils {
         if (store == null) return List.of();
 
         ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
-        SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get().getPlayerSpatialResourceType());
+        SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
+            .getPlayerSpatialResourceType());
         playerSpatialResource.getSpatialStructure().collect(location.getPosition(), (float) radius, results);
 
         List<Player> players = new ArrayList<>();
@@ -146,7 +147,8 @@ public class PlayerUtils {
         Vector3d max = Vector3d.max(loc1.getPosition(), loc2.getPosition());
 
         ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
-        SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get().getPlayerSpatialResourceType());
+        SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
+            .getPlayerSpatialResourceType());
         playerSpatialResource.getSpatialStructure().collectBox(min, max, results);
 
         List<Player> players = new ArrayList<>();
