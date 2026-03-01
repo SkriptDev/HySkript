@@ -1,0 +1,11 @@
+test "SecMapMarker":
+	create map marker:
+		id: "test_marker"
+		name: "Test Marker"
+		icon: "Campfire.png"
+		location: world spawn of event-world
+
+	assert map marker ids of event-world contains "test_marker" with "The marker should be there"
+
+	remove map marker with id "test_marker" from event-world
+	assert map marker ids of event-world does not contain "test_marker" with "The marker should be gone"
