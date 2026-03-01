@@ -27,6 +27,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.player.EffBan;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffConnect;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffOpenItemContainer;
+import com.github.skriptdev.skript.plugin.elements.effects.server.EffRemoveMapMarker;
 import com.github.skriptdev.skript.plugin.elements.effects.server.EffServerShutdown;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkLoadAsync;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkRegenerate;
@@ -72,6 +73,7 @@ public class EffectHandler {
         EffOpenItemContainer.register(registration);
 
         // SERVER
+        EffRemoveMapMarker.register(registration);
         EffServerShutdown.register(registration);
 
         // WORLD

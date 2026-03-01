@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.sections;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.plugin.elements.sections.server.SecMapMarker;
 
 public class SectionHandler {
 
@@ -14,6 +15,9 @@ public class SectionHandler {
         SecSendNotification.register(registration);
         SecSendTitle.register(registration);
         SecSpawnNPC.register(registration);
+
+        // SERVER
+        SecMapMarker.register(registration);
     }
 
 }

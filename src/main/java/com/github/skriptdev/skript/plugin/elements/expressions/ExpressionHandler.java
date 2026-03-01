@@ -82,6 +82,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprEntityRef
 import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprRefComponent;
 import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprRefInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprConsole;
+import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprMapMarkerIds;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprServerViewRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprAllWorlds;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprChunkAtLocation;
@@ -194,6 +195,7 @@ public class ExpressionHandler {
 
         // SERVER
         ExprConsole.register(registration);
+        ExprMapMarkerIds.register(registration);
         ExprServerViewRadius.register(registration);
 
         // WORLD
