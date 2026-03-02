@@ -126,7 +126,7 @@ public class Skript extends SkriptAddon {
         });
     }
 
-    public void shutdown() {
+    void shutdown() {
         // SHUTDOWN LISTENERS
         EventHandler.shutdown();
 
