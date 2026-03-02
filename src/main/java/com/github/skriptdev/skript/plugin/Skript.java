@@ -208,16 +208,16 @@ public class Skript extends SkriptAddon {
     /**
      * Register an addon to HySkript.
      * <br>ONLY use this when registering a plugin/mod as an addon.
-     * <br>Regular addons are self registereing.
+     * <br>Regular addons are self registering.
      *
      * @param plugin     Main plugin instance
      * @param addonClass Class of the addon
      * @param <T>        Type of the addon
      * @return New instance of the addon
      */
-    public <T extends HySkriptAddon> T registerAddon(JavaPlugin plugin, Class<T> addonClass) {
+    public <T extends HySkriptAddon> T registerAddon(@NotNull JavaPlugin plugin, @NotNull Class<T> addonClass) {
         if (!this.isAcceptingRegistrations) {
-            throw new IllegalStateException("Cannot register addons after the HySkript has started!");
+            throw new IllegalStateException("Cannot register addons after HySkript has started!");
         }
         return this.addonLoader.registerAddon(plugin, addonClass);
     }
