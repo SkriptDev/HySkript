@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.conditions.block;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.protocol.BlockMaterial;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;

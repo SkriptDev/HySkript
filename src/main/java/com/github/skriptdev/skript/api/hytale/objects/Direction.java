@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.api.hytale;
+package com.github.skriptdev.skript.api.hytale.objects;
 
 import com.github.skriptdev.skript.api.hytale.utils.LocationUtils;
 import com.hypixel.hytale.math.vector.Location;

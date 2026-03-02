@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.api.skript.event;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 
 /**

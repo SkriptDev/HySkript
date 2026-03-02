@@ -1,7 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.events;
 
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.event.BlockContext;
 import com.github.skriptdev.skript.api.skript.event.LocationContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;

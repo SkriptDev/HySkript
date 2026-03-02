@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.api.hytale;
+package com.github.skriptdev.skript.api.hytale.objects;
 
 import com.github.skriptdev.skript.api.hytale.utils.StoreUtils;
 import com.hypixel.hytale.component.CommandBuffer;

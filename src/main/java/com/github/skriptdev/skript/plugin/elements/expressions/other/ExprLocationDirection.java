@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
-import com.github.skriptdev.skript.api.hytale.Direction;
+import com.github.skriptdev.skript.api.hytale.objects.Direction;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
 import io.github.syst3ms.skriptparser.lang.Expression;
