@@ -9,7 +9,7 @@ import org.bstats.hytale.Metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BstatsMetrics {
+class BstatsMetrics {
 
     static void registerMetrics(HySk plugin) {
         Metrics metrics = new Metrics(plugin, 29735);
