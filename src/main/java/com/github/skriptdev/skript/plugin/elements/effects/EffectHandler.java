@@ -3,6 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.effects;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.effects.block.EffBreakBlock;
 import com.github.skriptdev.skript.plugin.elements.effects.block.EffDamageBlock;
+import com.github.skriptdev.skript.plugin.elements.effects.entity.EffAttackOverrides;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffDamage;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffDropItem;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffEntityAttitude;
@@ -45,6 +46,7 @@ public class EffectHandler {
         EffDamageBlock.register(registration);
 
         // ENTITY
+        EffAttackOverrides.register(registration);
         EffDamage.register(registration);
         EffDropItem.register(registration);
         EffEntityAttitude.register(registration);
