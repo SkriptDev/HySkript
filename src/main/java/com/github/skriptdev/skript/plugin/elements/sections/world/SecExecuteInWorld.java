@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.sections;
+package com.github.skriptdev.skript.plugin.elements.sections.world;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.universe.world.World;

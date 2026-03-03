@@ -1,4 +1,4 @@
-package com.github.skriptdev.skript.plugin.elements.sections;
+package com.github.skriptdev.skript.plugin.elements.sections.entity;
 
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.component.Store;
