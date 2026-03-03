@@ -65,51 +65,49 @@ public class ExprEntityHealth extends PropertyExpression<LivingEntity, Number> {
 
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
-        Optional<? extends LivingEntity> single = getOwner().getSingle(ctx);
-        if (single.isEmpty()) return;
+        for (LivingEntity entity : getOwner().getArray(ctx)) {
+            World world = entity.getWorld();
+            if (world == null) continue;
 
-        LivingEntity entity = single.get();
-        World world = entity.getWorld();
-        if (world == null) return;
+            Runnable healthRunnable = () -> {
 
-        Runnable healthRunnable = () -> {
+                EntityStatMap statMap = EntityUtils.getEntityStatMap(entity);
+                if (statMap == null) return;
 
-            EntityStatMap statMap = EntityUtils.getEntityStatMap(entity);
-            if (statMap == null) return;
+                if (changeMode == ChangeMode.RESET) {
+                    statMap.resetStatValue(HEALTH_STAT_INDEX);
+                    return;
+                }
 
-            if (changeMode == ChangeMode.RESET) {
-                statMap.resetStatValue(HEALTH_STAT_INDEX);
-                return;
-            }
-
-            float newValue;
-            if (changeWith.length > 0 && changeWith[0] instanceof Number number) {
-                newValue = number.floatValue();
-            } else {
-                newValue = 0f;
-            }
-
-            if (changeMode != ChangeMode.SET) {
-                EntityStatValue healthStat = statMap.get(HEALTH_STAT_INDEX);
-                if (healthStat == null) return;
-                float oldHealthValue = healthStat.get();
-
-                if (changeMode == ChangeMode.ADD) {
-                    newValue += oldHealthValue;
-                } else if (changeMode == ChangeMode.REMOVE) {
-                    newValue = oldHealthValue - newValue;
-                } else if (changeMode == ChangeMode.DELETE) {
+                float newValue;
+                if (changeWith.length > 0 && changeWith[0] instanceof Number number) {
+                    newValue = number.floatValue();
+                } else {
                     newValue = 0f;
                 }
+
+                if (changeMode != ChangeMode.SET) {
+                    EntityStatValue healthStat = statMap.get(HEALTH_STAT_INDEX);
+                    if (healthStat == null) return;
+                    float oldHealthValue = healthStat.get();
+
+                    if (changeMode == ChangeMode.ADD) {
+                        newValue += oldHealthValue;
+                    } else if (changeMode == ChangeMode.REMOVE) {
+                        newValue = oldHealthValue - newValue;
+                    } else if (changeMode == ChangeMode.DELETE) {
+                        newValue = 0f;
+                    }
+                }
+
+                statMap.setStatValue(HEALTH_STAT_INDEX, newValue);
+            };
+
+            if (world.isInThread()) {
+                healthRunnable.run();
+            } else {
+                world.execute(healthRunnable);
             }
-
-            statMap.setStatValue(HEALTH_STAT_INDEX, newValue);
-        };
-
-        if (world.isInThread()) {
-            healthRunnable.run();
-        } else {
-            world.execute(healthRunnable);
         }
     }
 
