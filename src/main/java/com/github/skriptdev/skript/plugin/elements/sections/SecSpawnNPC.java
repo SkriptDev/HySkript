@@ -32,10 +32,10 @@ public class SecSpawnNPC extends CodeSection {
     public record SpawnMobContext(Entity entity) implements TriggerContext {
 
         @Override
-            public String getName() {
-                return "spawn_mob";
-            }
+        public String getName() {
+            return "spawn_mob";
         }
+    }
 
     public static void register(SkriptRegistration registration) {
         registration.newSection(SecSpawnNPC.class, "spawn [a|an] %npcrole% at %location%")
@@ -100,33 +100,35 @@ public class SecSpawnNPC extends CodeSection {
         AtomicReference<VariableMap> vars = new AtomicReference<>();
         VariableMap variableMap = Variables.copyLocalVariables(ctx);
         vars.set(variableMap);
+        Variables.clearLocalVariables(ctx);
 
-        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, (npcEntity, _, _) -> {
-            SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
+        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, null,
+            (npcEntity, entityStoreRef, entityStoreStore) -> {
+                SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
 
-            // Copy the locals from the previous trigger into this context
-            Variables.setLocalVariables(spawnMobContext, vars.get());
+                // Copy the locals from the previous trigger into this context
+                Variables.setLocalVariables(spawnMobContext, vars.get());
 
-            setNext(null);
-            firstStatement.ifPresent(statement ->
-                Statement.runAll(statement, spawnMobContext));
+                firstStatement.ifPresent(statement ->
+                    Statement.runAll(statement, spawnMobContext));
 
-            // After that is run, copy them back
-            VariableMap map = Variables.copyLocalVariables(spawnMobContext);
-            vars.set(map);
+                // After that is run, copy them back
+                VariableMap map = Variables.copyLocalVariables(spawnMobContext);
+                vars.set(map);
 
-            // Clear locals from the no longer used SpawnMobContext
-            Variables.clearLocalVariables(spawnMobContext);
-        }, (npcEntity, entityStoreRef, entityStoreStore) -> {
-            nextStatement.ifPresent(statement -> {
-                // Take the previous local variables and use them again in this context
-                Variables.setLocalVariables(ctx, vars.get());
-                Statement.runAll(statement, ctx);
+                // Clear locals from the no longer used SpawnMobContext
+                Variables.clearLocalVariables(spawnMobContext);
 
+                nextStatement.ifPresent(statement -> {
+                    // Take the previous local variables and use them again in this context
+                    Variables.setLocalVariables(ctx, vars.get());
+                    Statement.runAll(statement, ctx);
+
+                });
                 // Now we're done, we can clear them out
                 Variables.clearLocalVariables(ctx);
+                vars.get().clearVariables();
             });
-        });
 
         return Optional.empty();
     }
