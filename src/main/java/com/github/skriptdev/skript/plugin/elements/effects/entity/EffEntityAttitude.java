@@ -81,7 +81,12 @@ public class EffEntityAttitude extends Effect {
                 EntityUtils.clearMarkedEntity(npcEntity, target);
 
                 // Override attitude
-                worldSupport.overrideAttitude(targetRef, attitude, durationSeconds);
+                try {
+                    worldSupport.overrideAttitude(targetRef, attitude, durationSeconds);
+                } catch (NullPointerException ignored) {
+                    // If the entity cannot have an attitude adjustment, it throws NPE
+                    // Appears there is no way to pre check this
+                }
             }
         }
     }
