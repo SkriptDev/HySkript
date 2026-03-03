@@ -4,8 +4,11 @@ import com.github.skriptdev.skript.api.skript.event.WorldContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.dependency.Dependency;
+import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
@@ -30,7 +33,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EvtEntityDeath extends SkriptEvent {
 
@@ -123,6 +128,11 @@ public class EvtEntityDeath extends SkriptEvent {
 
     private static class EntityDeathListener extends DeathSystems.OnDeathSystem {
 
+        @Override
+        public @NotNull Set<Dependency<EntityStore>> getDependencies() {
+            return Collections.singleton(RootDependency.first());
+        }
+
         @SuppressWarnings("DataFlowIssue")
         @Override
         public void onComponentAdded(@NotNull Ref<EntityStore> ref, @NotNull DeathComponent deathComponent,
@@ -204,8 +214,8 @@ public class EvtEntityDeath extends SkriptEvent {
         }
 
         public void setShowDeathMenu(boolean showDeathMenu) {
-            // this.component.setShowDeathMenu(showDeathMenu);  (doesn't seem to work)
-            // So let's respawn instead
+            this.component.setShowDeathMenu(showDeathMenu);
+            // We have to respawn the player or they get locked in a death pose
             if (!showDeathMenu && this.getVictim() instanceof Player player) {
                 Ref<EntityStore> reference = player.getReference();
                 DeathComponent.respawn(reference.getStore(), reference);
@@ -218,6 +228,13 @@ public class EvtEntityDeath extends SkriptEvent {
 
         public void setDeathMessage(Message deathMessage) {
             this.component.setDeathMessage(deathMessage);
+            // Hytale doesn't seem to actually use the `getDeathMessge` in the death screen
+            this.component.getDeathInfo().setSource(new Damage.Source() {
+                @Override
+                public @NotNull Message getDeathMessage(@NotNull Damage info, @NotNull Ref<EntityStore> targetRef, @NotNull ComponentAccessor<EntityStore> componentAccessor) {
+                    return deathMessage;
+                }
+            });
         }
 
         public String getDeathMessageString() {
@@ -225,7 +242,7 @@ public class EvtEntityDeath extends SkriptEvent {
         }
 
         public void setDeathMessageString(String deathMessage) {
-            this.component.setDeathMessage(Message.raw(deathMessage));
+            setDeathMessage(Message.raw(deathMessage));
         }
 
         @Override
