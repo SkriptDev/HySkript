@@ -231,7 +231,8 @@ public class EvtEntityDeath extends SkriptEvent {
             // Hytale doesn't seem to actually use the `getDeathMessge` in the death screen
             this.component.getDeathInfo().setSource(new Damage.Source() {
                 @Override
-                public @NotNull Message getDeathMessage(@NotNull Damage info, @NotNull Ref<EntityStore> targetRef, @NotNull ComponentAccessor<EntityStore> componentAccessor) {
+                public @NotNull Message getDeathMessage(@NotNull Damage info, @NotNull Ref<EntityStore> targetRef,
+                                                        @NotNull ComponentAccessor<EntityStore> componentAccessor) {
                     return deathMessage;
                 }
             });
