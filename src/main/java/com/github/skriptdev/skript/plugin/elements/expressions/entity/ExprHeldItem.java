@@ -71,9 +71,10 @@ public class ExprHeldItem implements Expression<ItemStack> {
     @SuppressWarnings("ConstantValue")
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
-        if (changeWith == null) return;
-
-        ItemStack itemStack = ((ItemStack) changeWith[0]);
+        ItemStack itemStack = ItemStack.EMPTY;
+        if (changeWith != null && changeWith.length > 0 && changeWith[0] instanceof ItemStack stack) {
+            itemStack = stack;
+        }
 
         for (LivingEntity livingEntity : this.entities.getArray(ctx)) {
             Inventory inventory = livingEntity.getInventory();
