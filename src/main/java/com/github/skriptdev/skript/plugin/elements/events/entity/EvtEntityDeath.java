@@ -57,12 +57,14 @@ public class EvtEntityDeath extends SkriptEvent {
             .register();
 
         reg.newSingleContextValue(EntityDeathContext.class,
-            Entity.class, "victim", EntityDeathContext::getVictim)
+                Entity.class, "victim", EntityDeathContext::getVictim)
             .description("The entity that died.")
+            .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();
         reg.newSingleContextValue(EntityDeathContext.class,
-            Entity.class, "attacker", EntityDeathContext::getAttacker)
+                Entity.class, "attacker", EntityDeathContext::getAttacker)
             .description("The entity that killed the victim.")
+            .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .register();
         reg.addSingleContextValue(EntityDeathContext.class,
             Damage.Source.class, "damage-source", EntityDeathContext::getDamageSource);
@@ -71,7 +73,7 @@ public class EvtEntityDeath extends SkriptEvent {
         reg.addSingleContextValue(EntityDeathContext.class,
             Damage.class, "death-info", EntityDeathContext::getDamage);
         reg.newListContextValue(EntityDeathContext.class,
-            Item.class, "lost-items", EntityDeathContext::getItemsLostOnDeath)
+                Item.class, "lost-items", EntityDeathContext::getItemsLostOnDeath)
             .description("The Item types of the ItemStacks lost on death.")
             .register();
         reg.newListContextValue(EntityDeathContext.class,
@@ -82,6 +84,8 @@ public class EvtEntityDeath extends SkriptEvent {
             .register();
         reg.newSingleContextValue(EntityDeathContext.class,
                 Boolean.class, "show-death-menu", EntityDeathContext::isShowDeathMenu)
+            .description("Whether the death menu should be shown to the player. " +
+                "Disabling this will respawn the player.")
             .setUsage(ContextValue.Usage.EXPRESSION_OR_ALONE)
             .addSetter(EntityDeathContext::setShowDeathMenu)
             .register();
@@ -162,31 +166,31 @@ public class EvtEntityDeath extends SkriptEvent {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private record EntityDeathContext(int pattern, Entity victim, DeathComponent component)
-        implements TriggerContext, WorldContext {
+    private static class EntityDeathContext implements TriggerContext, WorldContext {
+
+        private final int pattern;
+        private final Entity victim;
+        private final DeathComponent component;
+        private final OverridingDamageSource damageSource;
+
+        EntityDeathContext(int pattern, Entity victim, DeathComponent component) {
+            this.pattern = pattern;
+            this.victim = victim;
+            this.component = component;
+            this.damageSource = new OverridingDamageSource(component.getDeathInfo().getSource());
+            this.component.getDeathInfo().setSource(this.damageSource);
+        }
 
         public Entity getVictim() {
             return this.victim;
         }
 
         public Entity getAttacker() {
-            Entity attacker = null;
-            if (this.component.getDeathInfo().getSource() instanceof Damage.EntitySource entitySource) {
-                Ref<EntityStore> attackerRef = entitySource.getRef();
-                Store<EntityStore> store = attackerRef.getStore();
-                Player player = store.getComponent(attackerRef, Player.getComponentType());
-                if (player != null) {
-                    attacker = player;
-                } else {
-                    NPCEntity npc = store.getComponent(attackerRef, NPCEntity.getComponentType());
-                    if (npc != null) attacker = npc;
-                }
-            }
-            return attacker;
+            return this.damageSource.getAttacker();
         }
 
         public Damage.Source getDamageSource() {
-            return this.component.getDeathInfo().getSource();
+            return this.damageSource.parentSource;
         }
 
         public DamageCause getDamageCause() {
@@ -228,14 +232,7 @@ public class EvtEntityDeath extends SkriptEvent {
 
         public void setDeathMessage(Message deathMessage) {
             this.component.setDeathMessage(deathMessage);
-            // Hytale doesn't seem to actually use the `getDeathMessge` in the death screen
-            this.component.getDeathInfo().setSource(new Damage.Source() {
-                @Override
-                public @NotNull Message getDeathMessage(@NotNull Damage info, @NotNull Ref<EntityStore> targetRef,
-                                                        @NotNull ComponentAccessor<EntityStore> componentAccessor) {
-                    return deathMessage;
-                }
-            });
+            this.damageSource.setDeathMessage(deathMessage);
         }
 
         public String getDeathMessageString() {
@@ -255,6 +252,44 @@ public class EvtEntityDeath extends SkriptEvent {
         public String getName() {
             return "entity-death-context";
         }
+    }
+
+    public static class OverridingDamageSource implements Damage.Source {
+
+        private final Damage.Source parentSource;
+        private Message deathMessage;
+
+        public OverridingDamageSource(Damage.Source parentSource) {
+            this.parentSource = parentSource;
+        }
+
+        @Override
+        public @NotNull Message getDeathMessage(@NotNull Damage info, @NotNull Ref<EntityStore> targetRef, @NotNull ComponentAccessor<EntityStore> componentAccessor) {
+            if (this.deathMessage != null) return this.deathMessage;
+            return this.parentSource.getDeathMessage(info, targetRef, componentAccessor);
+        }
+
+        public void setDeathMessage(Message deathMessage) {
+            this.deathMessage = deathMessage;
+        }
+
+        @SuppressWarnings("DataFlowIssue")
+        public Entity getAttacker() {
+            Entity attacker = null;
+            if (this.parentSource instanceof Damage.EntitySource entitySource) {
+                Ref<EntityStore> attackerRef = entitySource.getRef();
+                Store<EntityStore> store = attackerRef.getStore();
+                Player player = store.getComponent(attackerRef, Player.getComponentType());
+                if (player != null) {
+                    attacker = player;
+                } else {
+                    NPCEntity npc = store.getComponent(attackerRef, NPCEntity.getComponentType());
+                    if (npc != null) attacker = npc;
+                }
+            }
+            return attacker;
+        }
+
     }
 
 }
