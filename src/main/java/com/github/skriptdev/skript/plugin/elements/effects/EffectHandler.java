@@ -24,9 +24,11 @@ import com.github.skriptdev.skript.plugin.elements.effects.other.EffExecuteComma
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendMessage;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendTitle;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffBan;
+import com.github.skriptdev.skript.plugin.elements.effects.player.EffCloseWindows;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffConnect;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffOpenItemContainer;
+import com.github.skriptdev.skript.plugin.elements.effects.player.EffOpenPage;
 import com.github.skriptdev.skript.plugin.elements.effects.server.EffRemoveMapMarker;
 import com.github.skriptdev.skript.plugin.elements.effects.server.EffServerShutdown;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkLoadAsync;
@@ -68,9 +70,11 @@ public class EffectHandler {
 
         // PLAYER
         EffBan.register(registration);
+        EffCloseWindows.register(registration);
         EffConnect.register(registration);
         EffKick.register(registration);
         EffOpenItemContainer.register(registration);
+        EffOpenPage.register(registration);
 
         // SERVER
         EffRemoveMapMarker.register(registration);
