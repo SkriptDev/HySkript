@@ -2,15 +2,12 @@ package com.github.skriptdev.skript.plugin.elements.events.entity;
 
 import com.github.skriptdev.skript.api.skript.event.WorldContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
-import com.github.skriptdev.skript.plugin.HySk;
-import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.event.events.entity.LivingEntityInventoryChangeEvent;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
@@ -31,16 +28,8 @@ public class EvtLivingEntityInvChange extends SkriptEvent {
         // TODO add transaction
     }
 
-    private static EventRegistration<String, LivingEntityInventoryChangeEvent> LISTENER;
-
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, ParseContext parseContext) {
-        if (LISTENER == null) {
-            LISTENER = HySk.getInstance().getEventRegistry().registerGlobal(LivingEntityInventoryChangeEvent.class, event -> {
-                InvChangeContext ctx = new InvChangeContext(event);
-                TriggerMap.callTriggersByContext(ctx);
-            });
-        }
         return true;
     }
 
@@ -54,7 +43,7 @@ public class EvtLivingEntityInvChange extends SkriptEvent {
         return "living entity inventory change";
     }
 
-    private record InvChangeContext(LivingEntityInventoryChangeEvent event) implements TriggerContext, WorldContext {
+    public record InvChangeContext(LivingEntityInventoryChangeEvent event) implements TriggerContext, WorldContext {
 
         private Entity getEntity() {
             return this.event.getEntity();
