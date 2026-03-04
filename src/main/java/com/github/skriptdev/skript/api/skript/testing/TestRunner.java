@@ -7,6 +7,8 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.command.system.CommandManager;
+import com.hypixel.hytale.server.core.console.ConsoleSender;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -48,6 +50,11 @@ public class TestRunner {
             Utils.log("Loading test scripts...");
             loadTests();
             Utils.log("Finished loading test scripts!");
+
+            // Print docs
+            CommandManager commandManager = CommandManager.get();
+            commandManager.handleCommand(ConsoleSender.INSTANCE, "sk docs json");
+            commandManager.handleCommand(ConsoleSender.INSTANCE, "sk docs md");
 
             // Make sure the world isn't paused
             if (this.world.isPaused()) this.world.setPaused(false);

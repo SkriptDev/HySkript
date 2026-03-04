@@ -181,7 +181,7 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
         public void register() {
             AssetStoreType<C, K> assetStoreType = new AssetStoreType<>(assetClass, baseName, pattern, literalParser,
                 toStringFunction, toVariableNameFunction,
-                defaultChanger, arithmetic, documentation, serializer, this.supplier);
+                defaultChanger, arithmetic, documentation, serializer, this.supplier, this.assetMap);
             newTypes = true;
             types.add(assetStoreType);
         }
@@ -189,13 +189,20 @@ public class SkriptRegistration extends io.github.syst3ms.skriptparser.registrat
 
     public static class AssetStoreType<C extends JsonAsset<K>, K extends String> extends Type<C> {
 
+        private final DefaultAssetMap<K, C> assetMap;
+
         public AssetStoreType(Class<C> c, String baseName, String pattern, Function<String, ? extends C> literalParser,
                               Function<? super C, String> toStringFunction,
                               Function<? super C, String> toVariableNameFunction, Changer<? super C> defaultChanger,
                               Arithmetic<C, ?> arithmetic, Documentation documentation, TypeSerializer<C> serializer,
-                              Supplier<Iterator<C>> supplier) {
+                              Supplier<Iterator<C>> supplier, DefaultAssetMap<K, C> assetMap) {
             super(c, baseName, pattern, literalParser, toStringFunction, toVariableNameFunction, defaultChanger,
                 arithmetic, documentation, serializer, supplier);
+            this.assetMap = assetMap;
+        }
+
+        public DefaultAssetMap<K, C> getAssetMap() {
+            return this.assetMap;
         }
     }
 

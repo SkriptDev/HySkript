@@ -1,9 +1,11 @@
 package com.github.skriptdev.skript.api.skript.docs;
 
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
+import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration.AssetStoreType;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.github.skriptdev.skript.plugin.Skript;
+import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import io.github.syst3ms.skriptparser.Parser;
 import io.github.syst3ms.skriptparser.docs.Documentation;
 import io.github.syst3ms.skriptparser.lang.CodeSection;
@@ -222,7 +224,7 @@ public class MarkdownDocPrinter {
                     }
                 }
                 Documentation documentation = jf.getDocumentation();
-                if (documentation.isNoDoc()) return;
+                if (documentation == null || documentation.isNoDoc()) return;
 
                 // Create a pattern for a function
                 String pattern = String.format("%s(%s)", jf.getName(), String.join(", ", parameterNames));
@@ -258,6 +260,17 @@ public class MarkdownDocPrinter {
             Documentation documentation = type.getDocumentation();
             if (documentation.isNoDoc()) return;
 
+            if (type instanceof AssetStoreType<?,?> assetStoreType) {
+                List<String> keys = new ArrayList<>();
+                DefaultAssetMap<?, ?> assetMap = assetStoreType.getAssetMap();
+                assetMap.getAssetMap().keySet().forEach(key -> {
+                    if (key instanceof String s) {
+                        keys.add(s);
+                    }
+                });
+                documentation.setUsage(String.join(", ", keys));
+
+            }
             printDocumentation("Type", writer, documentation, List.of());
             writer.println("- **Can Be Serialized**: " + type.getSerializer().isPresent());
         });

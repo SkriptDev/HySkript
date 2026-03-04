@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.api.skript.docs;
 
 import com.github.skriptdev.skript.api.skript.addon.HySkriptAddon;
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
+import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration.AssetStoreType;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.github.skriptdev.skript.plugin.Skript;
@@ -416,6 +417,13 @@ public class JsonDocPrinter {
             BsonArray descriptionArray = new BsonArray();
             for (String s : documentation.getDescription()) {
                 descriptionArray.add(new BsonString(s));
+            }
+            if (registration instanceof com.github.skriptdev.skript.api.skript.registration.SkriptRegistration) {
+                if (type instanceof AssetStoreType<?, ?>) {
+                    String link = "[Click Here](https://github.com/SkriptDev/HySkript/wiki/_usage-" +
+                        documentation.getName().replace(" ", "-") + ")";
+                    descriptionArray.add(new BsonString("For all values: " + link));
+                }
             }
             syntaxDoc.put("description", descriptionArray);
 
