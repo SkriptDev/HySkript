@@ -105,6 +105,7 @@ public class SecSpawnNPC extends CodeSection {
         NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, null,
             (npcEntity, entityStoreRef, entityStoreStore) -> {
                 SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
+                setNext(null);
 
                 // Copy the locals from the previous trigger into this context
                 Variables.setLocalVariables(spawnMobContext, vars.get());
