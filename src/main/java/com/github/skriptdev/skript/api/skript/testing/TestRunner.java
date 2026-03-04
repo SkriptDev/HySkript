@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.spawn.ISpawnProvider;
 import com.hypixel.hytale.server.core.util.MessageUtil;
 import fi.sulku.hytale.TinyMsg;
@@ -42,10 +43,6 @@ public class TestRunner {
 
     @SuppressWarnings("DataFlowIssue")
     public void start() {
-        Runnable runTestsRunnable = () -> {
-            Utils.log("Running tests in world 'default'...");
-            runTests();
-        };
         Runnable loadTestsRunnable = () -> {
             Utils.log("Testing has started!");
             Utils.log("Loading test scripts...");
@@ -60,12 +57,17 @@ public class TestRunner {
                 ISpawnProvider spawnProvider = this.world.getWorldConfig().getSpawnProvider();
                 Transform spawnPoint = spawnProvider.getSpawnPoint(this.world, UUID.randomUUID());
                 Vector3i pos = spawnPoint.getPosition().toVector3i();
-                long index = ChunkUtil.indexChunkFromBlock(pos.getX(), pos.getZ());
-                this.world.getChunkAsync(index).thenApply(worldChunk -> {
-                    worldChunk.addKeepLoaded();
-                    runTestsRunnable.run();
-                    return null;
-                });
+
+
+                for (int x = pos.getX() - 64; x < pos.getX() + 64; x += 32) {
+                    for (int z = pos.getZ() - 64; z < pos.getZ() + 64; z += 32) {
+                        long index = ChunkUtil.indexChunkFromBlock(x, z);
+                        WorldChunk chunk = this.world.getChunk(index);
+                        chunk.addKeepLoaded();
+                    }
+                }
+                Utils.log("Running tests in world 'default'...");
+                runTests(this.world, pos);
             });
         };
 
@@ -78,7 +80,7 @@ public class TestRunner {
         loadScripts(path);
     }
 
-    private void runTests() {
+    private void runTests(World world, Vector3i pos) {
         // Catch exceptions and treat them as failures
         Statement.setExceptionHandler(e ->
             this.testResults.addFailure("Exception",
@@ -86,7 +88,7 @@ public class TestRunner {
 
         // Run all the test triggers
         for (Trigger allTrigger : TriggerMap.getAllTriggers()) {
-            TestContext context = new TestContext(this.testResults, this.world);
+            TestContext context = new TestContext(this.testResults, world, pos);
             Statement.runAll(allTrigger, context);
             Variables.clearLocalVariables(context);
         }
