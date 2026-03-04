@@ -2,10 +2,14 @@ package com.github.skriptdev.skript.api.skript.testing;
 
 import com.github.skriptdev.skript.api.skript.testing.elements.EvtTest.TestContext;
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.hypixel.hytale.math.util.ChunkUtil;
+import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.spawn.ISpawnProvider;
 import com.hypixel.hytale.server.core.util.MessageUtil;
 import fi.sulku.hytale.TinyMsg;
 import io.github.syst3ms.skriptparser.lang.Statement;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +56,17 @@ public class TestRunner {
             if (this.world.isPaused()) this.world.setPaused(false);
 
             // Run our tests in the world to make sure we have access to blocks/entities
-            this.world.execute(runTestsRunnable);
+            this.world.execute(() -> {
+                ISpawnProvider spawnProvider = this.world.getWorldConfig().getSpawnProvider();
+                Transform spawnPoint = spawnProvider.getSpawnPoint(this.world, UUID.randomUUID());
+                Vector3i pos = spawnPoint.getPosition().toVector3i();
+                long index = ChunkUtil.indexChunkFromBlock(pos.getX(), pos.getZ());
+                this.world.getChunkAsync(index).thenApply(worldChunk -> {
+                    worldChunk.addKeepLoaded();
+                    runTestsRunnable.run();
+                    return null;
+                });
+            });
         };
 
         // Delay start to make sure the server has finished loading
