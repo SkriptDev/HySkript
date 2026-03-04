@@ -8,6 +8,7 @@ import com.hypixel.hytale.builtin.hytalegenerator.assets.biomes.BiomeAsset;
 import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.common.util.java.ManifestUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.camera.CameraEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
@@ -55,6 +56,13 @@ public class TypesAssetStore {
             .examples("set {_block} to blocktype of block at player")
             .since("1.0.0")
             .toStringFunction(BlockType::getId)
+            .register();
+        reg.newAssetStoreType(CameraEffect.class, CameraEffect.getAssetMap(),
+                "cameraeffect", "cameraEffect@s")
+            .name("Camera Effect")
+            .description("Represents the types of camera effects in the game.")
+            .since("INSERT VERSION")
+            .toStringFunction(CameraEffect::getId)
             .register();
         reg.newAssetStoreType(CraftingRecipe.class, CraftingRecipe.getAssetMap(), "craftingrecipe", "craftingrecipe@s")
             .name("Crafting Recipe")
