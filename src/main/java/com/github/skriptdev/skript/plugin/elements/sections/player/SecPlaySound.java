@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.sections.player;
 
+import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -7,6 +8,7 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
@@ -40,13 +42,23 @@ public class SecPlaySound extends CodeSection {
                 " - `3d` = Whether the sound should be 3D ([optional, `location` is required for this] default: false).",
                 " - `sound-category` = The category of the sound ([optional] default: ambient).")
             .experimental("This seems a bit messy/buggy and may change in the future.")
+            .examples("play sound SFX_Bear_Grizzly_Hurt:",
+                "\tto-players: event-player",
+                "\tvolume: 5.0",
+                "\tsound-category: Ambient",
+                "",
+                "play sound SFX_Wood_Walk:",
+                "\tlocation: location of player",
+                "\tvolume: 5.0",
+                "\tpitch: 0.5",
+                "\tsound-category: SFX")
             .since("1.0.0")
             .register();
     }
 
     SectionConfiguration sectionConfig = new SectionConfiguration.Builder()
         .addOptionalExpression("to-players", PlayerRef.class, true)
-        .addOptionalKey("location")
+        .addOptionalExpression("location", Location.class, false)
         .addOptionalLiteral("volume", Number.class)
         .addOptionalLiteral("pitch", Number.class)
         .addOptionalLiteral("3d", Boolean.class)
@@ -76,15 +88,21 @@ public class SecPlaySound extends CodeSection {
         int soundIndex = SoundEvent.getAssetMap().getIndex(soundEvent.getId());
         if (soundIndex < 0) return nextStatement;
 
-        Location location = this.sectionConfig.getValue("location", Location.class).orElse(null);
-        Expression<PlayerRef> playerExpr = this.sectionConfig.getExpression("to-players", PlayerRef.class).orElse(null);
+        Expression<Object> playerExpr = this.sectionConfig.getExpression("to-players", Object.class).orElse(null);
+
+        Location location = null;
+        Expression<Location> locExpr = this.sectionConfig.getExpression("location", Location.class).orElse(null);
+        if (locExpr != null) {
+            location = locExpr.getSingle(ctx).orElse(null);
+        }
+
         Number volume = this.sectionConfig.getValue("volume", Number.class).orElse(1.0f);
         Number pitch = this.sectionConfig.getValue("pitch", Number.class).orElse(1.0f);
         boolean is3d = this.sectionConfig.getValue("3d", Boolean.class).orElse(false);
         SoundCategory soundCategory = this.sectionConfig.getValue("sound-category", SoundCategory.class).orElse(SoundCategory.Ambient);
 
         if (playerExpr != null) {
-            PlayerRef[] playerRefs = playerExpr.getArray(ctx);
+            Object[] playerRefs = playerExpr.getArray(ctx);
             playSoundToPlayer(playerRefs, location, soundIndex, soundCategory, is3d, volume.floatValue(), pitch.floatValue());
         } else if (location != null) {
             playSoundAtLocation(location, soundIndex, soundCategory, is3d, volume.floatValue(), pitch.floatValue());
@@ -97,19 +115,29 @@ public class SecPlaySound extends CodeSection {
         return "";
     }
 
-    public void playSoundToPlayer(@NotNull PlayerRef[] players, @Nullable Location location, int soundEvent,
+    public void playSoundToPlayer(@NotNull Object[] players, @Nullable Location location, int soundEvent,
                                   SoundCategory category, boolean is3d, float volume, float pitch) {
-        for (PlayerRef player : players) {
+        for (Object o : players) {
+            PlayerRef playerRef;
+            if (o instanceof PlayerRef ref) {
+                playerRef = ref;
+            } else if (o instanceof Player player) {
+                playerRef = PlayerUtils.getPlayerRef(player);
+            } else {
+                continue;
+            }
+            if (playerRef == null) continue;
+
             if (is3d && location != null) {
                 Vector3d pos = location.getPosition();
-                Ref<EntityStore> reference = player.getReference();
+                Ref<EntityStore> reference = playerRef.getReference();
                 if (reference == null || !reference.isValid()) continue;
 
                 Store<EntityStore> store = reference.getStore();
                 SoundUtil.playSoundEvent3dToPlayer(reference, soundEvent, category,
                     pos.getX(), pos.getY(), pos.getZ(), volume, pitch, store);
             } else {
-                SoundUtil.playSoundEvent2dToPlayer(player, soundEvent, category, volume, pitch);
+                SoundUtil.playSoundEvent2dToPlayer(playerRef, soundEvent, category, volume, pitch);
             }
         }
     }
