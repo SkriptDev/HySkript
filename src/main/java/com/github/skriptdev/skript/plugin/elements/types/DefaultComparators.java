@@ -1,7 +1,9 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
+import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
@@ -15,8 +17,18 @@ import java.util.concurrent.atomic.AtomicReference;
 public class DefaultComparators {
 
     public static void register() {
+        assetStore();
         block();
         inventory();
+    }
+
+    private static void assetStore() {
+        Comparators.registerComparator(NPCRegistry.NPCRole.class, ModelAsset.class, new Comparator<>(false) {
+            @Override
+            public Relation apply(@NotNull NPCRegistry.NPCRole npcRole, @NotNull ModelAsset modelAsset) {
+                return Relation.get(npcRole.name().equals(modelAsset.getId()));
+            }
+        });
     }
 
     private static void block() {
