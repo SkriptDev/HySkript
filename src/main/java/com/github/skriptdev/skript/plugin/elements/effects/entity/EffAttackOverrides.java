@@ -21,6 +21,7 @@ public class EffAttackOverrides extends Effect {
             .description("Applies an attack override to NPCs or clears their attack overrides.")
             .examples("apply attack override Gun_Shoot to {_e}",
                 "clear attack overrides of {_e}")
+            .since("1.3.0")
             .register();
     }
 
