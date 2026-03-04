@@ -17,7 +17,7 @@ public class EvtSlotTransaction extends SkriptEvent {
                 "inventory item[stack] slot transaction")
             .name("Inventory Item Slot Transaction")
             .description("Called when there is an inventory transaction involving a slot.")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .setHandledContexts(SlotTransactionContext.class)
             .register();
     }

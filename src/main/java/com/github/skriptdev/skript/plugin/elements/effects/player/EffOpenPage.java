@@ -21,7 +21,7 @@ public class EffOpenPage extends Effect {
             .description("Opens a page to the specified players.")
             .examples("open page inventory to player",
                 "open page map to all players")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 

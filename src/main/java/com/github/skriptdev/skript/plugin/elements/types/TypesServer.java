@@ -43,7 +43,7 @@ public class TypesServer {
         registration.newType(ContextMenuItem.class, "contextmenuitem", "contextMenuItem@s")
             .name("Context Menu Item")
             .description("Represents a context menu item that can be used in the world map marker.")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
         registration.newType(Damage.class, "damage", "damage@s")
             .name("Damage")

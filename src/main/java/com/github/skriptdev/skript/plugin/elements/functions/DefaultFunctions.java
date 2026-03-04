@@ -300,7 +300,7 @@ public class DefaultFunctions {
             })
             .name("Context Menu Itme")
             .description("Create a ContextMenuItem to be used with map markers")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 

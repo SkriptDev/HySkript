@@ -20,7 +20,7 @@ public class EffCloseWindows extends Effect {
             .name("Close Windows")
             .description("Close all open windows/pages of a player.")
             .examples("close open windows of player")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 

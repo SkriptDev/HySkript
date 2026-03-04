@@ -20,7 +20,7 @@ public class EvtItemStackTransaction extends SkriptEvent {
         reg.newEvent(EvtItemStackTransaction.class, "inventory item[stack] transaction")
             .name("Inventory ItemStack Transaction")
             .description("Called when there is an inventory transaction involving an ItemStack.")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .setHandledContexts(ItemStackTransactionContext.class)
             .register();
 

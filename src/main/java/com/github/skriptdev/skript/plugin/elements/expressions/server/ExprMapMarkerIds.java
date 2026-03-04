@@ -25,7 +25,7 @@ public class ExprMapMarkerIds implements Expression<String> {
             .name("Map Marker Ids")
             .description("Get the IDs of all map markers of a world or player.")
             .examples("set {_ids::*} to map marker ids of player")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 

@@ -61,6 +61,9 @@ public class ErrorHandler {
                         Utils.error("A world was accessed on the wrong thread!");
                         Utils.warn("Consider using 'execute in %world%' section.");
                         Utils.error("Original error message: %s", message);
+                        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                            Utils.error("  - %s", stackTraceElement);
+                        }
                     }
                 }
             } else if (message.contains("calling a store method from a system")) {

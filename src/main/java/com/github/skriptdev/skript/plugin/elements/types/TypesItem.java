@@ -51,7 +51,7 @@ public class TypesItem {
         reg.newEnumType(ActionType.class, "inventorytransactionactiontype", "inventoryTransactionActionType@s")
             .name("Inventory Transaction Action Type")
             .description("Represents the types of actions that can be performed in an inventory transaction.")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
         reg.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
             .name("Item Component")

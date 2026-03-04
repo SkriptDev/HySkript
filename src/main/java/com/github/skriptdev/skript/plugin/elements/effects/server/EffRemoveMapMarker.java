@@ -29,7 +29,7 @@ public class EffRemoveMapMarker extends Effect {
             .examples("remove map marker with id \"marker1\" from event-world",
                 "remove map markers with ids \"marker1\", \"marker2\" from player",
                 "remove all map markers from world world(\"default\")")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 

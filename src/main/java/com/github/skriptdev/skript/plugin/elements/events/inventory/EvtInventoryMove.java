@@ -29,7 +29,7 @@ public class EvtInventoryMove extends SkriptEvent {
                 " - move = Called after an item is moved from one slot to another (fired twice).",
                 " - pickup = Called when an item is picked up from the inventory (fired once after the item is put down).",
                 " - place down = Called when an item is placed down in the inventory (fired once).")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .setHandledContexts(InventoryMoveContext.class)
             .register();
 

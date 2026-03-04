@@ -56,7 +56,7 @@ public class SecMapMarker extends CodeSection {
                 "\tlocation: location of player",
                 "\tname: \"Warming Spot!\"",
                 "\ttint: color from hex \"#f0750a\"")
-            .since("INSERT VERSION")
+            .since("1.3.0")
             .register();
     }
 
