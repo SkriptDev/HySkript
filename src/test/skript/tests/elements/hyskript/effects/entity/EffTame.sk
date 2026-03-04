@@ -5,5 +5,4 @@ test "EffTame":
 		tame {_e}
 
 	wait 5 tick
-	# assert {_e} is tamed with "The sheep should be tamed now, but found '%npc role of {_e}%'"
-	# TODO broken, chunk loading issue
+	assert {_e} is tamed with "The sheep should be tamed now, but found '%npc role of {_e}%'"

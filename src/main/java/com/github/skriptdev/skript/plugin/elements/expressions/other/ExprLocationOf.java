@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;

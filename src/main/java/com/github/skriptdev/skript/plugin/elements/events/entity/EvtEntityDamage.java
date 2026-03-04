@@ -8,6 +8,8 @@ import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.dependency.Dependency;
+import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -23,25 +25,27 @@ import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class EvtEntityDamage extends SkriptEvent {
 
     public static void register(SkriptRegistration reg) {
         reg.newEvent(EvtEntityDamage.class, "entity damage", "entity damaged")
             .setHandledContexts(EntityDamageContext.class)
             .name("Entity Damage")
-            .description("Called when an entity takes damage.",
-                "**NOTE**: This event is cancellable but doesn't appear to work when trying to cancel.")
+            .description("Called when an entity takes damage.")
             .examples("on entity damage:",
                 "\tbroadcast \"Poor %context-victim%\" was damaged by %context-damage-amount%")
             .since("1.0.0")
             .register();
 
         reg.newSingleContextValue(EntityDamageContext.class, Entity.class,
-            "victim", EntityDamageContext::getVictim)
+                "victim", EntityDamageContext::getVictim)
             .description("The entity that was damaged.")
             .register();
         reg.newSingleContextValue(EntityDamageContext.class, Entity.class,
-            "attacker", EntityDamageContext::getAttacker)
+                "attacker", EntityDamageContext::getAttacker)
             .description("The entity that dealt the damage.")
             .register();
         reg.newSingleContextValue(EntityDamageContext.class, Float.class,
@@ -50,11 +54,11 @@ public class EvtEntityDamage extends SkriptEvent {
             .addSetter(EntityDamageContext::setDamage)
             .register();
         reg.newSingleContextValue(EntityDamageContext.class, Damage.Source.class,
-            "damage-source", EntityDamageContext::getDamageSource)
+                "damage-source", EntityDamageContext::getDamageSource)
             .description("The source of the damage.")
             .register();
         reg.newSingleContextValue(EntityDamageContext.class, DamageCause.class,
-            "damage-cause", EntityDamageContext::getDamageCause)
+                "damage-cause", EntityDamageContext::getDamageCause)
             .description("The cause of the damage.")
             .register();
     }
@@ -93,8 +97,7 @@ public class EvtEntityDamage extends SkriptEvent {
             if (source instanceof Damage.EntitySource entitySource) {
                 Player player = this.store.getComponent(entitySource.getRef(), Player.getComponentType());
                 if (player != null) return player;
-                NPCEntity npc = this.store.getComponent(entitySource.getRef(), NPCEntity.getComponentType());
-                if (npc != null) return npc;
+                return this.store.getComponent(entitySource.getRef(), NPCEntity.getComponentType());
             }
             return null;
         }
@@ -138,6 +141,11 @@ public class EvtEntityDamage extends SkriptEvent {
     }
 
     private static class EntityDamageSystem extends DamageSystems.ApplyDamage {
+
+        @Override
+        public @NotNull Set<Dependency<EntityStore>> getDependencies() {
+            return Collections.singleton(RootDependency.first());
+        }
 
         @SuppressWarnings("DataFlowIssue")
         @Override

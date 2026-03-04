@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.effects.entity;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.hytale.utils.StoreUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;

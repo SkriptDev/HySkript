@@ -3,6 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.effects;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.effects.block.EffBreakBlock;
 import com.github.skriptdev.skript.plugin.elements.effects.block.EffDamageBlock;
+import com.github.skriptdev.skript.plugin.elements.effects.entity.EffAttackOverrides;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffDamage;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffDropItem;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffEntityAttitude;
@@ -24,9 +25,12 @@ import com.github.skriptdev.skript.plugin.elements.effects.other.EffExecuteComma
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendMessage;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendTitle;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffBan;
+import com.github.skriptdev.skript.plugin.elements.effects.player.EffCloseWindows;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffConnect;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffOpenItemContainer;
+import com.github.skriptdev.skript.plugin.elements.effects.player.EffOpenPage;
+import com.github.skriptdev.skript.plugin.elements.effects.server.EffRemoveMapMarker;
 import com.github.skriptdev.skript.plugin.elements.effects.server.EffServerShutdown;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkLoadAsync;
 import com.github.skriptdev.skript.plugin.elements.effects.world.EffChunkRegenerate;
@@ -42,6 +46,7 @@ public class EffectHandler {
         EffDamageBlock.register(registration);
 
         // ENTITY
+        EffAttackOverrides.register(registration);
         EffDamage.register(registration);
         EffDropItem.register(registration);
         EffEntityAttitude.register(registration);
@@ -67,11 +72,14 @@ public class EffectHandler {
 
         // PLAYER
         EffBan.register(registration);
+        EffCloseWindows.register(registration);
         EffConnect.register(registration);
         EffKick.register(registration);
         EffOpenItemContainer.register(registration);
+        EffOpenPage.register(registration);
 
         // SERVER
+        EffRemoveMapMarker.register(registration);
         EffServerShutdown.register(registration);
 
         // WORLD

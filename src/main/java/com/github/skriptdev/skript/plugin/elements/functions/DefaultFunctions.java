@@ -5,6 +5,7 @@ import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.inventory.Inventory;
@@ -27,6 +28,7 @@ public class DefaultFunctions {
         itemFunctions(reg);
         mathFunctions(reg);
         positionFunctions(reg);
+        serverFunctions(reg);
     }
 
     private static void dateTimeFunctions(SkriptRegistration reg) {
@@ -284,6 +286,21 @@ public class DefaultFunctions {
             .description("Returns the world with the given name.")
             .examples("set {_world} to world(\"default\")")
             .since("1.0.0")
+            .register();
+    }
+
+    private static void serverFunctions(SkriptRegistration reg) {
+        reg.newJavaFunction("contextMenuItem", ContextMenuItem.class, true)
+            .parameter("name", String.class, true)
+            .parameter("command", String.class, true)
+            .executeSingle(params -> {
+                String name = (String) params[0][0];
+                String command = (String) params[1][0];
+                return new ContextMenuItem(name, command);
+            })
+            .name("Context Menu Itme")
+            .description("Create a ContextMenuItem to be used with map markers")
+            .since("INSERT VERSION")
             .register();
     }
 

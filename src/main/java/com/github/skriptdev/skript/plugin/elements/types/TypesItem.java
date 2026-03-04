@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.EmptyItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.inventory.transaction.ActionType;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import io.github.syst3ms.skriptparser.types.changers.TypeSerializer;
 import org.bson.BsonDocument;
@@ -47,6 +48,11 @@ public class TypesItem {
             .description("Represents the types of actions that can be performed in an inventory.")
             .since("1.0.0")
             .register();
+        reg.newEnumType(ActionType.class, "inventorytransactionactiontype", "inventoryTransactionActionType@s")
+            .name("Inventory Transaction Action Type")
+            .description("Represents the types of actions that can be performed in an inventory transaction.")
+            .since("INSERT VERSION")
+            .register();
         reg.newType(ItemComponent.class, "itemcomponent", "itemComponent@s")
             .name("Item Component")
             .description("Represents the component of a dropped item.")
@@ -58,7 +64,10 @@ public class TypesItem {
             .name("Item Container")
             .description("Represents an item container within an inventory (such as the armor container).")
             .since("1.0.0")
-            .toStringFunction(ItemContainer::toString)
+            .toStringFunction((itemContainer) ->
+                String.format("%s{capacity=%d}",
+                    itemContainer.getClass().getSimpleName(),
+                    itemContainer.getCapacity()))
             .serializer(new TypeSerializer<>() {
                 @Override
                 public JsonElement serialize(@NotNull Gson gson, @NotNull ItemContainer value) {

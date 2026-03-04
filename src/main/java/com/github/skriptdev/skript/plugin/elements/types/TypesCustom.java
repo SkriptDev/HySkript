@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
-import com.github.skriptdev.skript.api.hytale.Direction;
+import com.github.skriptdev.skript.api.hytale.objects.Direction;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 
 public class TypesCustom {

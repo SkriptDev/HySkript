@@ -1,12 +1,14 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
+import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -20,9 +22,17 @@ import java.util.Optional;
 public class DefaultConverters {
 
     public static void register() {
+        assetStore();
         entity();
         inventory();
         other();
+    }
+
+    private static void assetStore() {
+        Converters.registerConverter(ModelAsset.class, NPCRegistry.NPCRole.class, modelAsset ->
+            Optional.ofNullable(NPCRegistry.parse(modelAsset.getId())));
+        Converters.registerConverter(NPCRegistry.NPCRole.class, ModelAsset.class, (npcRole) ->
+            Optional.ofNullable(ModelAsset.getAssetMap().getAsset(npcRole.name())));
     }
 
     @SuppressWarnings("removal")

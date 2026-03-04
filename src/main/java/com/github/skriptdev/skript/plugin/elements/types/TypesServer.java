@@ -11,6 +11,7 @@ import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.Vector2f;
 import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
+import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
@@ -38,6 +39,11 @@ public class TypesServer {
             .description("Represents a command sender such as a player or the console.")
             .since("1.0.0")
             .toStringFunction(CommandSender::getDisplayName)
+            .register();
+        registration.newType(ContextMenuItem.class, "contextmenuitem", "contextMenuItem@s")
+            .name("Context Menu Item")
+            .description("Represents a context menu item that can be used in the world map marker.")
+            .since("INSERT VERSION")
             .register();
         registration.newType(Damage.class, "damage", "damage@s")
             .name("Damage")

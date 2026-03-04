@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.events.player;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.event.CancellableContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.SystemEvent;

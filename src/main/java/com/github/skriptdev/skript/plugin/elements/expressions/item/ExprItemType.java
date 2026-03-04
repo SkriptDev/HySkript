@@ -1,6 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.item;
 
-import com.github.skriptdev.skript.api.hytale.Block;
+import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.inventory.ItemStack;

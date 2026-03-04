@@ -3,6 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.expressions;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockAt;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockFluid;
+import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockFluidLevel;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockHealth;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockIterator;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockRotation;
@@ -10,37 +11,33 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockSp
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockTint;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockTypeAtLocation;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockTypeOfBlock;
-import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprBlockFluidLevel;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprHighestBlock;
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetBlockOfPlayer;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityAttitude;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityComponents;
-import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityModel;
-import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStamina;
-import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprLockedTarget;
-import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemQuality;
-import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprValueWithin;
-import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerDefenseLevel;
-import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementBaseSpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
-import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityScale;
-import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectDuration;
-import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffects;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHealth;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityModel;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityScale;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStamina;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityStat;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityVelocity;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprHeldItem;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprLockedTarget;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprNPCType;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprName;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprTargetEntityOfEntity;
+import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectDuration;
 import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffectEffect;
+import com.github.skriptdev.skript.plugin.elements.expressions.entityeffect.ExprActiveEntityEffects;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventory;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventoryAmountOfItems;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventorySlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprInventorySlots;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemContainer;
+import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemQuality;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStack;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStackName;
 import com.github.skriptdev.skript.plugin.elements.expressions.item.ExprItemStackQuantity;
@@ -63,6 +60,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprMessage
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprMessageProperties;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprUUID;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprUUIDRandom;
+import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprValueWithin;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprVector3d;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprVector3f;
 import com.github.skriptdev.skript.plugin.elements.expressions.other.ExprVector3i;
@@ -70,6 +68,8 @@ import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprAllPla
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprChatMessage;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprGameMode;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerClientViewRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerDefenseLevel;
+import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementBaseSpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementFlySpeed;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementJumpForce;
 import com.github.skriptdev.skript.plugin.elements.expressions.player.ExprPlayerMovementMass;
@@ -82,6 +82,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprEntityRef
 import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprRefComponent;
 import com.github.skriptdev.skript.plugin.elements.expressions.ref.ExprRefInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprConsole;
+import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprMapMarkerIds;
 import com.github.skriptdev.skript.plugin.elements.expressions.server.ExprServerViewRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprAllWorlds;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprChunkAtLocation;
@@ -90,9 +91,9 @@ import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprRelativ
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorld;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldCurrentMSPT;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldCurrentTPS;
+import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldDateTime;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldOf;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldSpawn;
-import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldDateTime;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldTPS;
 import com.github.skriptdev.skript.plugin.elements.expressions.world.ExprWorldTimeDurations;
 
@@ -194,6 +195,7 @@ public class ExpressionHandler {
 
         // SERVER
         ExprConsole.register(registration);
+        ExprMapMarkerIds.register(registration);
         ExprServerViewRadius.register(registration);
 
         // WORLD
