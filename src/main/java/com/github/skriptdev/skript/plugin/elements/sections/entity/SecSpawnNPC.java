@@ -113,21 +113,18 @@ public class SecSpawnNPC extends CodeSection {
                     Statement.runAll(statement, spawnMobContext));
 
                 // After that is run, copy them back
-                VariableMap map = Variables.copyLocalVariables(spawnMobContext);
-                vars.set(map);
+                VariableMap sectionVariables = Variables.copyLocalVariables(spawnMobContext);
 
                 // Clear locals from the no longer used SpawnMobContext
                 Variables.clearLocalVariables(spawnMobContext);
 
                 nextStatement.ifPresent(statement -> {
                     // Take the previous local variables and use them again in this context
-                    Variables.setLocalVariables(ctx, vars.get());
+                    Variables.setLocalVariables(ctx, sectionVariables);
                     Statement.runAll(statement, ctx);
-
                 });
                 // Now we're done, we can clear them out
                 Variables.clearLocalVariables(ctx);
-                vars.get().clearVariables();
             });
 
         return Optional.empty();
