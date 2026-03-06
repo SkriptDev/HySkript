@@ -1,0 +1,9 @@
+test "Variables":
+	set {_var::*} to "one", "two" and "three"
+	assert size of {_var::*} is 3 with "Should be 3 elements"
+
+	assert {_var::1} is "one" with "Should be 'one'"
+
+	# Old issue where same named variables could override each other,
+	# want to verify that it's still working
+	assert {_var} is not set with "This var should not be set"
