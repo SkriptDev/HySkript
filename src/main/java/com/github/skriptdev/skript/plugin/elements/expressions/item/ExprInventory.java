@@ -1,8 +1,13 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.item;
 
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
@@ -10,20 +15,22 @@ import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-@Deprecated(forRemoval = true, since = "INSERT VERSION")
-public class ExprInventory implements Expression<Inventory> {
+public class ExprInventory implements Expression<ItemContainer> {
 
     public static void register(SkriptRegistration registration) {
-        registration.newExpression(ExprInventory.class, Inventory.class, false,
-                "inventory of %livingentity%")
-            .name("Inventory")
-            .description("Returns the inventory of a living entity.",
-                "An inventory can also be cleared.",
-                "**Deprecated as of `INSERT VERSION` and will be removed in the future.**")
+        registration.newExpression(ExprInventory.class, ItemContainer.class, false,
+                "inventory of %livingentities%")
+            .name("Inventory of LivingEntity")
+            .description("While it is called \"inventory\" it will " +
+                    "actually return the combined everything ItemContainer of a LivingEntity.",
+                "This is essentially a shortcut for the `combined everything item contatiner of` expression.")
             .examples("set {_inv} to inventory of player",
-                "clear inventory of player")
+                "clear inventory of player",
+                "add itemstack of ingredient_stick to inventory of player")
             .since("1.0.0")
             .register();
     }
@@ -40,11 +47,17 @@ public class ExprInventory implements Expression<Inventory> {
     }
 
     @Override
-    public Inventory[] getValues(@NotNull TriggerContext ctx) {
-        Optional<? extends LivingEntity> single = this.entity.getSingle(ctx);
-        if (single.isEmpty()) return null;
-        LivingEntity livingEntity = single.get();
-        return new Inventory[]{livingEntity.getInventory()};
+    public ItemContainer[] getValues(@NotNull TriggerContext ctx) {
+        List<ItemContainer> containers = new ArrayList<>();
+        for (LivingEntity livingEntity : this.entity.getArray(ctx)) {
+            Ref<EntityStore> reference = livingEntity.getReference();
+            if (reference == null) continue;
+
+            Store<EntityStore> store = reference.getStore();
+            CombinedItemContainer combined = InventoryComponent.getCombined(store, reference, InventoryComponent.EVERYTHING);
+            containers.add(combined);
+        }
+        return containers.toArray(new ItemContainer[0]);
     }
 
     @Override
@@ -57,17 +70,17 @@ public class ExprInventory implements Expression<Inventory> {
 
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
-        Inventory[] toChange = getValues(ctx);
+        ItemContainer[] toChange = getValues(ctx);
         if (changeMode == ChangeMode.ADD) {
-            for (Inventory inventory : toChange) {
+            for (ItemContainer inventory : toChange) {
                 for (Object o : changeWith) {
                     if (o instanceof ItemStack itemStack) {
-                        inventory.getCombinedEverything().addItemStack(itemStack);
+                        inventory.addItemStack(itemStack);
                     }
                 }
             }
         } else if (changeMode == ChangeMode.DELETE) {
-            for (Inventory inventory : toChange) {
+            for (ItemContainer inventory : toChange) {
                 inventory.clear();
             }
         }
