@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+@Deprecated(forRemoval = true, since = "INSERT VERSION")
 public class ExprInventory implements Expression<Inventory> {
 
     public static void register(SkriptRegistration registration) {
@@ -19,7 +20,8 @@ public class ExprInventory implements Expression<Inventory> {
                 "inventory of %livingentity%")
             .name("Inventory")
             .description("Returns the inventory of a living entity.",
-                "An inventory can also be cleared.")
+                "An inventory can also be cleared.",
+                "**Deprecated as of `INSERT VERSION` and will be removed in the future.**")
             .examples("set {_inv} to inventory of player",
                 "clear inventory of player")
             .since("1.0.0")
@@ -31,6 +33,8 @@ public class ExprInventory implements Expression<Inventory> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
+        parseContext.getLogger().warn("'inventory of %livingentity%' has been deprecated. " +
+            "This may still work but will be removed in the future.");
         this.entity = (Expression<LivingEntity>) expressions[0];
         return true;
     }

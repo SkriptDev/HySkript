@@ -20,9 +20,10 @@ public class ExprItemsInInventory implements Expression<ItemStack> {
         reg.newExpression(ExprItemsInInventory.class, ItemStack.class, false,
                 "itemstacks in %inventory/itemcontainer%")
             .name("Itemstacks in Inventory/ItemContainer")
-            .description("Returns all itemstacks in an Inventory or ItemContainer.")
-            .examples("set {_items::*} to itemstacks in inventory of player",
-                "loop itemstacks in inventory of player:")
+            .description("Returns all itemstacks in an Inventory or ItemContainer.",
+                "**The inventory option has been deprecated and will be removed in a future version.**")
+            .examples("set {_items::*} to itemstacks in combined everything container of player",
+                "loop itemstacks in storage item container of player:")
             .since("1.0.0")
             .register();
     }

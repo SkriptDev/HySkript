@@ -7,8 +7,6 @@ import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
-import com.hypixel.hytale.server.core.entity.LivingEntity;
-import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
@@ -117,49 +115,50 @@ public class DefaultFunctions {
             .since("1.0.0")
             .register();
 
-        reg.newJavaFunction("inventory", Inventory.class, true)
-            .parameter("storageCapacity", Number.class)
-            .parameter("armorCapacity", Number.class)
-            .parameter("hotbarCapacity", Number.class)
-            .parameter("utilityCapacity", Number.class)
-            .executeSingle(params -> {
-                short storage = (short) Math.max(((Number) params[0][0]).shortValue(), 0);
-                short armor = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
-                short hotbar = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
-                short utility = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
-                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
-                // Unregister click listeners since there's no owner
-                inv.unregister();
-                return inv;
-            })
-            .name("Inventory")
-            .description("Create a new inventory with the given ItemContainer sizes.",
-                "This inventory will not have click events due to no owner.",
-                "See the `inventoryWithOwner` function for that.")
-            .since("1.1.0")
-            .register();
-
-        reg.newJavaFunction("inventoryWithOwner", Inventory.class, true)
-            .parameter("owner", LivingEntity.class)
-            .parameter("storageCapacity", Number.class)
-            .parameter("armorCapacity", Number.class)
-            .parameter("hotbarCapacity", Number.class)
-            .parameter("utilityCapacity", Number.class)
-            .executeSingle(params -> {
-                LivingEntity livingEntity = (LivingEntity) params[0][0];
-                short storage = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
-                short armor = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
-                short hotbar = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
-                short utility = (short) Math.max(((Number) params[4][0]).shortValue(), 0);
-                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
-                inv.setEntity(livingEntity);
-                return inv;
-            })
-            .name("Inventory with Owner")
-            .description("Create a new inventory with the given ItemContainer capacities and an owner.",
-                "The owner is used for registered click events.")
-            .since("1.1.0")
-            .register();
+        // Remove for now, may re-introduce something in the future
+//        reg.newJavaFunction("inventory", InventoryComponent.class, true)
+//            .parameter("storageCapacity", Number.class)
+//            .parameter("armorCapacity", Number.class)
+//            .parameter("hotbarCapacity", Number.class)
+//            .parameter("utilityCapacity", Number.class)
+//            .executeSingle(params -> {
+//                short storage = (short) Math.max(((Number) params[0][0]).shortValue(), 0);
+//                short armor = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
+//                short hotbar = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
+//                short utility = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
+//                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
+//                // Unregister click listeners since there's no owner
+//                inv.unregister();
+//                return inv;
+//            })
+//            .name("Inventory")
+//            .description("Create a new inventory with the given ItemContainer sizes.",
+//                "This inventory will not have click events due to no owner.",
+//                "See the `inventoryWithOwner` function for that.")
+//            .since("1.1.0")
+//            .register();
+//
+//        reg.newJavaFunction("inventoryWithOwner", Inventory.class, true)
+//            .parameter("owner", LivingEntity.class)
+//            .parameter("storageCapacity", Number.class)
+//            .parameter("armorCapacity", Number.class)
+//            .parameter("hotbarCapacity", Number.class)
+//            .parameter("utilityCapacity", Number.class)
+//            .executeSingle(params -> {
+//                LivingEntity livingEntity = (LivingEntity) params[0][0];
+//                short storage = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
+//                short armor = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
+//                short hotbar = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
+//                short utility = (short) Math.max(((Number) params[4][0]).shortValue(), 0);
+//                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
+//                inv.setEntity(livingEntity);
+//                return inv;
+//            })
+//            .name("Inventory with Owner")
+//            .description("Create a new inventory with the given ItemContainer capacities and an owner.",
+//                "The owner is used for registered click events.")
+//            .since("1.1.0")
+//            .register();
 
         reg.newJavaFunction("itemContainer", ItemContainer.class, true)
             .parameter("capacity", Number.class)

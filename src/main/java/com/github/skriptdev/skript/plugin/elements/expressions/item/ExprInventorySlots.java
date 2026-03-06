@@ -18,7 +18,8 @@ public class ExprInventorySlots implements Expression<Number> {
         reg.newExpression(ExprInventorySlots.class, Number.class, false,
                 "slots (of|in) %inventory/itemcontainer%")
             .name("Inventory Slots")
-            .description("Returns all slots in an Inventory or ItemContainer as numbers.")
+            .description("Returns all slots in an Inventory or ItemContainer as numbers.",
+                "**The inventory option has been deprecated and will be removed in a future version.**")
             .examples("loop slots of inventory of player:",
                 "loop slots of hotbar item container of inventory of player:")
             .since("1.0.0")
