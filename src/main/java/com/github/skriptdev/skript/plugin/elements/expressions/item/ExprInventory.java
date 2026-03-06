@@ -40,8 +40,6 @@ public class ExprInventory implements Expression<ItemContainer> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
-        parseContext.getLogger().warn("'inventory of %livingentity%' has been deprecated. " +
-            "This may still work but will be removed in the future.");
         this.entity = (Expression<LivingEntity>) expressions[0];
         return true;
     }
