@@ -11,6 +11,7 @@ import com.github.skriptdev.skript.plugin.elements.conditions.item.CondInventory
 import com.github.skriptdev.skript.plugin.elements.conditions.other.CondObjectOfType;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerHasPermission;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerHasPlayedBefore;
+import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerIsOnline;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementCrouching;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementFalling;
 import com.github.skriptdev.skript.plugin.elements.conditions.player.CondPlayerMovementFlying;
@@ -50,6 +51,7 @@ public class ConditionHandler {
         // PLAYER
         CondPlayerHasPermission.register(registration);
         CondPlayerHasPlayedBefore.register(registration);
+        CondPlayerIsOnline.register(registration);
         CondPlayerMovementCanFly.register(registration);
         CondPlayerMovementCrouching.register(registration);
         CondPlayerMovementFalling.register(registration);

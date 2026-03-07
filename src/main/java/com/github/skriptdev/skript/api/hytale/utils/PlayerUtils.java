@@ -78,7 +78,7 @@ public class PlayerUtils {
      */
     public static @Nullable PlayerRef getPlayerRef(Player player) {
         World world = player.getWorld();
-        assert world != null;
+        if (world == null) return null;
 
         Ref<EntityStore> reference = player.getReference();
         assert reference != null;

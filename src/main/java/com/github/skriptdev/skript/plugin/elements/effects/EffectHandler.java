@@ -25,6 +25,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.other.EffExecuteComma
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendMessage;
 import com.github.skriptdev.skript.plugin.elements.effects.other.EffSendTitle;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffBan;
+import com.github.skriptdev.skript.plugin.elements.effects.player.EffCameraEffect;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffCloseWindows;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffConnect;
 import com.github.skriptdev.skript.plugin.elements.effects.player.EffKick;
@@ -72,6 +73,7 @@ public class EffectHandler {
 
         // PLAYER
         EffBan.register(registration);
+        EffCameraEffect.register(registration);
         EffCloseWindows.register(registration);
         EffConnect.register(registration);
         EffKick.register(registration);

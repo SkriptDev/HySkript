@@ -15,6 +15,7 @@ import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDeath;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityPickupItem;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityRemove;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtLivingEntityInvChange;
+import com.github.skriptdev.skript.plugin.elements.events.entity.EvtTeleport;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtInventoryMove;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtItemStackSlotTransaction;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtSlotTransaction;
@@ -63,6 +64,7 @@ public class EventHandler {
         EvtEntityPickupItem.register(registration);
         EvtEntityRemove.register(registration);
         EvtLivingEntityInvChange.register(registration);
+        EvtTeleport.register(registration);
 
         // INVENTORY
         InventoryListener.registerListener(registration);
