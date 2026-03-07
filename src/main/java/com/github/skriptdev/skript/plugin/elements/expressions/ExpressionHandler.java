@@ -17,6 +17,7 @@ import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActive
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityAttitude;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityComponents;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityFallDistance;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHealth;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityModel;
@@ -119,6 +120,7 @@ public class ExpressionHandler {
         ExprEntitiesInRadius.register(registration);
         ExprEntityAttitude.register(registration);
         ExprEntityComponents.register(registration);
+        ExprEntityFallDistance.register(registration);
         ExprEntityHeadRotation.register(registration);
         ExprEntityHealth.register(registration);
         ExprEntityModel.register(registration);
