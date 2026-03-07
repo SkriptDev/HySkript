@@ -43,7 +43,7 @@ public class EvtTeleport extends SystemEvent<EvtTeleport.TeleportSystem> {
             .description("Called when an entity/player teleports.")
             .examples("on player teleport:",
                 "\tsend \"Ok byeeee....\" to player")
-            .since("INSERT VERSION")
+            .since("1.4.0")
             .setHandledContexts(TeleportContext.class)
             .register();
 

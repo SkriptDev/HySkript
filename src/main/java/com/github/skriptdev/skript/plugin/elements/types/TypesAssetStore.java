@@ -61,7 +61,7 @@ public class TypesAssetStore {
                 "cameraeffect", "cameraEffect@s")
             .name("Camera Effect")
             .description("Represents the types of camera effects in the game.")
-            .since("INSERT VERSION")
+            .since("1.4.0")
             .toStringFunction(CameraEffect::getId)
             .register();
         reg.newAssetStoreType(CraftingRecipe.class, CraftingRecipe.getAssetMap(), "craftingrecipe", "craftingrecipe@s")
