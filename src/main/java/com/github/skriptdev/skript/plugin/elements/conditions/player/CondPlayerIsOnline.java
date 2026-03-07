@@ -19,7 +19,7 @@ public class CondPlayerIsOnline extends PropertyConditional<Object> {
             .examples("if player is online:",
                 "if player is not online:",
                 "while player is online:")
-            .since("INSERT VERSION")
+            .since("1.4.0")
             .register();
     }
 

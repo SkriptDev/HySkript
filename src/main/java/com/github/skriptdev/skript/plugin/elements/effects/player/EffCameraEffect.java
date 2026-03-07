@@ -23,7 +23,7 @@ public class EffCameraEffect extends Effect {
             .description("Applies a camera effect to the specified players with an optional intensity.")
             .examples("apply camera effect Impact_Strong to player",
                 "apply camera effect Mace_Explode with intensity 2 to player")
-            .since("INSERT VERSION")
+            .since("1.4.0")
             .register();
     }
 
