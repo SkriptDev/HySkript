@@ -3,6 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.sections;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.sections.entity.SecApplyStatModifier;
 import com.github.skriptdev.skript.plugin.elements.sections.entity.SecDropItem;
+import com.github.skriptdev.skript.plugin.elements.sections.entity.SecSpawnDisplay;
 import com.github.skriptdev.skript.plugin.elements.sections.entity.SecSpawnNPC;
 import com.github.skriptdev.skript.plugin.elements.sections.player.SecPlaySound;
 import com.github.skriptdev.skript.plugin.elements.sections.player.SecSendNotification;
@@ -18,6 +19,7 @@ public class SectionHandler {
         // ENTITY
         SecApplyStatModifier.register(registration);
         SecDropItem.register(registration);
+        SecSpawnDisplay.register(registration);
         SecSpawnNPC.register(registration);
 
         // PLAYER

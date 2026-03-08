@@ -10,15 +10,30 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.model.config.Model;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
+import com.hypixel.hytale.server.core.entity.entities.BlockEntity;
 import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
 import com.hypixel.hytale.server.core.entity.nameplate.Nameplate;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.entity.component.EntityScaleComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
+import com.hypixel.hytale.server.core.modules.entity.component.ModelComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.PersistentModel;
+import com.hypixel.hytale.server.core.modules.entity.component.PropComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
+import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
+import com.hypixel.hytale.server.core.modules.entity.item.PreventPickup;
+import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatsModule;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -29,6 +44,7 @@ import io.github.syst3ms.skriptparser.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 /**
@@ -227,7 +243,7 @@ public class EntityUtils {
 
     @SuppressWarnings({"DataFlowIssue"})
     public static @NotNull Pair<Ref<EntityStore>, ItemComponent> dropItem(Store<EntityStore> store, ItemStack itemStack,
-                                                                Location location, Vector3f velocity, float pickupDelay) {
+                                                                          Location location, Vector3f velocity, float pickupDelay) {
         if (itemStack.isEmpty() || !itemStack.isValid()) {
             return new Pair<>(null, null);
         }
@@ -322,6 +338,119 @@ public class EntityUtils {
                 markedEntitySupport.clearMarkedEntity(i);
             }
         }
+    }
+
+    private static String getItemModelId(@Nonnull Item item) {
+        String modelId = item.getModel();
+
+        if (modelId == null && item.hasBlockType()) {
+            BlockType blockType = BlockType.getAssetMap().getAsset(item.getId());
+
+            if (blockType != null && blockType.getCustomModel() != null) {
+                modelId = blockType.getCustomModel();
+            }
+        }
+
+        return modelId;
+    }
+
+    private static Model getItemModel(@Nonnull Item item) {
+        String modelId = getItemModelId(item);
+
+        if (modelId == null) {
+            return null;
+        } else {
+            ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(modelId);
+
+            return modelAsset != null ? Model.createStaticScaledModel(modelAsset, 1.0f) : null;
+        }
+    }
+
+    public static Ref<EntityStore> spawnModel(@NotNull Object object, @NotNull Location location) {
+        return switch (object) {
+            case Item item -> spawnItem(item, location);
+            case BlockType blockType -> spawnBlock(null, blockType, location);
+            case ModelAsset modelAsset -> spawnModel(null, Model.createStaticScaledModel(modelAsset, 1.0f), location);
+            default -> null;
+        };
+    }
+
+    public static Ref<EntityStore> spawnModel(@Nullable Item item, @NotNull Model model, @NotNull Location location) {
+        World world = Universe.get().getWorld(location.getWorld());
+        if (world == null) return null;
+
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        Holder<EntityStore> holder = store.getRegistry().newHolder();
+
+        holder.addComponent(NetworkId.getComponentType(), new NetworkId(store.getExternalData().takeNextNetworkId()));
+        holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(location.getPosition(), location.getRotation()));
+        holder.addComponent(ModelComponent.getComponentType(), new ModelComponent(model));
+        holder.addComponent(PersistentModel.getComponentType(), new PersistentModel(new Model.ModelReference(model.getModelAssetId(), 1.0f, null, true)));
+        if (item != null) {
+            ItemStack itemStack = new ItemStack(item.getId(), 1);
+            itemStack.setOverrideDroppedItemAnimation(true);
+            holder.addComponent(ItemComponent.getComponentType(), new ItemComponent(itemStack));
+        }
+        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(1.0f));
+        holder.addComponent(PreventPickup.getComponentType(), PreventPickup.INSTANCE);
+        holder.addComponent(PreventItemMerging.getComponentType(), PreventItemMerging.INSTANCE);
+        holder.addComponent(HeadRotation.getComponentType(), new HeadRotation(location.getRotation()));
+        holder.addComponent(PropComponent.getComponentType(), PropComponent.get());
+        holder.ensureComponent(UUIDComponent.getComponentType());
+        return store.addEntity(holder, AddReason.SPAWN);
+    }
+
+    public static Ref<EntityStore> spawnItem(@NotNull Item item, @NotNull Location location) {
+        Model model = getItemModel(item);
+        if (model != null) {
+            return spawnModel(item, model, location);
+        }
+        if (item.hasBlockType()) {
+            BlockType blockType = BlockType.getAssetMap().getAsset(item.getId());
+            if (blockType != null) {
+                return spawnBlock(item, blockType, location);
+            }
+        }
+        World world = Universe.get().getWorld(location.getWorld());
+        if (world == null) return null;
+
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        Holder<EntityStore> holder = store.getRegistry().newHolder();
+
+        holder.addComponent(NetworkId.getComponentType(), new NetworkId(store.getExternalData().takeNextNetworkId()));
+        holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(location.getPosition(), location.getRotation()));
+        ItemStack itemStack = new ItemStack(item.getId(), 1);
+        itemStack.setOverrideDroppedItemAnimation(true);
+        holder.addComponent(ItemComponent.getComponentType(), new ItemComponent(itemStack));
+        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(1.0f));
+        holder.addComponent(PreventPickup.getComponentType(), PreventPickup.INSTANCE);
+        holder.addComponent(PreventItemMerging.getComponentType(), PreventItemMerging.INSTANCE);
+        holder.addComponent(HeadRotation.getComponentType(), new HeadRotation(location.getRotation()));
+        holder.addComponent(PropComponent.getComponentType(), PropComponent.get());
+        return store.addEntity(holder, AddReason.SPAWN);
+    }
+
+    public static Ref<EntityStore> spawnBlock(@Nullable Item item, @NotNull BlockType blockType, @NotNull Location location) {
+        World world = Universe.get().getWorld(location.getWorld());
+        if (world == null) return null;
+
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        Holder<EntityStore> holder = store.getRegistry().newHolder();
+
+        holder.addComponent(BlockEntity.getComponentType(), new BlockEntity(blockType.getId()));
+        holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(location.getPosition(), location.getRotation()));
+        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(1.0F));
+        if (item != null) {
+            ItemStack itemStack = new ItemStack(item.getId(), 1);
+            itemStack.setOverrideDroppedItemAnimation(true);
+            holder.addComponent(ItemComponent.getComponentType(), new ItemComponent(itemStack));
+        }
+        holder.addComponent(PreventPickup.getComponentType(), PreventPickup.INSTANCE);
+        holder.addComponent(PreventItemMerging.getComponentType(), PreventItemMerging.INSTANCE);
+        holder.addComponent(HeadRotation.getComponentType(), new HeadRotation(location.getRotation()));
+        holder.addComponent(PropComponent.getComponentType(), PropComponent.get());
+        holder.ensureComponent(UUIDComponent.getComponentType());
+        return store.addEntity(holder, AddReason.SPAWN);
     }
 
 }
