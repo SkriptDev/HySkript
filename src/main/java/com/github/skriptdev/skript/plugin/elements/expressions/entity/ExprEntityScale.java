@@ -69,12 +69,10 @@ public class ExprEntityScale extends PropertyExpression<Object, Number> {
                 component = EntityUtils.ensureAndGetComponent(entity, EntityScaleComponent.getComponentType());
             } else if (o instanceof Ref<?> r) {
                 Ref<EntityStore> ref = (Ref<EntityStore>) r;
-                component = ref.getStore().getComponent(ref, EntityScaleComponent.getComponentType());
+                component = ref.getStore().ensureAndGetComponent(ref, EntityScaleComponent.getComponentType());
             } else {
                 continue;
             }
-
-            if (component == null) continue;
 
             float oldValue = component.getScale();
             float changeValue = number.floatValue();
