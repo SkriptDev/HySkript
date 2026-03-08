@@ -7,14 +7,15 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Literal;
+import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.Trigger;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.VariableString;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.lang.event.StartOnLoadEvent;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
+import io.github.syst3ms.skriptparser.variables.Variables;
 
 import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
@@ -73,7 +74,11 @@ public class EvtPeriodical extends SkriptEvent implements StartOnLoadEvent {
         Duration dur = this.duration.getSingle().orElseThrow(AssertionError::new);
         long durationMillis = dur.toMillis();
 
-        Runnable runTrigger = () -> TriggerMap.callTriggersByContext(new PeriodicalContext(this.world));
+        Runnable runTrigger = () -> {
+            PeriodicalContext periodicalContext = new PeriodicalContext(this.world);
+            Statement.runAll(trigger, periodicalContext);
+            Variables.clearLocalVariables(periodicalContext);
+        };
 
         this.scheduledFuture = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(() -> {
             if (this.world != null) {
