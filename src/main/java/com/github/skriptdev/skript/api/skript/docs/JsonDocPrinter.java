@@ -50,7 +50,7 @@ public class JsonDocPrinter {
     private final SkriptAddon addon;
     private final String addonKey;
     private final boolean includeSkriptParser;
-    private final List<String> IDS = new ArrayList<>();
+    private final List<String> ids = new ArrayList<>();
 
     public JsonDocPrinter(CommandSender sender, SkriptAddon addon) {
         this.sender = sender;
@@ -595,10 +595,10 @@ public class JsonDocPrinter {
         }
         String s = type + ":" + addonName + ":" + syntaxId;
         String id = s.toLowerCase(Locale.ROOT).replace(" ", "_");
-        if (this.IDS.contains(id)) {
+        if (this.ids.contains(id)) {
             Utils.error("Duplicate ID: " + id);
         }
-        this.IDS.add(id);
+        this.ids.add(id);
         return new BsonString(id);
 
     }

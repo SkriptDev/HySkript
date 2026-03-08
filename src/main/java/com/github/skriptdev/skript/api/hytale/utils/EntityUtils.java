@@ -385,7 +385,9 @@ public class EntityUtils {
         holder.addComponent(NetworkId.getComponentType(), new NetworkId(store.getExternalData().takeNextNetworkId()));
         holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(location.getPosition(), location.getRotation()));
         holder.addComponent(ModelComponent.getComponentType(), new ModelComponent(model));
-        holder.addComponent(PersistentModel.getComponentType(), new PersistentModel(new Model.ModelReference(model.getModelAssetId(), 1.0f, null, true)));
+        holder.addComponent(PersistentModel.getComponentType(),
+            new PersistentModel(
+                new Model.ModelReference(model.getModelAssetId(), 1.0f, null, true)));
         if (item != null) {
             ItemStack itemStack = new ItemStack(item.getId(), 1);
             itemStack.setOverrideDroppedItemAnimation(true);
