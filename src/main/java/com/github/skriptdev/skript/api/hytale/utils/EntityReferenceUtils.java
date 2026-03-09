@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.spatial.SpatialResource;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
@@ -42,6 +43,16 @@ public class EntityReferenceUtils {
 
     public static ReferenceType<?> getType(Class<? extends Component<?>> componentClass) {
         return TYPES_MAP.get(componentClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static @Nullable Ref<EntityStore> getRef(Object o) {
+        if (o instanceof Ref<?> ref) {
+            return (Ref<EntityStore>) ref;
+        } else if (o instanceof Entity entity) {
+            return entity.getReference();
+        }
+        return null;
     }
 
     public static List<Ref<EntityStore>> getRefsInSphere(@Nonnull Vector3d pos, double radius, @Nonnull Store<EntityStore> store) {

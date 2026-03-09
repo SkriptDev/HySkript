@@ -5,6 +5,7 @@ import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.RemoveReason;
+import com.hypixel.hytale.protocol.AnimationSlot;
 import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
@@ -57,6 +58,11 @@ public class TypesEntity {
             .since("1.0.0")
             .toStringFunction(ActiveEntityEffect::toString)
             .register();
+        reg.newEnumType(AnimationSlot.class, "animationslot", "animationSlot@s")
+            .name("Animation Slot")
+            .description("Represents the slot for an animation to be played on an entity.")
+            .since("INSERT VERSION")
+            .register();
         reg.newEnumType(Attitude.class, "attitude", "attitude@s")
             .name("Attitude")
             .description("Represents the attitude of an NPC Entity towards another entity.")
@@ -89,7 +95,6 @@ public class TypesEntity {
         reg.newType(NPCRegistry.NPCRole.class, "npcrole", "npcrole@s")
             .name("NPC Role")
             .description("Represents the type of NPCs in the game.")
-            .examples("coming soon") // TODO
             .usage(NPCRegistry.getTypeUsage())
             .since("1.0.0")
             .toStringFunction(NPCRegistry.NPCRole::name)
