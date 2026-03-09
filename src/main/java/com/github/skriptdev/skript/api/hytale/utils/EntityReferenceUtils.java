@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -47,10 +48,11 @@ public class EntityReferenceUtils {
 
     @SuppressWarnings("unchecked")
     public static @Nullable Ref<EntityStore> getRef(Object o) {
-        if (o instanceof Ref<?> ref) {
+        if (o instanceof Ref<?> ref && ref.isValid()) {
             return (Ref<EntityStore>) ref;
         } else if (o instanceof Entity entity) {
-            return entity.getReference();
+            Ref<EntityStore> reference = entity.getReference();
+            if (reference != null && reference.isValid()) return reference;
         }
         return null;
     }
@@ -108,6 +110,97 @@ public class EntityReferenceUtils {
             Store<EntityStore> store = ref.getStore();
             return (E) store.getComponent(ref, this.componentType);
         }
+    }
+
+    /**
+     * Get a component from an Object (Entity/Ref).
+     *
+     * @param object     Object to get component from
+     * @param type       Component type to get
+     * @param <ECS_TYPE> EntityStore Type
+     * @param <T>        Type of returned component
+     * @return Component from entity if available otherwise null
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS_TYPE, T extends Component<ECS_TYPE>> @Nullable T getComponent(Object object, ComponentType<ECS_TYPE, T> type) {
+        Ref<ECS_TYPE> reference = (Ref<ECS_TYPE>) getRef(object);
+        if (reference == null) return null;
+
+        Store<ECS_TYPE> store = reference.getStore();
+        return store.getComponent(reference, type);
+    }
+
+    /**
+     * Get a component from an Object (Entity/Ref) or create it if not present.
+     *
+     * @param object Object to get component from
+     * @param type   Component type to get
+     * @param <ECS>  EntityStore Type
+     * @param <T>    Type of returned component
+     * @return Component from entity if available otherwise will create/add a new one
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> @NotNull T ensureAndGetComponent(Object object, ComponentType<ECS, T> type) {
+        Ref<ECS> reference = (Ref<ECS>) getRef(object);
+        if (reference == null) {
+            throw new IllegalStateException("Object '" + object + "' does not have a reference");
+        }
+
+        Store<ECS> store = reference.getStore();
+        return store.ensureAndGetComponent(reference, type);
+    }
+
+    /**
+     * Add a component on an Object (Entity/Ref).
+     *
+     * @param object    Object (Entity/Ref) to add component to
+     * @param type      Type of component to add
+     * @param component Component to add
+     * @param <ECS>     EntityStore Type
+     * @param <T>       Type of component
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> void addComponent(Object object, ComponentType<ECS, T> type, Component<ECS> component) {
+        Ref<ECS> reference = (Ref<ECS>) getRef(object);
+        if (reference == null) {
+            throw new IllegalStateException("Object '" + object + "' does not have a reference");
+        }
+        reference.getStore().addComponent(reference, type, (T) component);
+    }
+
+    /**
+     * Put a component on an Object (Entity/Ref).
+     *
+     * @param object    Object (Entity/Ref) to put component on
+     * @param type      Type of component to put
+     * @param component Component to put
+     * @param <ECS>     EntityStore Type
+     * @param <T>       Type of component
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> void putComponent(Object object, ComponentType<ECS, T> type, Component<ECS> component) {
+        Ref<ECS> reference = (Ref<ECS>) getRef(object);
+        if (reference == null) {
+            throw new IllegalStateException("Object '" + object + "' does not have a reference");
+        }
+        reference.getStore().putComponent(reference, type, (T) component);
+    }
+
+    /**
+     * Try to remove a component from an Object (Entity/Ref).
+     *
+     * @param object Object (Entity/Ref) to remove component from
+     * @param type   Type of component to remove
+     * @param <ECS>  Store type
+     * @param <T>    Component type
+     */
+    @SuppressWarnings("unchecked")
+    public static <ECS, T extends Component<ECS>> void tryRemoveComponent(Object object, ComponentType<ECS, T> type) {
+        Ref<ECS> reference = (Ref<ECS>) getRef(object);
+        if (reference == null) {
+            throw new IllegalStateException("Object '" + object + "' does not have a reference");
+        }
+        reference.getStore().tryRemoveComponent(reference, type);
     }
 
 }
