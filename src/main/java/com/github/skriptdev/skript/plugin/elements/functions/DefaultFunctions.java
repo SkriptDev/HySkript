@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.functions;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -212,6 +213,24 @@ public class DefaultFunctions {
     }
 
     private static void positionFunctions(SkriptRegistration reg) {
+        reg.newJavaFunction("box", Box.class, true)
+            .parameter("x1", Number.class)
+            .parameter("y1", Number.class)
+            .parameter("z1", Number.class)
+            .parameter("x2", Number.class)
+            .parameter("y2", Number.class)
+            .parameter("z2", Number.class)
+            .executeSingle(params -> {
+                Number x1 = (Number) params[0][0];
+                Number y1 = (Number) params[1][0];
+                Number z1 = (Number) params[2][0];
+                Number x2 = (Number) params[3][0];
+                Number y2 = (Number) params[4][0];
+                Number z2 = (Number) params[5][0];
+                return new Box(x1.doubleValue(), y1.doubleValue(), z1.doubleValue(),
+                    x2.doubleValue(), y2.doubleValue(), z2.doubleValue());
+            })
+            .register();
         reg.newJavaFunction("location", Location.class, true)
             .parameter("x", Number.class)
             .parameter("y", Number.class)
