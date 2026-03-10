@@ -1,4 +1,3 @@
-![GitHub all releases](https://img.shields.io/github/downloads/SkriptDev/HySkript/total)  
 # Skript... but for Hytale.  
 
 ![landscape](https://github.com/user-attachments/assets/2234f5ea-c2dc-4e79-b51c-4300b795e64f)
