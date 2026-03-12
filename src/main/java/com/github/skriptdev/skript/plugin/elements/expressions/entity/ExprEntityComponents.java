@@ -19,27 +19,34 @@ public class ExprEntityComponents implements Expression<String> {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(ExprEntityComponents.class, String.class, false,
-            "components of %entity%")
+                "components of %entity/ref%")
             .noDoc()
             .register();
     }
 
-    private Expression<Entity> entity;
+    private Expression<?> entity;
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
-        this.entity = (Expression<Entity>) expressions[0];
+        this.entity = expressions[0];
         return true;
     }
 
+    @SuppressWarnings({"unchecked", "PatternVariableHidesField"})
     @Override
     public String[] getValues(@NotNull TriggerContext ctx) {
         List<String> components = new ArrayList<>();
-        Entity entity = this.entity.getSingle(ctx).orElse(null);
-        if (entity == null) return null;
+        Object object = this.entity.getSingle(ctx).orElse(null);
+        if (object == null) return null;
 
-        Ref<EntityStore> reference = entity.getReference();
+        Ref<EntityStore> reference;
+        if (object instanceof Entity entity) {
+            reference = entity.getReference();
+        } else if (object instanceof Ref<?> ref) {
+            reference = (Ref<EntityStore>) ref;
+        } else {
+            return null;
+        }
         assert reference != null;
 
         Archetype<EntityStore> archetype = reference.getStore().getArchetype(reference);

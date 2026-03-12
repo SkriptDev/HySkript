@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.sections.world;
 
+import com.github.skriptdev.skript.api.skript.event.WorldContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.CodeSection;
@@ -20,7 +21,7 @@ public class SecExecuteInWorld extends CodeSection {
             .name("Execute In World")
             .description("Executes the code inside the section in the specified world.")
             .examples("execute in world of player:",
-                "\tkill player")
+                "\tkill all players in event-world")
             .since("1.0.0")
             .register();
     }
@@ -45,13 +46,14 @@ public class SecExecuteInWorld extends CodeSection {
             VariableMap variableMap = Variables.copyLocalVariables(ctx);
             Statement firstStatement = first.get();
             worldOptional.ifPresent(world -> world.execute(() -> {
-                // Place the variables back into the original context
+                // Place the variables back into the new context
                 // This is done in case World#execute is delayed
-                Variables.setLocalVariables(ctx, variableMap);
-                Statement.runAll(firstStatement, ctx);
+                ExecuteInWorldContext worldContext = new ExecuteInWorldContext(world);
+                Variables.setLocalVariables(worldContext, variableMap);
+                Statement.runAll(firstStatement, worldContext);
 
                 // Clear out old variables
-                Variables.clearLocalVariables(ctx);
+                Variables.clearLocalVariables(worldContext);
             }));
         }
         return getNext();
@@ -60,6 +62,18 @@ public class SecExecuteInWorld extends CodeSection {
     @Override
     public String toString(@NotNull TriggerContext ctx, boolean debug) {
         return "execute in world " + this.world.toString(ctx, debug);
+    }
+
+    public record ExecuteInWorldContext(World world) implements WorldContext {
+        @Override
+        public World getWorld() {
+            return this.world;
+        }
+
+        @Override
+        public String getName() {
+            return "execute in world context";
+        }
     }
 
 }

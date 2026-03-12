@@ -5,6 +5,7 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.codec.ExtraInfo;
+import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -16,6 +17,7 @@ import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgumentType;
+import com.hypixel.hytale.server.core.modules.entity.component.BoundingBox;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.util.MessageUtil;
@@ -33,6 +35,10 @@ public class TypesServer {
             .description("Represents the types of arguments that can be used in commands.")
             .usage(ArgUtils.getTypeUsage())
             .since("1.0.0")
+            .register();
+        registration.newType(BoundingBox.class, "boundingbox", "boundingBox@es")
+            .register();
+        registration.newType(Box.class, "box", "box@es")
             .register();
         registration.newType(CommandSender.class, "commandsender", "commandSender@s")
             .name("Command Sender")

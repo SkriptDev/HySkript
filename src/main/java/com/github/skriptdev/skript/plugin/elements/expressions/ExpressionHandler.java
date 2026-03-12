@@ -15,8 +15,11 @@ import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprHighest
 import com.github.skriptdev.skript.plugin.elements.expressions.block.ExprTargetBlockOfPlayer;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprActiveSlot;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntitiesInRadius;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityAnimations;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityAttitude;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityBoundingBox;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityComponents;
+import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityFallDistance;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHeadRotation;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityHealth;
 import com.github.skriptdev.skript.plugin.elements.expressions.entity.ExprEntityModel;
@@ -117,8 +120,11 @@ public class ExpressionHandler {
         // ENTITY
         ExprActiveSlot.register(registration);
         ExprEntitiesInRadius.register(registration);
+        ExprEntityAnimations.register(registration);
         ExprEntityAttitude.register(registration);
+        ExprEntityBoundingBox.register(registration);
         ExprEntityComponents.register(registration);
+        ExprEntityFallDistance.register(registration);
         ExprEntityHeadRotation.register(registration);
         ExprEntityHealth.register(registration);
         ExprEntityModel.register(registration);

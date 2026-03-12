@@ -12,6 +12,7 @@ import com.github.skriptdev.skript.plugin.elements.effects.entity.EffEntityModel
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffFreeze;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffInteraction;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffKill;
+import com.github.skriptdev.skript.plugin.elements.effects.entity.EffPlayAnimation;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffRemoveStatModifier;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffRide;
 import com.github.skriptdev.skript.plugin.elements.effects.entity.EffShoot;
@@ -56,6 +57,7 @@ public class EffectHandler {
         EffFreeze.register(registration);
         EffInteraction.register(registration);
         EffKill.register(registration);
+        EffPlayAnimation.register(registration);
         EffRemoveStatModifier.register(registration);
         EffRide.register(registration);
         EffShoot.register(registration);

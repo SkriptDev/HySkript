@@ -5,6 +5,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Literal;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.log.ErrorType;
+import io.github.syst3ms.skriptparser.log.SkriptLogger;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.Type;
 import org.jetbrains.annotations.NotNull;
@@ -27,33 +28,40 @@ public class ExprCast implements Expression<Object> {
 
     private String castable;
     private Type<?> type;
-    private Function<String, ?> parser;
+    private Object parsedObject;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, ParseContext parseContext) {
+        SkriptLogger logger = parseContext.getLogger();
         this.castable = parseContext.getMatches().getFirst().group();
         Literal<Type<?>> expression = (Literal<Type<?>>) expressions[0];
         this.type = expression.getSingle().orElse(null);
         if (this.type == null) {
             // This shouldn't happen, but let's be safe;
-            parseContext.getLogger().error("Type cannot be null for cast expression initialization.", ErrorType.SEMANTIC_ERROR);
+            logger.error("Type cannot be null for cast expression initialization.", ErrorType.SEMANTIC_ERROR);
             return false;
         }
         if (this.type.getLiteralParser().isEmpty()) {
             String baseName = this.type.getBaseName();
-            parseContext.getLogger().error("The type '" + baseName + "' cannot be casted.", ErrorType.SEMANTIC_ERROR);
+            logger.error("The type '" + baseName + "' cannot be cast.", ErrorType.SEMANTIC_ERROR);
             return false;
         }
-        this.parser = this.type.getLiteralParser().get();
+        Function<String, ?> parser = this.type.getLiteralParser().get();
+        // Let's parse at parse time so we don't have to worry about it during runtime
+        this.parsedObject = parser.apply(this.castable);
+        if (this.parsedObject == null) {
+            String baseName = this.type.getBaseName();
+            logger.error("'" + this.castable + "' cannot be cast to " + baseName + ".", ErrorType.SEMANTIC_ERROR);
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public Object[] getValues(@NotNull TriggerContext ctx) {
-        Object apply = this.parser.apply(castable);
-        return new Object[]{apply};
+        return new Object[]{this.parsedObject};
     }
 
     @Override

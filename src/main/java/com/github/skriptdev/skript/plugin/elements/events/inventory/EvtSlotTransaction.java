@@ -14,8 +14,8 @@ public class EvtSlotTransaction extends SkriptEvent {
 
     public static void register(SkriptRegistration reg) {
         reg.newEvent(EvtSlotTransaction.class,
-                "inventory item[stack] slot transaction")
-            .name("Inventory Item Slot Transaction")
+                "inventory slot transaction")
+            .name("Inventory Slot Transaction")
             .description("Called when there is an inventory transaction involving a slot.")
             .since("1.3.0")
             .setHandledContexts(SlotTransactionContext.class)

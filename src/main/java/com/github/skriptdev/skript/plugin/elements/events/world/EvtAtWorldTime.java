@@ -10,15 +10,16 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.Literal;
+import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.Trigger;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.VariableString;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.lang.event.StartOnLoadEvent;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.util.Time;
+import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -85,7 +86,9 @@ public class EvtAtWorldTime extends SkriptEvent implements StartOnLoadEvent {
                 // Check every in-world minute for a match
                 if (time.getHour() != worldTime.getHour() || time.getMinute() != worldTime.getMinute()) return;
 
-                TriggerMap.callTriggersByContext(new WorldTimeContext(this.world));
+                WorldTimeContext worldTimeContext = new WorldTimeContext(this.world);
+                Statement.runAll(trigger, worldTimeContext);
+                Variables.clearLocalVariables(worldTimeContext);
             }), 0, duration, TimeUnit.MILLISECONDS);
     }
 
