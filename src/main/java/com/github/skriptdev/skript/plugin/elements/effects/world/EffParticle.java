@@ -19,7 +19,6 @@ import io.github.syst3ms.skriptparser.lang.Effect;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -96,7 +95,7 @@ public class EffParticle extends Effect {
         if (receivers.isEmpty()) {
             SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
                 .getPlayerSpatialResourceType());
-            ObjectList<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
+            List<Ref<EntityStore>> playerRefs = SpatialResource.getThreadLocalReferenceList();
             playerSpatialResource.getSpatialStructure().collect(pos, 75.0F, playerRefs);
             receivers.addAll(playerRefs);
         }

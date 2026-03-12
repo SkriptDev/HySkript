@@ -11,7 +11,6 @@ import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -45,7 +44,7 @@ public class EntityReferenceUtils {
     }
 
     public static List<Ref<EntityStore>> getRefsInSphere(@Nonnull Vector3d pos, double radius, @Nonnull Store<EntityStore> store) {
-        ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
+        List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         EntityModule entityModule = EntityModule.get();
         SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getEntitySpatialResourceType());
         entities.getSpatialStructure().collect(pos, (float) radius, results);
@@ -58,7 +57,7 @@ public class EntityReferenceUtils {
 
     @Nonnull
     public static List<Ref<EntityStore>> getRefsInBox(@Nonnull Vector3d min, @Nonnull Vector3d max, @Nonnull Store<EntityStore> store) {
-        ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
+        List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         EntityModule entityModule = EntityModule.get();
         SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getEntitySpatialResourceType());
         entities.getSpatialStructure().collectBox(min, max, results);

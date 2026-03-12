@@ -8,7 +8,7 @@ plugins {
 java.sourceCompatibility = JavaVersion.VERSION_25
 
 group = "com.github.SkriptDev"
-val projectVersion = "1.4.0"
+val projectVersion = "1.3.0"
 val hytaleVersion = "2026.03.05-9fdc5985d"
 // You can find Hytale versions on their maven repo:
 // https://maven.hytale.com/release/com/hypixel/hytale/Server/maven-metadata.xml
@@ -37,7 +37,7 @@ dependencies {
     implementation("org.bstats:bstats-hytale:3.2.1")
 
     // Skript-Parser
-    implementation("com.github.SkriptDev:skript-parser:1.0.13") {
+    implementation("com.github.SkriptDev:skript-parser:1.0.12") {
         isTransitive = false
     }
     implementation("com.github.Zoltus:TinyMessage:2.0.1") {

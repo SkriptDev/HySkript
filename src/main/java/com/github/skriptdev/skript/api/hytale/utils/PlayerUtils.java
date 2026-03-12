@@ -11,7 +11,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,7 +115,7 @@ public class PlayerUtils {
         Store<EntityStore> store = world.getEntityStore().getStore();
         if (store == null) return List.of();
 
-        ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
+        List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
             .getPlayerSpatialResourceType());
         playerSpatialResource.getSpatialStructure().collect(location.getPosition(), (float) radius, results);
@@ -146,7 +145,7 @@ public class PlayerUtils {
         Vector3d min = Vector3d.min(loc1.getPosition(), loc2.getPosition());
         Vector3d max = Vector3d.max(loc1.getPosition(), loc2.getPosition());
 
-        ObjectList<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
+        List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
             .getPlayerSpatialResourceType());
         playerSpatialResource.getSpatialStructure().collectBox(min, max, results);
