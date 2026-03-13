@@ -59,12 +59,8 @@ public class EntityReferenceUtils {
     public static List<Ref<EntityStore>> getRefsInSphere(@Nonnull Vector3d pos, double radius, @Nonnull Store<EntityStore> store) {
         List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         EntityModule entityModule = EntityModule.get();
-        SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getEntitySpatialResourceType());
+        SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getNetworkSendableSpatialResourceType());
         entities.getSpatialStructure().collect(pos, (float) radius, results);
-        SpatialResource<Ref<EntityStore>, EntityStore> players = store.getResource(entityModule.getPlayerSpatialResourceType());
-        players.getSpatialStructure().collect(pos, (float) radius, results);
-        SpatialResource<Ref<EntityStore>, EntityStore> items = store.getResource(entityModule.getItemSpatialResourceType());
-        items.getSpatialStructure().collect(pos, (float) radius, results);
         return results;
     }
 
@@ -72,17 +68,12 @@ public class EntityReferenceUtils {
     public static List<Ref<EntityStore>> getRefsInBox(@Nonnull Vector3d min, @Nonnull Vector3d max, @Nonnull Store<EntityStore> store) {
         List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         EntityModule entityModule = EntityModule.get();
-        SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getEntitySpatialResourceType());
+        SpatialResource<Ref<EntityStore>, EntityStore> entities = store.getResource(entityModule.getNetworkSendableSpatialResourceType());
         entities.getSpatialStructure().collectBox(min, max, results);
-        SpatialResource<Ref<EntityStore>, EntityStore> players = store.getResource(entityModule.getPlayerSpatialResourceType());
-        players.getSpatialStructure().collectBox(min, max, results);
-        SpatialResource<Ref<EntityStore>, EntityStore> items = store.getResource(entityModule.getItemSpatialResourceType());
-        items.getSpatialStructure().collectBox(min, max, results);
         return results;
     }
 
     public static class ReferenceType<E extends Component<EntityStore>> {
-
 
         private final String name;
         private final Class<E> componentClass;
