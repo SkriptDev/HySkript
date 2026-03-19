@@ -69,7 +69,7 @@ public class ExprItemContainer implements Expression<ItemContainer> {
                 case 3 -> inventory.getUtility();
                 case 4 -> inventory.getTools();
                 case 5 -> inventory.getBackpack();
-                case 6 -> inventory.getCombinedEverything();
+                //case 6 -> inventory.getCombinedEverything();
                 case 7 -> inventory.getCombinedHotbarFirst();
                 case 8 -> inventory.getCombinedStorageFirst();
                 case 9 -> inventory.getCombinedBackpackStorageHotbar();

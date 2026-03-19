@@ -46,7 +46,7 @@ public class ExprItemsInInventory implements Expression<ItemStack> {
 
         Object o = single.get();
         if (o instanceof Inventory inventory) {
-            CombinedItemContainer combinedEverything = inventory.getCombinedEverything();
+            CombinedItemContainer combinedEverything = inventory.getCombinedHotbarFirst();
             combinedEverything.forEach((_, itemStack) -> itemStacks.add(itemStack));
         } else if (o instanceof ItemContainer itemContainer) {
             itemContainer.forEach((_, itemStack) -> itemStacks.add(itemStack));

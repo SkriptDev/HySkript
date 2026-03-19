@@ -42,7 +42,7 @@ public class ExprInventorySlots implements Expression<Number> {
 
         List<Number> slots = new ArrayList<>();
         if (object instanceof Inventory inventory) {
-            int containersSize = inventory.getCombinedEverything().getContainersSize();
+            int containersSize = inventory.getCombinedHotbarFirst().getContainersSize();
             for (int i = 0; i < containersSize; i++) {
                 slots.add(i);
             }

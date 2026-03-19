@@ -47,7 +47,7 @@ public class ExprInventoryAmountOfItems implements Expression<Number> {
         if (o instanceof ItemContainer c) {
             container = c;
         } else if (o instanceof Inventory inv) {
-            container = inv.getCombinedEverything();
+            container = inv.getCombinedHotbarFirst();
         } else {
             return null;
         }

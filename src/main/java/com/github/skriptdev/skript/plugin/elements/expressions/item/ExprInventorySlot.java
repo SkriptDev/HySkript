@@ -49,7 +49,7 @@ public class ExprInventorySlot implements Expression<ItemStack> {
 
         ItemStack itemStack = null;
         if (o instanceof Inventory inventory) {
-            itemStack = inventory.getCombinedEverything().getItemStack(number.shortValue());
+            itemStack = inventory.getCombinedHotbarFirst().getItemStack(number.shortValue());
         } else if (o instanceof ItemContainer itemContainer) {
             itemStack = itemContainer.getItemStack(number.shortValue());
         }
@@ -80,13 +80,13 @@ public class ExprInventorySlot implements Expression<ItemStack> {
         if (changeMode == ChangeMode.SET) {
             ItemStack itemStack = (ItemStack) changeWith[0];
             if (o instanceof Inventory inventory) {
-                inventory.getCombinedEverything().setItemStackForSlot(numSlot.shortValue(), itemStack);
+                inventory.getCombinedHotbarFirst().setItemStackForSlot(numSlot.shortValue(), itemStack);
             } else if (o instanceof ItemContainer itemContainer) {
                 itemContainer.setItemStackForSlot(numSlot.shortValue(), itemStack);
             }
         } else if (changeMode == ChangeMode.DELETE) {
             if (o instanceof Inventory inventory) {
-                inventory.getCombinedEverything().setItemStackForSlot(numSlot.shortValue(), null);
+                inventory.getCombinedHotbarFirst().setItemStackForSlot(numSlot.shortValue(), null);
             } else if (o instanceof ItemContainer itemContainer) {
                 itemContainer.setItemStackForSlot(numSlot.shortValue(), null);
             }
