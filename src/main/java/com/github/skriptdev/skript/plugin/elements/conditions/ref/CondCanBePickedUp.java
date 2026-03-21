@@ -23,7 +23,7 @@ public class CondCanBePickedUp extends PropertyConditional<Ref<EntityStore>> {
             .description("Check if a ref can be picked up.",
                 "This generally refers to dropped items.",
                 "This can be set, preventing items from being picked up.")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
     }
 

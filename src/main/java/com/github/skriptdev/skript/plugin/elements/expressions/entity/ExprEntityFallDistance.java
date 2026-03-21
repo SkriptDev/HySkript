@@ -23,6 +23,7 @@ public class ExprEntityFallDistance extends PropertyExpression<LivingEntity, Num
                 "add 1 to fall distance of player",
                 "remove 10 from fall distance of {_e}",
                 "clear fall distance of player")
+            .since("1.5.0")
             .register();
     }
 

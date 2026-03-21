@@ -32,7 +32,7 @@ public class SecSpawnDisplay extends CodeSection {
             .examples("spawn display item ingredient_poop at {_loc}:",
                 "\tset {_e} to event-ref",
                 "\tset scale of {_e} to 10")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
     }
 

@@ -61,7 +61,7 @@ public class TypesEntity {
         reg.newEnumType(AnimationSlot.class, "animationslot", "animationSlot@s")
             .name("Animation Slot")
             .description("Represents the slot for an animation to be played on an entity.")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
         reg.newEnumType(Attitude.class, "attitude", "attitude@s")
             .name("Attitude")

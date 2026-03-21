@@ -24,7 +24,7 @@ public class ExprEntityAnimations implements Expression<String> {
             .name("Entity Animations")
             .description("Get the animations of an Entity/Ref.",
                 "If using Entity/Ref this will return the possible animations of their current model component.")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
     }
 
