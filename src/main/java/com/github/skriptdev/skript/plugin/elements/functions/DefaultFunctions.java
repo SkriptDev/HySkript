@@ -169,7 +169,7 @@ public class DefaultFunctions {
             })
             .name("ItemContainer")
             .description("Create a new ItemContainer with the given capacity.")
-            .since("INSERT VERSRION")
+            .since("1.5.0")
             .register();
     }
 
@@ -229,6 +229,9 @@ public class DefaultFunctions {
                 return new Box(x1.doubleValue(), y1.doubleValue(), z1.doubleValue(),
                     x2.doubleValue(), y2.doubleValue(), z2.doubleValue());
             })
+            .name("Box")
+            .description("Creates a box with the given dimensions.")
+            .since("1.5.0")
             .register();
         reg.newJavaFunction("location", Location.class, true)
             .parameter("x", Number.class)

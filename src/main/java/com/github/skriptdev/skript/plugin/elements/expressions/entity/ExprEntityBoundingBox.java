@@ -24,7 +24,7 @@ public class ExprEntityBoundingBox extends PropertyExpression<Object, Box> {
                 "Changes may not be persistent on some objects, such as dropped items.")
             .examples("set {_box} to entity bounding box of {_e}",
                 "set entity bounding box of {_e} to box(0, 0, 0, 1, 1, 1)")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
     }
 

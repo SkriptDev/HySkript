@@ -37,8 +37,14 @@ public class TypesServer {
             .since("1.0.0")
             .register();
         registration.newType(BoundingBox.class, "boundingbox", "boundingBox@es")
+            .name("Bounding Box")
+            .description("Represents the bounding box component of a reference.")
+            .since("1.5.0")
             .register();
         registration.newType(Box.class, "box", "box@es")
+            .name("Box")
+            .description("Represents a 3D box with dimensions.")
+            .since("1.5.0")
             .register();
         registration.newType(CommandSender.class, "commandsender", "commandSender@s")
             .name("Command Sender")

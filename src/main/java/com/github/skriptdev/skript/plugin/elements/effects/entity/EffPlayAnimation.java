@@ -28,7 +28,7 @@ public class EffPlayAnimation extends Effect {
             .examples("play animation \"Death\" on player",
                 "play action animation \"Eat\" on target entity of player",
                 "play movement animation \"Jump\" on player")
-            .since("INSERT VERSION")
+            .since("1.5.0")
             .register();
     }
 
