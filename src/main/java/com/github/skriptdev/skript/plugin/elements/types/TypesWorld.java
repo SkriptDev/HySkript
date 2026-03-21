@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.command.system.arguments.types.RelativeDoublePosition;
 import com.hypixel.hytale.server.core.command.system.arguments.types.RelativeIntPosition;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.worldgen.zone.Zone;
@@ -50,6 +51,10 @@ public class TypesWorld {
                 public void change(Ref @NotNull [] toChange, Object @NotNull [] changeWith, @NotNull ChangeMode mode) {
                     for (Ref ref : toChange) {
                         Store store = ref.getStore();
+                        if (store.getComponent(ref, Player.getComponentType()) != null) {
+                            // Don't allow deleting players
+                            continue;
+                        }
                         store.removeEntity(ref, RemoveReason.REMOVE);
                     }
                 }

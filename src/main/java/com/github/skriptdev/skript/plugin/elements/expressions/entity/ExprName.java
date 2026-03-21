@@ -1,10 +1,14 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.nameplate.Nameplate;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
@@ -20,12 +24,12 @@ public class ExprName extends PropertyExpression<Object, String> {
 
     public static void register(SkriptRegistration registration) {
         registration.newPropertyExpression(ExprName.class, String.class,
-                "[:display] name[s]", "entities/players/playerrefs/worlds")
+                "[:display] name[s]", "entities/players/playerrefs/refs/worlds")
             .name("Name of Object")
             .description("Gets the name of an object.",
-                "Currently supports players, entities, and worlds.",
+                "Currently supports players, entities, refs, and worlds.",
                 "Display name refers to the nameplate over an entity/player's head.",
-                "Display name of Entity/Player can be set. PlayerRef/World do not support setting.")
+                "Display name of Entity/Ref/Player can be set. PlayerRef/World do not support setting.")
             .examples("set {_name} to name of player",
                 "set {_w} to name of world of player",
                 "set display name of target entity of player to \"Mr Sheep\"")
@@ -41,12 +45,19 @@ public class ExprName extends PropertyExpression<Object, String> {
         return super.init(expressions, matchedPattern, parseContext);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public @Nullable String getProperty(Object object) {
         return switch (object) {
             case PlayerRef playerRef -> playerRef.getUsername();
             case Player player -> this.display ? EntityUtils.getName(player) : player.getDisplayName();
             case Entity entity -> EntityUtils.getName(entity);
+            case Ref<?> ref -> {
+                Ref<EntityStore> reference = (Ref<EntityStore>) ref;
+                Nameplate component = reference.getStore().getComponent(reference, Nameplate.getComponentType());
+                if (component != null) yield component.getText();
+                else yield null;
+            }
             case World world -> world.getName();
             default -> null;
         };
@@ -59,7 +70,7 @@ public class ExprName extends PropertyExpression<Object, String> {
         return Optional.empty();
     }
 
-    @SuppressWarnings("ConstantValue")
+    @SuppressWarnings({"ConstantValue", "unchecked"})
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
         String name = null;
@@ -71,6 +82,15 @@ public class ExprName extends PropertyExpression<Object, String> {
         for (Object o : getOwner().getArray(ctx)) {
             if (o instanceof Entity entity) {
                 EntityUtils.setNameplateName(entity, name);
+            } else if (o instanceof Ref<?> ref) {
+                Ref<EntityStore> reference = (Ref<EntityStore>) ref;
+                Store<EntityStore> store = reference.getStore();
+                if (name != null) {
+                    Nameplate component = store.ensureAndGetComponent(reference, Nameplate.getComponentType());
+                    component.setText(name);
+                } else {
+                    store.tryRemoveComponent(reference, Nameplate.getComponentType());
+                }
             }
         }
     }

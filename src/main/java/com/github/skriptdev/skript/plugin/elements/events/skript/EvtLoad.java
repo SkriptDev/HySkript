@@ -1,13 +1,14 @@
 package com.github.skriptdev.skript.plugin.elements.events.skript;
 
 import io.github.syst3ms.skriptparser.lang.Expression;
+import io.github.syst3ms.skriptparser.lang.Statement;
 import io.github.syst3ms.skriptparser.lang.Trigger;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.lang.event.StartOnLoadEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
+import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.Nullable;
 
 public class EvtLoad extends SkriptEvent implements StartOnLoadEvent {
@@ -38,7 +39,9 @@ public class EvtLoad extends SkriptEvent implements StartOnLoadEvent {
 
     @Override
     public void onInitialLoad(Trigger trigger) {
-        TriggerMap.callTriggersByContext(new ScriptLoadContext());
+        ScriptLoadContext scriptLoadContext = new ScriptLoadContext();
+        Statement.runAll(trigger, scriptLoadContext);
+        Variables.clearLocalVariables(scriptLoadContext);
     }
 
     private static class ScriptLoadContext implements TriggerContext {
