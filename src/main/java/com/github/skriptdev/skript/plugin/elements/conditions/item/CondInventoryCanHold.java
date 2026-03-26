@@ -1,7 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.conditions.item;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
-import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -14,23 +13,23 @@ public class CondInventoryCanHold extends ConditionalExpression {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(CondInventoryCanHold.class, Boolean.class, true,
-                "%inventory/itemcontainer% can hold %itemstacks%",
-                "%inventory/itemcontainer% (can't|cannot) hold %itemstacks%")
-            .name("Inventory Can Hold")
-            .description("Checks if the inventory can hold the given items.")
+                "%itemcontainer% can hold %itemstacks%",
+                "%itemcontainer% (can't|cannot) hold %itemstacks%")
+            .name("ItemContainer Can Hold")
+            .description("Checks if the ItemContainer can hold the given items.")
             .examples("if inventory of player can hold itemstack of ingredient_poop:",
                 "if inventory of player can hold {_itemstack}:")
             .since("1.0.0")
             .register();
     }
 
-    private Expression<?> holders;
+    private Expression<ItemContainer> holders;
     private Expression<ItemStack> items;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, @NotNull ParseContext parseContext) {
-        this.holders = expressions[0];
+        this.holders = (Expression<ItemContainer>) expressions[0];
         this.items = (Expression<ItemStack>) expressions[1];
         setNegated(matchedPattern == 1);
         return true;
@@ -39,14 +38,7 @@ public class CondInventoryCanHold extends ConditionalExpression {
     @Override
     public boolean check(@NotNull TriggerContext ctx) {
         return this.holders.check(ctx, holder ->
-            this.items.check(ctx, item -> {
-                if (holder instanceof Inventory inventory) {
-                    return inventory.getCombinedEverything().canAddItemStack(item);
-                } else if (holder instanceof ItemContainer container) {
-                    return container.canAddItemStack(item);
-                }
-                return false;
-            }), isNegated());
+            this.items.check(ctx, holder::canAddItemStack), isNegated());
     }
 
     @Override

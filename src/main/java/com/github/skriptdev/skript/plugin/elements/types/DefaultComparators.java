@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
-import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import io.github.syst3ms.skriptparser.types.comparisons.Comparator;
@@ -41,33 +40,6 @@ public class DefaultComparators {
     }
 
     private static void inventory() {
-        // Inventory contains ItemStack
-        Comparators.registerComparator(Inventory.class, ItemStack.class, new Comparator<>(false) {
-            @Override
-            public Relation apply(@NotNull Inventory inventory, @NotNull ItemStack itemStack) {
-                AtomicReference<Relation> relation = new AtomicReference<>(Relation.NOT_EQUAL);
-                inventory.getCombinedEverything().forEach((s, is) -> {
-                    if (is.isEquivalentType(itemStack)) {
-                        relation.set(Relation.EQUAL);
-                    }
-                });
-                return relation.get();
-            }
-        });
-        // Inventory contains Item
-        Comparators.registerComparator(Inventory.class, Item.class, new Comparator<>(false) {
-            @Override
-            public Relation apply(@NotNull Inventory inventory, @NotNull Item item) {
-                AtomicReference<Relation> relation = new AtomicReference<>(Relation.NOT_EQUAL);
-                inventory.getCombinedEverything().forEach((s, is) -> {
-                    if (is.getItem().equals(item)) {
-                        relation.set(Relation.EQUAL);
-                    }
-                });
-                return relation.get();
-            }
-        });
-
         // ItemContainer contains ItemStack
         Comparators.registerComparator(ItemContainer.class, ItemStack.class, new Comparator<>(false) {
             @Override

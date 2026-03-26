@@ -27,7 +27,9 @@ public class TypesItem {
         // Please keep in alphabetical order
         reg.newType(Inventory.class, "inventory", "inventor@y@ies")
             .name("Inventory")
-            .description("Represents an inventory of an entity or block.")
+            .description("Represents an inventory of an entity or block.",
+                "**DEPRRECATED as of `INSERT VERSION` and will be removed in the future.**",
+                "Hytale no longer will be using Inventory.")
             .since("1.0.0")
             .toStringFunction(Inventory::toString)
             .serializer(new TypeSerializer<>() {

@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.effects.player;
 
 import com.github.skriptdev.skript.api.utils.ReflectionUtils;
 import com.github.skriptdev.skript.api.utils.Utils;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.console.ConsoleSender;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -147,7 +148,7 @@ public class EffBan extends Effect {
             }
 
             bans.put(target, ban);
-            EffKick.kick(o, reason);
+            EffKick.kick(o, Message.raw(reason));
         }
 
         // Put them all in at once

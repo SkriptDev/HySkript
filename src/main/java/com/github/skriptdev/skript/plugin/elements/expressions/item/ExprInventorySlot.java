@@ -19,7 +19,8 @@ public class ExprInventorySlot implements Expression<ItemStack> {
                 "itemstack in slot %number% of %inventory/itemcontainer%")
             .name("Itemstack in Inventory Slot")
             .description("Get/set/delete the itemstack in a slot of an Inventory or ItemContainer.",
-                "When using Inventory, this will combine all ItemContainers in the inventory and grab from there.")
+                "When using Inventory, this will combine all ItemContainers in the inventory and grab from there.",
+                "**The inventory option has been deprecated and will be removed in a future version.**")
             .examples("set {_item} to itemstack in slot 3 of inventory of player",
                 "delete itemstack in slot 3 of inventory of player",
                 "delete itemstack in slot 2 of hotbar item container of inventory of player",
@@ -48,7 +49,7 @@ public class ExprInventorySlot implements Expression<ItemStack> {
 
         ItemStack itemStack = null;
         if (o instanceof Inventory inventory) {
-            itemStack = inventory.getCombinedEverything().getItemStack(number.shortValue());
+            itemStack = inventory.getCombinedHotbarFirst().getItemStack(number.shortValue());
         } else if (o instanceof ItemContainer itemContainer) {
             itemStack = itemContainer.getItemStack(number.shortValue());
         }
@@ -79,13 +80,13 @@ public class ExprInventorySlot implements Expression<ItemStack> {
         if (changeMode == ChangeMode.SET) {
             ItemStack itemStack = (ItemStack) changeWith[0];
             if (o instanceof Inventory inventory) {
-                inventory.getCombinedEverything().setItemStackForSlot(numSlot.shortValue(), itemStack);
+                inventory.getCombinedHotbarFirst().setItemStackForSlot(numSlot.shortValue(), itemStack);
             } else if (o instanceof ItemContainer itemContainer) {
                 itemContainer.setItemStackForSlot(numSlot.shortValue(), itemStack);
             }
         } else if (changeMode == ChangeMode.DELETE) {
             if (o instanceof Inventory inventory) {
-                inventory.getCombinedEverything().setItemStackForSlot(numSlot.shortValue(), null);
+                inventory.getCombinedHotbarFirst().setItemStackForSlot(numSlot.shortValue(), null);
             } else if (o instanceof ItemContainer itemContainer) {
                 itemContainer.setItemStackForSlot(numSlot.shortValue(), null);
             }
