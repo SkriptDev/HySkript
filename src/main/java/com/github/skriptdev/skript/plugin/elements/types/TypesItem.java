@@ -28,7 +28,7 @@ public class TypesItem {
         reg.newType(Inventory.class, "inventory", "inventor@y@ies")
             .name("Inventory")
             .description("Represents an inventory of an entity or block.",
-                "**DEPRRECATED as of `INSERT VERSION` and will be removed in the future.**",
+                "**DEPRRECATED as of `1.6.0` and will be removed in the future.**",
                 "Hytale no longer will be using Inventory.")
             .since("1.0.0")
             .toStringFunction(Inventory::toString)

@@ -233,7 +233,7 @@ public class DefaultFunctions {
             .name("Player")
             .description("Returns the player with the given name in the given world.")
             .examples("set {_player} to player(\"ShaneBee\", world(\"default\"))")
-            .since("INSERT VERSION")
+            .since("1.6.0")
             .register();
 
         reg.newJavaFunction("playerRef", PlayerRef.class, true)
@@ -245,7 +245,7 @@ public class DefaultFunctions {
             .name("PlayerRef")
             .description("Returns the PlayerRef with the given name.")
             .examples("set {_ref} to playerRef(\"ShaneBee\")")
-            .since("INSERT VERSION")
+            .since("1.6.0")
             .register();
     }
 
