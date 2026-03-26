@@ -5,6 +5,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.spatial.SpatialResource;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -84,6 +85,10 @@ public class PlayerUtils {
 
         Store<EntityStore> store = world.getEntityStore().getStore();
         return store.getComponent(reference, PlayerRef.getComponentType());
+    }
+
+    public static @Nullable PlayerRef getPlayerRef(String name) {
+        return Universe.get().getPlayerByUsername(name, NameMatching.EXACT_IGNORE_CASE);
     }
 
     /**
