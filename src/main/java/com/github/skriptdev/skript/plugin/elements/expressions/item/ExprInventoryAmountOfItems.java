@@ -22,7 +22,8 @@ public class ExprInventoryAmountOfItems implements Expression<Number> {
             .description("Get the amount of a certain Item/ItemStack in an Inventory/ItemContainer.",
                 "If you pass in an Item, it will compare the Item types of ItemStacks in the inventory.",
                 "If you pass in an ItemStack, it will direct compare that the ItemStacks are the same " +
-                    "(ie: same durability, max durability, metadata, etc), excluding stack size.")
+                    "(ie: same durability, max durability, metadata, etc), excluding stack size.",
+                "**The inventory option has been deprecated and will be removed in a future version.**")
             .examples("set {_amount} to amount of ingredient_stick in inventory of player")
             .since("1.1.0")
             .register();
@@ -46,7 +47,7 @@ public class ExprInventoryAmountOfItems implements Expression<Number> {
         if (o instanceof ItemContainer c) {
             container = c;
         } else if (o instanceof Inventory inv) {
-            container = inv.getCombinedEverything();
+            container = inv.getCombinedHotbarFirst();
         } else {
             return null;
         }

@@ -1,8 +1,11 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
+import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Tool;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Utility;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -50,13 +53,19 @@ public class ExprHeldItem implements Expression<ItemStack> {
         ItemStack[] items = new ItemStack[entities.length];
 
         for (int i = 0; i < entities.length; i++) {
-            Inventory inventory = entities[i].getInventory();
+            LivingEntity entity = entities[i];
             if (this.pattern == 0) {
-                items[i] = inventory.getActiveHotbarItem();
+                Hotbar component = EntityUtils.getComponent(entity, Hotbar.getComponentType());
+                if (component == null) continue;
+                items[i] = component.getActiveItem();
             } else if (this.pattern == 1) {
-                items[i] = inventory.getUtilityItem();
+                Utility component = EntityUtils.getComponent(entity, Utility.getComponentType());
+                if (component == null) continue;
+                items[i] = component.getActiveItem();
             } else if (this.pattern == 2) {
-                items[i] = inventory.getActiveToolItem();
+                Tool component = EntityUtils.getComponent(entity, Tool.getComponentType());
+                if (component == null) continue;
+                items[i] = component.getActiveItem();
             }
         }
         return items;
@@ -77,28 +86,37 @@ public class ExprHeldItem implements Expression<ItemStack> {
         }
 
         for (LivingEntity livingEntity : this.entities.getArray(ctx)) {
-            Inventory inventory = livingEntity.getInventory();
+
             if (this.pattern == 0) {
-                ItemContainer hotbar = inventory.getHotbar();
-                byte activeHotbarSlot = inventory.getActiveHotbarSlot();
-                hotbar.setItemStackForSlot(activeHotbarSlot, itemStack);
+                Hotbar hotbar = EntityUtils.getComponent(livingEntity, Hotbar.getComponentType());
+                if (hotbar == null) continue;
+
+                ItemContainer container = hotbar.getInventory();
+                byte activeHotbarSlot = hotbar.getActiveSlot();
+                container.setItemStackForSlot(activeHotbarSlot, itemStack);
             } else if (this.pattern == 1) {
-                ItemContainer utility = inventory.getUtility();
-                byte activeUtilitySlot = inventory.getActiveUtilitySlot();
+                Utility utility = EntityUtils.getComponent(livingEntity, Utility.getComponentType());
+                if (utility == null) continue;
+
+                ItemContainer container = utility.getInventory();
+                byte activeUtilitySlot = utility.getActiveSlot();
                 if (activeUtilitySlot < 0) {
                     activeUtilitySlot = 0;
-                    inventory.setActiveToolsSlot((byte) 0);
+                    utility.setActiveSlot((byte) 0);
                 }
-                utility.setItemStackForSlot(activeUtilitySlot, itemStack);
+                container.setItemStackForSlot(activeUtilitySlot, itemStack);
             } else if (this.pattern == 2) {
-                ItemContainer tools = inventory.getTools();
-                byte activeToolSlot = inventory.getActiveToolsSlot();
+                Tool tool = EntityUtils.getComponent(livingEntity, Tool.getComponentType());
+                if (tool == null) continue;
+
+                ItemContainer container = tool.getInventory();
+                byte activeToolSlot = tool.getActiveSlot();
                 if (activeToolSlot < 0) {
-                    inventory.setUsingToolsItem(true);
-                    inventory.setActiveToolsSlot((byte) 1);
+                    tool.setUsingToolsItem(true);
+                    tool.setActiveSlot((byte) 1);
                     activeToolSlot = 1;
                 }
-                tools.setItemStackForSlot(activeToolSlot, itemStack);
+                container.setItemStackForSlot(activeToolSlot, itemStack);
             }
         }
     }

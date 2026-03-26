@@ -1,8 +1,12 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
+import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Tool;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Utility;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
@@ -41,13 +45,28 @@ public class ExprActiveSlot implements Expression<Number> {
         LivingEntity[] entityArray = this.entity.getArray(ctx);
         Byte[] s = new Byte[entityArray.length];
         for (int i = 0; i < entityArray.length; i++) {
-            Inventory inventory = entityArray[i].getInventory();
+            LivingEntity livingEntity = entityArray[i];
             if (this.slot == 0) {
-                s[i] = inventory.getActiveHotbarSlot();
+                Hotbar component = EntityUtils.getComponent(livingEntity, Hotbar.getComponentType());
+                if (component != null) {
+                    s[i] = component.getActiveSlot();
+                } else {
+                    s[i] = -1;
+                }
             } else if (this.slot == 1) {
-                s[i] = inventory.getActiveUtilitySlot();
+                Utility component = EntityUtils.getComponent(livingEntity, Utility.getComponentType());
+                if (component != null) {
+                    s[i] = component.getActiveSlot();
+                } else {
+                    s[i] = -1;
+                }
             } else if (this.slot == 2) {
-                s[i] = inventory.getActiveToolsSlot();
+                Tool component = EntityUtils.getComponent(livingEntity, Tool.getComponentType());
+                if (component != null) {
+                    s[i] = component.getActiveSlot();
+                } else {
+                    s[i] = -1;
+                }
             }
         }
         return s;
@@ -68,17 +87,30 @@ public class ExprActiveSlot implements Expression<Number> {
 
 
         for (LivingEntity entity : this.entity.getArray(ctx)) {
-            Inventory inventory = entity.getInventory();
             if (this.slot == 0) {
-                byte clamp = (byte) Math.clamp(slot, 0, Inventory.DEFAULT_HOTBAR_CAPACITY - 1);
-                inventory.setActiveHotbarSlot(clamp);
+                byte clamp = (byte) Math.clamp(slot, 0, InventoryComponent.DEFAULT_HOTBAR_CAPACITY - 1);
+                Hotbar component = EntityUtils.getComponent(entity, Hotbar.getComponentType());
+                if (component != null) {
+                    component.setActiveSlot(clamp);
+                    component.markDirty();
+
+                }
             } else if (this.slot == 1) {
-                byte clamp = (byte) Math.clamp(slot, -1, Inventory.DEFAULT_UTILITY_CAPACITY - 1);
-                inventory.setActiveUtilitySlot(clamp);
+                byte clamp = (byte) Math.clamp(slot, -1, InventoryComponent.DEFAULT_UTILITY_CAPACITY - 1);
+                Utility component = EntityUtils.getComponent(entity, Utility.getComponentType());
+                if (component != null) {
+                    component.setActiveSlot(clamp);
+                    component.markDirty();
+                }
             } else if (this.slot == 2) {
-                byte clamp = (byte) Math.clamp(slot, -1, Inventory.DEFAULT_TOOLS_CAPACITY - 1);
-                inventory.setActiveToolsSlot(clamp);
+                byte clamp = (byte) Math.clamp(slot, -1, InventoryComponent.DEFAULT_TOOLS_CAPACITY - 1);
+                Tool component = EntityUtils.getComponent(entity, Tool.getComponentType());
+                if (component != null) {
+                    component.setActiveSlot(clamp);
+                    component.markDirty();
+                }
             }
+            entity.invalidateEquipmentNetwork();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.functions;
 
+import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Location;
@@ -8,11 +9,11 @@ import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
-import com.hypixel.hytale.server.core.entity.LivingEntity;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.util.SkriptDate;
@@ -28,6 +29,7 @@ public class DefaultFunctions {
         dateTimeFunctions(reg);
         itemFunctions(reg);
         mathFunctions(reg);
+        playerFunctions(reg);
         positionFunctions(reg);
         serverFunctions(reg);
     }
@@ -118,49 +120,50 @@ public class DefaultFunctions {
             .since("1.0.0")
             .register();
 
-        reg.newJavaFunction("inventory", Inventory.class, true)
-            .parameter("storageCapacity", Number.class)
-            .parameter("armorCapacity", Number.class)
-            .parameter("hotbarCapacity", Number.class)
-            .parameter("utilityCapacity", Number.class)
-            .executeSingle(params -> {
-                short storage = (short) Math.max(((Number) params[0][0]).shortValue(), 0);
-                short armor = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
-                short hotbar = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
-                short utility = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
-                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
-                // Unregister click listeners since there's no owner
-                inv.unregister();
-                return inv;
-            })
-            .name("Inventory")
-            .description("Create a new inventory with the given ItemContainer sizes.",
-                "This inventory will not have click events due to no owner.",
-                "See the `inventoryWithOwner` function for that.")
-            .since("1.1.0")
-            .register();
-
-        reg.newJavaFunction("inventoryWithOwner", Inventory.class, true)
-            .parameter("owner", LivingEntity.class)
-            .parameter("storageCapacity", Number.class)
-            .parameter("armorCapacity", Number.class)
-            .parameter("hotbarCapacity", Number.class)
-            .parameter("utilityCapacity", Number.class)
-            .executeSingle(params -> {
-                LivingEntity livingEntity = (LivingEntity) params[0][0];
-                short storage = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
-                short armor = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
-                short hotbar = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
-                short utility = (short) Math.max(((Number) params[4][0]).shortValue(), 0);
-                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
-                inv.setEntity(livingEntity);
-                return inv;
-            })
-            .name("Inventory with Owner")
-            .description("Create a new inventory with the given ItemContainer capacities and an owner.",
-                "The owner is used for registered click events.")
-            .since("1.1.0")
-            .register();
+        // Remove for now, may re-introduce something in the future
+//        reg.newJavaFunction("inventory", InventoryComponent.class, true)
+//            .parameter("storageCapacity", Number.class)
+//            .parameter("armorCapacity", Number.class)
+//            .parameter("hotbarCapacity", Number.class)
+//            .parameter("utilityCapacity", Number.class)
+//            .executeSingle(params -> {
+//                short storage = (short) Math.max(((Number) params[0][0]).shortValue(), 0);
+//                short armor = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
+//                short hotbar = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
+//                short utility = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
+//                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
+//                // Unregister click listeners since there's no owner
+//                inv.unregister();
+//                return inv;
+//            })
+//            .name("Inventory")
+//            .description("Create a new inventory with the given ItemContainer sizes.",
+//                "This inventory will not have click events due to no owner.",
+//                "See the `inventoryWithOwner` function for that.")
+//            .since("1.1.0")
+//            .register();
+//
+//        reg.newJavaFunction("inventoryWithOwner", Inventory.class, true)
+//            .parameter("owner", LivingEntity.class)
+//            .parameter("storageCapacity", Number.class)
+//            .parameter("armorCapacity", Number.class)
+//            .parameter("hotbarCapacity", Number.class)
+//            .parameter("utilityCapacity", Number.class)
+//            .executeSingle(params -> {
+//                LivingEntity livingEntity = (LivingEntity) params[0][0];
+//                short storage = (short) Math.max(((Number) params[1][0]).shortValue(), 0);
+//                short armor = (short) Math.max(((Number) params[2][0]).shortValue(), 0);
+//                short hotbar = (short) Math.max(((Number) params[3][0]).shortValue(), 0);
+//                short utility = (short) Math.max(((Number) params[4][0]).shortValue(), 0);
+//                Inventory inv = new Inventory(storage, armor, hotbar, utility, (short) 0);
+//                inv.setEntity(livingEntity);
+//                return inv;
+//            })
+//            .name("Inventory with Owner")
+//            .description("Create a new inventory with the given ItemContainer capacities and an owner.",
+//                "The owner is used for registered click events.")
+//            .since("1.1.0")
+//            .register();
 
         reg.newJavaFunction("itemContainer", ItemContainer.class, true)
             .parameter("capacity", Number.class)
@@ -209,6 +212,40 @@ public class DefaultFunctions {
             .name("Math - Sine")
             .description("Retuns the sine of an angle.")
             .since("1.1.0")
+            .register();
+    }
+
+    private static void playerFunctions(SkriptRegistration reg) {
+        reg.newJavaFunction("player", Player.class, true)
+            .parameter("name", String.class)
+            .parameter("world", World.class)
+            .executeSingle(params -> {
+                String name = (String) params[0][0];
+                World world = (World) params[1][0];
+
+                for (PlayerRef playerRef : world.getPlayerRefs()) {
+                    if (playerRef.getUsername().equals(name)) {
+                        return PlayerUtils.getPlayer(playerRef, world);
+                    }
+                }
+                return null;
+            })
+            .name("Player")
+            .description("Returns the player with the given name in the given world.")
+            .examples("set {_player} to player(\"ShaneBee\", world(\"default\"))")
+            .since("INSERT VERSION")
+            .register();
+
+        reg.newJavaFunction("playerRef", PlayerRef.class, true)
+            .parameter("name", String.class)
+            .executeSingle(params -> {
+                String name = (String) params[0][0];
+                return PlayerUtils.getPlayerRef(name);
+            })
+            .name("PlayerRef")
+            .description("Returns the PlayerRef with the given name.")
+            .examples("set {_ref} to playerRef(\"ShaneBee\")")
+            .since("INSERT VERSION")
             .register();
     }
 

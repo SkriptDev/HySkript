@@ -7,7 +7,6 @@ import com.github.skriptdev.skript.api.skript.event.LocationContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerRefContext;
 import com.github.skriptdev.skript.api.skript.event.RefContext;
-import com.github.skriptdev.skript.api.skript.event.SlotTransactionContext;
 import com.github.skriptdev.skript.api.skript.event.WorldContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtEntityDamage;
@@ -18,8 +17,8 @@ import com.github.skriptdev.skript.plugin.elements.events.entity.EvtLivingEntity
 import com.github.skriptdev.skript.plugin.elements.events.entity.EvtTeleport;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtInventoryMove;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtItemStackSlotTransaction;
+import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtItemStackTransaction;
 import com.github.skriptdev.skript.plugin.elements.events.inventory.EvtSlotTransaction;
-import com.github.skriptdev.skript.plugin.elements.events.inventory.InventoryListener;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerAddToWorld;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerBreakBlock;
 import com.github.skriptdev.skript.plugin.elements.events.player.EvtPlayerChangeGameMode;
@@ -47,12 +46,8 @@ import com.github.skriptdev.skript.plugin.elements.events.world.EvtAtWorldTime;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.inventory.transaction.ActionType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import io.github.syst3ms.skriptparser.registration.context.ContextValue.Usage;
 
 public class EventHandler {
@@ -67,9 +62,9 @@ public class EventHandler {
         EvtTeleport.register(registration);
 
         // INVENTORY
-        InventoryListener.registerListener(registration);
         EvtInventoryMove.register(registration);
         EvtItemStackSlotTransaction.register(registration);
+        EvtItemStackTransaction.register(registration);
         EvtSlotTransaction.register(registration);
 
         // PLAYER
@@ -106,7 +101,6 @@ public class EventHandler {
 
         // CONTEXT
         registerGlobalContexts(registration);
-        registerInventoryContexts(registration);
     }
 
     public static void shutdown() {
@@ -131,32 +125,10 @@ public class EventHandler {
         reg.addSingleContextValue(PlayerRefContext.class, PlayerRef.class,
             "player-ref", PlayerRefContext::getPlayerRef);
         reg.addSingleContextValue(RefContext.class, Ref.class,
-                "ref", RefContext::getRef);
+            "ref", RefContext::getRef);
         reg.newSingleContextValue(WorldContext.class, World.class,
                 "world", WorldContext::getWorld)
             .setUsage(Usage.EXPRESSION_OR_ALONE)
-            .register();
-    }
-
-    private static void registerInventoryContexts(SkriptRegistration reg) {
-        reg.newSingleContextValue(SlotTransactionContext.class, ItemContainer.class,
-                "item-container", SlotTransactionContext::getContainer)
-            .register();
-        reg.newSingleContextValue(SlotTransactionContext.class, ActionType.class,
-                "action-type", SlotTransactionContext::getActionType)
-            .register();
-        reg.newSingleContextValue(SlotTransactionContext.class, Number.class,
-                "slot", SlotTransactionContext::getSlot)
-            .register();
-        reg.newSingleContextValue(SlotTransactionContext.class, ItemStack.class,
-                "itemstack", SlotTransactionContext::getSlotBefore)
-            .setState(ContextValue.State.PAST)
-            .register();
-        reg.newSingleContextValue(SlotTransactionContext.class, ItemStack.class,
-                "itemstack", SlotTransactionContext::getSlotAfter)
-            .register();
-        reg.newSingleContextValue(SlotTransactionContext.class, ItemStack.class,
-                "output", SlotTransactionContext::getOutput)
             .register();
     }
 

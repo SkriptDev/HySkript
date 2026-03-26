@@ -4,7 +4,9 @@ import com.github.skriptdev.skript.api.skript.event.CancellableContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.event.EventRegistration;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerSetupConnectEvent;
+import com.hypixel.hytale.server.core.util.MessageUtil;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.TriggerMap;
@@ -28,8 +30,10 @@ public class EvtPlayerSetupConnect extends SkriptEvent {
             "name", PlayerSetupConnectContext::getUsername);
         reg.addSingleContextValue(PlayerSetupConnectContext.class, UUID.class,
             "uuid", PlayerSetupConnectContext::getUuid);
-        reg.addSingleContextValue(PlayerSetupConnectContext.class, String.class,
+        reg.addSingleContextValue(PlayerSetupConnectContext.class, Message.class,
             "reason", PlayerSetupConnectContext::getReason);
+        reg.addSingleContextValue(PlayerSetupConnectContext.class, String.class,
+            "reason-string", PlayerSetupConnectContext::getReasonString);
     }
 
     private static EventRegistration<Void, PlayerSetupConnectEvent> LISTENER;
@@ -66,8 +70,12 @@ public class EvtPlayerSetupConnect extends SkriptEvent {
             return this.event.getUuid();
         }
 
-        public String getReason() {
+        public Message getReason() {
             return this.event.getReason();
+        }
+
+        public String getReasonString() {
+            return MessageUtil.toAnsiString(this.event.getReason()).toAnsi();
         }
 
         @Override
