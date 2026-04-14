@@ -6,7 +6,6 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.projectile.ProjectileModule;
@@ -17,6 +16,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 public class EffShoot extends Effect {
 
@@ -59,8 +59,8 @@ public class EffShoot extends Effect {
         TransformComponent component = EntityUtils.getComponent(entity, TransformComponent.getComponentType());
         if (component == null) return;
 
-        Vector3d pos = component.getTransform().getPosition().clone();
-        Vector3d dir = component.getTransform().getDirection().clone();
+        Vector3d pos = new Vector3d(component.getTransform().getPosition());
+        Vector3d dir = new Vector3d(component.getTransform().getDirection());
 
         if (this.direction != null) {
             Vector3d vector3d = this.direction.getSingle(ctx).orElse(null);

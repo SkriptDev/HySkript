@@ -2,7 +2,7 @@ package com.github.skriptdev.skript.api.hytale.objects;
 
 import com.github.skriptdev.skript.api.hytale.utils.LocationUtils;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +53,9 @@ public enum Direction {
 
     private static Location create(Location location, Number offset, int x, int y, int z) {
         double value = offset.doubleValue();
-        Vector3d add = location.getPosition().clone().add(x * value, y * value, z * value);
+
+        Vector3d position = new Vector3d(location.getPosition());
+        Vector3d add = position.add(x * value, y * value, z * value);
         return new Location(location.getWorld(), add);
     }
 

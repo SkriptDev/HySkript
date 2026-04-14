@@ -3,7 +3,6 @@ package com.github.skriptdev.skript.plugin.elements.effects.world;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Effect;
@@ -14,6 +13,8 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.variables.VariableMap;
 import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.Optional;
 
@@ -53,9 +54,9 @@ public class EffChunkLoadAsync extends Effect {
         World world = Universe.get().getWorld(loc.getWorld());
         if (world == null) return nextStatement;
 
-        Vector3i pos = loc.getPosition().toVector3i();
-        int x = pos.getX();
-        int z = pos.getZ();
+        Vector3i pos = new Vector3i(loc.getPosition(), RoundingMode.FLOOR);
+        int x = pos.x();
+        int z = pos.z();
 
         // Save variables for later
         VariableMap variableMap = Variables.copyLocalVariables(ctx);

@@ -14,8 +14,7 @@ import com.hypixel.hytale.component.dependency.RootDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefChangeSystem;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -30,6 +29,7 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.Collections;
 import java.util.Set;
@@ -139,7 +139,7 @@ public class EvtTeleport extends SystemEvent<EvtTeleport.TeleportSystem> {
             TransformComponent component = EntityUtils.getComponent(this.entity, TransformComponent.getComponentType());
             assert component != null;
             Vector3d position = component.getPosition();
-            Vector3f rotation = component.getRotation();
+            Rotation3f rotation = component.getRotation();
             return new Location(world.getName(), position, rotation);
         }
 

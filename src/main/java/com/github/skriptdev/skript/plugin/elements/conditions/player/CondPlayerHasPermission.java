@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.conditions.player;
 
+import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -43,7 +44,9 @@ public class CondPlayerHasPermission extends ConditionalExpression {
         this.permission.check(ctx, string -> {
             this.players.check(ctx, p -> {
                 if (p instanceof Player player) {
-                    return player.hasPermission(string);
+                    PlayerRef playerRef = PlayerUtils.getPlayerRef(player);
+                    assert playerRef != null;
+                    return permissionsModule.hasPermission(playerRef.getUuid(), string);
                 } else if (p instanceof PlayerRef playerRef) {
                     return permissionsModule.hasPermission(playerRef.getUuid(), string);
                 } else if (p instanceof UUID uuid) {

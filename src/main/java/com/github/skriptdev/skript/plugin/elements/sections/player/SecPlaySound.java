@@ -5,7 +5,6 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -25,6 +24,7 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.parsing.ParserState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.Optional;
 
@@ -135,7 +135,7 @@ public class SecPlaySound extends CodeSection {
 
                 Store<EntityStore> store = reference.getStore();
                 SoundUtil.playSoundEvent3dToPlayer(reference, soundEvent, category,
-                    pos.getX(), pos.getY(), pos.getZ(), volume, pitch, store);
+                    pos.x(), pos.y(), pos.z(), volume, pitch, store);
             } else {
                 SoundUtil.playSoundEvent2dToPlayer(playerRef, soundEvent, category, volume, pitch);
             }
@@ -153,7 +153,7 @@ public class SecPlaySound extends CodeSection {
         Store<EntityStore> store = world.getEntityStore().getStore();
         if (is3d) {
             Vector3d pos = location.getPosition();
-            SoundUtil.playSoundEvent3d(soundEvent, category, pos.getX(), pos.getY(), pos.getZ(), volume, pitch, store);
+            SoundUtil.playSoundEvent3d(soundEvent, category, pos.x(), pos.y(), pos.z(), volume, pitch, store);
         } else {
             SoundUtil.playSoundEvent2d(soundEvent, category, volume, pitch, store);
         }

@@ -3,7 +3,6 @@ package com.github.skriptdev.skript.plugin.elements.expressions.world;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -11,6 +10,8 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 public class ExprChunkAtLocation implements Expression<WorldChunk> {
 
@@ -47,9 +48,9 @@ public class ExprChunkAtLocation implements Expression<WorldChunk> {
             World world = Universe.get().getWorld(worldName);
             if (world == null) continue;
 
-            Vector3i pos = location.getPosition().toVector3i();
+            Vector3i pos = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
 
-            long index = ChunkUtil.indexChunkFromBlock(pos.getX(), pos.getZ());
+            long index = ChunkUtil.indexChunkFromBlock(pos.x(), pos.z());
             chunks[i] = world.getChunk(index);
         }
 

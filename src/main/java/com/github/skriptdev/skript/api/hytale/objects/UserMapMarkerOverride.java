@@ -1,9 +1,9 @@
 package com.github.skriptdev.skript.api.hytale.objects;
 
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.protocol.packets.worldmap.MapMarker;
 import com.hypixel.hytale.server.core.universe.world.worldmap.markers.user.UserMapMarker;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class UserMapMarkerOverride extends UserMapMarker {
     private final List<ContextMenuItem> contextMenuItems = new ArrayList<>();
 
     public void setPosition(Vector3d pos) {
-        this.blockY = (float) pos.getY();
-        super.setPosition((float) pos.getX(), (float) pos.getZ());
+        this.blockY = (float) pos.y();
+        super.setPosition((float) pos.x(), (float) pos.z());
     }
 
     public void addContextMenuItem(ContextMenuItem contextMenuItem) {

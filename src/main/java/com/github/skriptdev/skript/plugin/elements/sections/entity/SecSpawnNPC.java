@@ -3,7 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.sections.entity;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -20,6 +20,7 @@ import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import io.github.syst3ms.skriptparser.variables.VariableMap;
 import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -94,15 +95,15 @@ public class SecSpawnNPC extends CodeSection {
 
         Optional<? extends Statement> firstStatement = getFirst();
 
-        Vector3f rotation = location.getRotation().clone();
-        if (Float.isNaN(rotation.getX())) rotation = Vector3f.ZERO;
+        Rotation3f rotation = location.getRotation().clone();
+        if (Float.isNaN(rotation.x())) rotation = (Rotation3f) Rotation3f.ZERO;
 
         AtomicReference<VariableMap> vars = new AtomicReference<>();
         VariableMap variableMap = Variables.copyLocalVariables(ctx);
         vars.set(variableMap);
         Variables.clearLocalVariables(ctx);
 
-        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, null,
+        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), new Vector3d(location.getPosition()), rotation, null, null,
             (npcEntity, entityStoreRef, entityStoreStore) -> {
                 SpawnMobContext spawnMobContext = new SpawnMobContext(npcEntity);
                 setNext(null);

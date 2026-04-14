@@ -38,7 +38,7 @@ public class ExprDistance implements Expression<Number> {
         if (single.isEmpty() || single2.isEmpty()) return null;
         Location loc1 = single.get();
         Location loc2 = single2.get();
-        return new Number[]{loc1.getPosition().distanceTo(loc2.getPosition())};
+        return new Number[]{loc1.getPosition().distance(loc2.getPosition())};
     }
 
     @Override

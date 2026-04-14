@@ -4,13 +4,14 @@ import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.iterator.LineIterator;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,15 +65,15 @@ public class ExprBlockIterator implements Expression<Block> {
         World world = Universe.get().getWorld(worldString);
         if (world == null) return blocks.iterator();
 
-        Vector3i pos1 = loc1.getPosition().toVector3i();
-        Vector3i pos2 = loc2.getPosition().toVector3i();
+        Vector3i pos1 = new Vector3i(loc1.getPosition(), RoundingMode.FLOOR);
+        Vector3i pos2 = new Vector3i(loc2.getPosition(), RoundingMode.FLOOR);
 
         if (this.within) {
-            Vector3i min = Vector3i.min(pos1, pos2);
-            Vector3i max = Vector3i.max(pos1, pos2);
-            for (int x = min.getX(); x <= max.getX(); x++) {
-                for (int y = min.getY(); y <= max.getY(); y++) {
-                    for (int z = min.getZ(); z <= max.getZ(); z++) {
+            Vector3i min = pos1.min(pos2);
+            Vector3i max = pos1.max(pos2);
+            for (int x = min.x(); x <= max.x(); x++) {
+                for (int y = min.y(); y <= max.y(); y++) {
+                    for (int z = min.z(); z <= max.z(); z++) {
                         Block block = new Block(world, new Vector3i(x, y, z));
                         blocks.add(block);
                     }
@@ -97,7 +98,7 @@ public class ExprBlockIterator implements Expression<Block> {
 
         public BlockLineIterator(World world, Vector3i pos1, Vector3i pos2) {
             this.world = world;
-            this.lineIterator = new LineIterator(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
+            this.lineIterator = new LineIterator(pos1.x(), pos1.y(), pos1.z(), pos2.x(), pos2.y(), pos2.z());
         }
 
         @Override

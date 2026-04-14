@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -13,6 +12,7 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.base.ConditionalExpression;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 public class CondChunkIsLoaded extends ConditionalExpression {
 
@@ -43,9 +43,9 @@ public class CondChunkIsLoaded extends ConditionalExpression {
         return this.location.check(ctx, location -> {
             World world = Universe.get().getWorld(location.getWorld());
             if (world != null) {
-                Vector3i pos = location.getPosition().toVector3i();
-                int x = pos.getX();
-                int z = pos.getZ();
+                Vector3d pos = location.getPosition();
+                int x = (int) Math.floor(pos.x());
+                int z = (int) Math.floor(pos.y());
                 long index = ChunkUtil.indexChunkFromBlock(x, z);
                 Ref<ChunkStore> chunkReference = world.getChunkStore().getChunkReference(index);
                 if (isNegated()) {

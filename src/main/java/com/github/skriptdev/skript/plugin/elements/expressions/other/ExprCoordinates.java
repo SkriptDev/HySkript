@@ -2,9 +2,6 @@ package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
@@ -12,6 +9,9 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.Optional;
 
@@ -44,30 +44,30 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
             case Location location -> {
                 Vector3d position = location.getPosition();
                 return switch (this.pattern) {
-                    case 1 -> position.getY();
-                    case 2 -> position.getZ();
-                    default -> position.getX();
+                    case 1 -> position.y();
+                    case 2 -> position.z();
+                    default -> position.x();
                 };
             }
             case Vector3i position -> {
                 return switch (this.pattern) {
-                    case 1 -> position.getY();
-                    case 2 -> position.getZ();
-                    default -> position.getX();
+                    case 1 -> position.y();
+                    case 2 -> position.z();
+                    default -> position.x();
                 };
             }
             case Vector3d position -> {
                 return switch (this.pattern) {
-                    case 1 -> position.getY();
-                    case 2 -> position.getZ();
-                    default -> position.getX();
+                    case 1 -> position.y();
+                    case 2 -> position.z();
+                    default -> position.x();
                 };
             }
             case Vector3f position -> {
                 return switch (this.pattern) {
-                    case 1 -> position.getY();
-                    case 2 -> position.getZ();
-                    default -> position.getX();
+                    case 1 -> position.y();
+                    case 2 -> position.z();
+                    default -> position.x();
                 };
             }
             default -> {
@@ -107,9 +107,9 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
 
     private void changeVec3d(Vector3d pos, ChangeMode mode, Number number) {
         double oldValue = switch (this.pattern) {
-            case 1 -> pos.getY();
-            case 2 -> pos.getZ();
-            default -> pos.getX();
+            case 1 -> pos.y();
+            case 2 -> pos.z();
+            default -> pos.x();
         };
 
         double changeValue = number.doubleValue();
@@ -120,18 +120,14 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
             newValue = oldValue - changeValue;
         }
 
-        switch (this.pattern) {
-            case 1 -> pos.setY(newValue);
-            case 2 -> pos.setZ(newValue);
-            default -> pos.setX(newValue);
-        }
+        pos.setComponent(this.pattern, newValue);
     }
 
     private void changeVec3f(Vector3f pos, ChangeMode mode, Number number) {
         float oldValue = switch (this.pattern) {
-            case 1 -> pos.getY();
-            case 2 -> pos.getZ();
-            default -> pos.getX();
+            case 1 -> pos.y();
+            case 2 -> pos.z();
+            default -> pos.x();
         };
 
         float changeValue = number.floatValue();
@@ -142,18 +138,14 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
             newValue = oldValue - changeValue;
         }
 
-        switch (this.pattern) {
-            case 1 -> pos.setY(newValue);
-            case 2 -> pos.setZ(newValue);
-            default -> pos.setX(newValue);
-        }
+        pos.setComponent(this.pattern, newValue);
     }
 
     private void changeVec3i(Vector3i pos, ChangeMode mode, Number number) {
         int oldValue = switch (this.pattern) {
-            case 1 -> pos.getY();
-            case 2 -> pos.getZ();
-            default -> pos.getX();
+            case 1 -> pos.y();
+            case 2 -> pos.z();
+            default -> pos.x();
         };
 
         int changeValue = number.intValue();
@@ -164,11 +156,7 @@ public class ExprCoordinates extends PropertyExpression<Object, Number> {
             newValue = oldValue - changeValue;
         }
 
-        switch (this.pattern) {
-            case 1 -> pos.setY(newValue);
-            case 2 -> pos.setZ(newValue);
-            default -> pos.setX(newValue);
-        }
+        pos.setComponent(this.pattern, newValue);
     }
 
 }

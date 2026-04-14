@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.plugin.elements.types;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
+import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -21,7 +22,7 @@ public class TypesPlayer {
             .name("Player")
             .description("Represents a player in the game.")
             .since("1.0.0")
-            .toStringFunction(Player::getDisplayName)
+            .toStringFunction(PlayerUtils::getUsername)
             .toVariableNameFunction(player -> {
                 UUID uuid = EntityUtils.getUUID(player);
                 assert uuid != null; // A player's UUID should never be null

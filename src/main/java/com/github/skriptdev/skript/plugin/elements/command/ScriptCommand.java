@@ -1,5 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.command;
 
+import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.github.skriptdev.skript.api.skript.command.ScriptCommandBuilder;
 import com.github.skriptdev.skript.api.skript.command.ScriptCommandParent;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
@@ -57,7 +58,7 @@ public class ScriptCommand extends Structure implements ScriptCommandParent {
         private final Player player;
 
         public PlayerScriptCommandContext(String command, Player player) {
-            super(command, player);
+            super(command, PlayerUtils.getPlayerRef(player));
             this.player = player;
         }
 

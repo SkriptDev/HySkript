@@ -1,12 +1,12 @@
 package com.github.skriptdev.skript.plugin.elements.sections.world;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.spatial.SpatialResource;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.particle.config.ParticleSystem;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -28,6 +28,8 @@ import io.github.syst3ms.skriptparser.parsing.ParserState;
 import io.github.syst3ms.skriptparser.util.color.Color;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,12 +97,12 @@ public class SecParticle extends CodeSection {
         }
 
         Vector3d pos = location.getPosition();
-        Vector3f rotation = location.getRotation();
+        Rotation3f rotation = location.getRotation();
 
         Expression<Vector3f> vecExpr = this.config.getExpression("rotation", Vector3f.class).orElse(null);
         if (vecExpr != null) {
             Vector3f vec = vecExpr.getSingle(ctx).orElse(null);
-            if (vec != null) rotation = vec;
+            if (vec != null) rotation = VectorUtils.rotFromVec3f(vec);
         }
 
         float scale = 1.0f;
@@ -154,15 +156,15 @@ public class SecParticle extends CodeSection {
             receivers.addAll(playerRefs);
         }
 
-        float yaw = rotation.getYaw();
-        float pitch = rotation.getPitch();
-        float roll = rotation.getRoll();
+        float yaw = rotation.yaw();
+        float pitch = rotation.pitch();
+        float roll = rotation.roll();
         if (Float.isNaN(yaw)) yaw = 0;
         if (Float.isNaN(pitch)) pitch = 0;
         if (Float.isNaN(roll)) roll = 0;
 
         ParticleUtil.spawnParticleEffect(particleId,
-            pos.getX(), pos.getY(), pos.getZ(),
+            pos.x(), pos.y(), pos.z(),
             yaw, pitch, roll,
             scale,
             getHytaleColor(color),

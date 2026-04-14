@@ -2,12 +2,13 @@ package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class ExprEntityHeadRotation extends PropertyExpression<Entity, Vector3f> {
 
@@ -26,7 +27,7 @@ public class ExprEntityHeadRotation extends PropertyExpression<Entity, Vector3f>
         HeadRotation component = EntityUtils.getComponent(entity, HeadRotation.getComponentType());
         if (component == null) return null;
 
-        return component.getRotation();
+        return VectorUtils.vecFromRot3f(component.getRotation());
     }
 
 }

@@ -3,12 +3,12 @@ package com.github.skriptdev.skript.plugin.elements.expressions.other;
 import com.github.skriptdev.skript.api.hytale.utils.LocationUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3i;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 public class ExprLocationOffset implements Expression<Location> {
 
@@ -44,7 +44,7 @@ public class ExprLocationOffset implements Expression<Location> {
         Vector3d offset;
         Object o = this.vector.getSingle(ctx).orElse(null);
         if (o instanceof Vector3i vector3i) {
-            offset = vector3i.toVector3d();
+            offset = new Vector3d(vector3i);
         } else if (o instanceof Vector3d vector3d) {
             offset = vector3d;
         } else {

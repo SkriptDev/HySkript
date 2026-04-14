@@ -2,7 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
-import com.hypixel.hytale.math.vector.Vector3d;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.protocol.ChangeVelocityType;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
@@ -12,6 +12,7 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.Optional;
 
@@ -61,7 +62,7 @@ public class ExprEntityVelocity implements Expression<Vector3d> {
     @SuppressWarnings("ConstantValue")
     @Override
     public void change(@NotNull TriggerContext ctx, @NotNull ChangeMode changeMode, Object @NotNull [] changeWith) {
-        Vector3d velocity = Vector3d.ZERO;
+        Vector3d velocity = VectorUtils.ZERO_3d;
         if (changeWith != null && changeWith[0] instanceof Vector3d vec) {
             velocity = vec;
         }

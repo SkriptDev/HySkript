@@ -5,9 +5,7 @@ import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
 import com.hypixel.hytale.event.EventRegistration;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.MouseButtonEvent;
-import com.hypixel.hytale.protocol.Vector2f;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -18,6 +16,8 @@ import io.github.syst3ms.skriptparser.lang.TriggerMap;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
+import org.joml.Vector3i;
 
 public class EvtPlayerMouseClick extends SkriptEvent {
 
@@ -79,7 +79,7 @@ public class EvtPlayerMouseClick extends SkriptEvent {
         }
 
         private Vector2f getScreenPoint() {
-            return this.event.getScreenPoint();
+            return (Vector2f) this.event.getScreenPoint();
         }
 
         private MouseButtonEvent getMouseButton() {

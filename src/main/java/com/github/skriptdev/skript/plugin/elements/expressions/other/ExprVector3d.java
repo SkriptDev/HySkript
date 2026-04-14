@@ -1,11 +1,11 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
-import com.hypixel.hytale.math.vector.Vector3d;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 public class ExprVector3d implements Expression<Vector3d> {
 

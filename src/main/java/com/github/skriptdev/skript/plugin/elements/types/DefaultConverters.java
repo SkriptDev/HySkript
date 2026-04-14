@@ -3,8 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.types;
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
@@ -16,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.util.MessageUtil;
 import io.github.syst3ms.skriptparser.types.conversions.Converters;
+import org.joml.Vector3d;
 
 import java.util.Optional;
 
@@ -50,7 +50,7 @@ public class DefaultConverters {
             if (component == null) return Optional.empty();
 
             Vector3d pos = component.getPosition();
-            Vector3f rotation = component.getRotation();
+            Rotation3f rotation = component.getRotation();
             Location location = new Location(world.getName(), pos, rotation);
             return Optional.of(location);
         });
@@ -64,7 +64,7 @@ public class DefaultConverters {
             if (component == null) return Optional.empty();
 
             Vector3d pos = component.getPosition();
-            Vector3f rotation = component.getRotation();
+            Rotation3f rotation = component.getRotation();
             Location location = new Location(world.getName(), pos, rotation);
             return Optional.of(location);
         });

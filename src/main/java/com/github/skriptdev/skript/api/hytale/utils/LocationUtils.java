@@ -1,6 +1,7 @@
 package com.github.skriptdev.skript.api.hytale.utils;
 
 import com.hypixel.hytale.math.vector.Location;
+import org.joml.Vector3d;
 
 /**
  * Untilities for {@link Location Locations}
@@ -16,7 +17,7 @@ public class LocationUtils {
      */
     public static Location clone(Location location) {
         return new Location(location.getWorld(),
-            location.getPosition().clone(),
+            new Vector3d(location.getPosition()),
             location.getRotation().clone());
     }
 

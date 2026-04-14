@@ -3,13 +3,14 @@ package com.github.skriptdev.skript.plugin.elements.expressions.block;
 import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class ExprBlockAt implements Expression<Block> {
 
     public static void register(SkriptRegistration reg) {
         reg.newExpression(ExprBlockAt.class, Block.class, true,
-            "block[s] at %locations%")
+                "block[s] at %locations%")
             .name("Block At")
             .description("Returns the block at a location.")
             .examples("set {_block} to block at player's location")
@@ -45,7 +46,7 @@ public class ExprBlockAt implements Expression<Block> {
             World world = Universe.get().getWorld(worldName);
             if (world == null) continue;
 
-            Vector3i pos = location.getPosition().toVector3i();
+            Vector3i pos = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
 
             Block block = new Block(world, pos);
             blocks.add(block);

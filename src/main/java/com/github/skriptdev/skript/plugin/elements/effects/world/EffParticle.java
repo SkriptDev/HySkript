@@ -5,8 +5,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.spatial.SpatialResource;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.particle.config.ParticleSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
@@ -20,6 +19,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +67,10 @@ public class EffParticle extends Effect {
         }
 
         Vector3d pos = location.getPosition();
-        Vector3f rotation = location.getRotation();
-        float yaw = rotation.getYaw();
-        float pitch = rotation.getPitch();
-        float roll = rotation.getRoll();
+        Rotation3f rotation = location.getRotation();
+        float yaw = rotation.yaw();
+        float pitch = rotation.pitch();
+        float roll = rotation.roll();
         if (Float.isNaN(yaw)) yaw = 0;
         if (Float.isNaN(pitch)) pitch = 0;
         if (Float.isNaN(roll)) roll = 0;
@@ -101,7 +101,7 @@ public class EffParticle extends Effect {
         }
 
         ParticleUtil.spawnParticleEffect(particleId,
-            pos.getX(), pos.getY(), pos.getZ(),
+            pos.x(), pos.y(), pos.z(),
             yaw, pitch, roll,
             1.0f,
             null,

@@ -6,7 +6,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
@@ -29,6 +28,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.util.color.Color;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -55,11 +56,11 @@ public class Block {
         if (world == null) {
             throw new IllegalArgumentException("World '" + location.getWorld() + "' not found.");
         }
-        this(world, location.getPosition().toVector3i());
+        this(world, new Vector3i(location.getPosition(), RoundingMode.FLOOR));
     }
 
     public long getChunkIndex() {
-        return ChunkUtil.indexChunkFromBlock(this.pos.getX(), this.pos.getZ());
+        return ChunkUtil.indexChunkFromBlock(this.pos.x(), this.pos.z());
     }
 
     public WorldChunk getChunk() {
@@ -72,7 +73,7 @@ public class Block {
     }
 
     public void setType(@NotNull BlockType type, int settings) {
-        Runnable r = () -> Block.this.world.setBlock(Block.this.pos.getX(), Block.this.pos.getY(), Block.this.pos.getZ(), type.getId(), settings);
+        Runnable r = () -> Block.this.world.setBlock(Block.this.pos.x(), Block.this.pos.y(), Block.this.pos.z(), type.getId(), settings);
         if (this.world.isInThread()) {
             r.run();
         } else {
@@ -95,11 +96,11 @@ public class Block {
         BlockChunk blockChunk = chunk.getBlockChunk();
         if (blockChunk == null) return;
 
-        Rotation pitch = getRotationFromInt(rotation.getX());
-        Rotation yaw = getRotationFromInt(rotation.getY());
-        Rotation roll = getRotationFromInt(rotation.getZ());
+        Rotation pitch = getRotationFromInt(rotation.x());
+        Rotation yaw = getRotationFromInt(rotation.y());
+        Rotation roll = getRotationFromInt(rotation.z());
         int rotationIndex = RotationTuple.of(yaw, pitch, roll).index();
-        blockChunk.setBlock(this.pos.getX(), this.pos.getY(), this.pos.getZ(),
+        blockChunk.setBlock(this.pos.x(), this.pos.y(), this.pos.z(),
             blockId, rotationIndex, 0);
     }
 
@@ -109,7 +110,7 @@ public class Block {
      * @return Rotation of block represented as a Vector3i(yaw, pitch, roll).
      */
     public Vector3i getRotation() {
-        int blockRotationIndex = getWorld().getBlockRotationIndex(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+        int blockRotationIndex = getWorld().getBlockRotationIndex(this.pos.x(), this.pos.y(), this.pos.z());
         RotationTuple rotationTuple = RotationTuple.get(blockRotationIndex);
 
         int yaw = getIntFromRotation(rotationTuple.yaw());
@@ -138,8 +139,8 @@ public class Block {
         BlockChunk blockChunk = getChunk().getBlockChunk();
         if (blockChunk == null) return null;
 
-        int x = this.pos.getX() % 32;
-        int z = this.pos.getZ() % 32;
+        int x = this.pos.x() % 32;
+        int z = this.pos.z() % 32;
         int tintInt = blockChunk.getTint(x, z);
         return Color.of(tintInt);
     }
@@ -152,8 +153,8 @@ public class Block {
         BlockChunk blockChunk = getChunk().getBlockChunk();
         if (blockChunk == null) return;
 
-        int x = this.pos.getX() % 32;
-        int z = this.pos.getZ() % 32;
+        int x = this.pos.x() % 32;
+        int z = this.pos.z() % 32;
         blockChunk.setTint(x, z, color.toJavaColor().getRGB());
         if (updateChunk) {
             updateChunk();
@@ -169,14 +170,14 @@ public class Block {
         ChunkColumn column = store.getComponent(columnRef, ChunkColumn.getComponentType());
         if (column == null) return 0;
 
-        Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.getY()));
+        Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.y()));
         if (section == null) {
             return 0;
         } else {
             FluidSection fluidSection = store.getComponent(section, FluidSection.getComponentType());
             if (fluidSection == null) return 0;
 
-            return fluidSection.getFluidLevel(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+            return fluidSection.getFluidLevel(this.pos.x(), this.pos.y(), this.pos.z());
         }
     }
 
@@ -187,7 +188,7 @@ public class Block {
             ChunkColumn column = store.getComponent(columnRef, ChunkColumn.getComponentType());
             if (column == null) return null;
 
-            Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.getY()));
+            Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.y()));
             if (section == null) {
                 return null;
             } else {
@@ -196,17 +197,17 @@ public class Block {
                     return null;
                 }
 
-                Fluid fluid = fluidSection.getFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+                Fluid fluid = fluidSection.getFluid(this.pos.x(), this.pos.y(), this.pos.z());
                 if (fluid == null) return null;
                 byte fluidLevel = (byte) Math.clamp((int) level, 0, fluid.getMaxFluidLevel());
-                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, fluidLevel);
+                fluidSection.setFluid(this.pos.x(), this.pos.y(), this.pos.z(), fluid, fluidLevel);
             }
             return chunk;
         });
     }
 
     public Fluid getFluid() {
-        int fluidId = this.world.getFluidId(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+        int fluidId = this.world.getFluidId(this.pos.x(), this.pos.y(), this.pos.z());
         if (fluidId == -1) {
             return null;
         }
@@ -220,7 +221,7 @@ public class Block {
             ChunkColumn column = store.getComponent(columnRef, ChunkColumn.getComponentType());
             if (column == null) return null;
 
-            Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.getY()));
+            Ref<ChunkStore> section = column.getSection(ChunkUtil.chunkCoordinate(this.pos.y()));
             if (section == null) {
                 return null;
             } else {
@@ -234,18 +235,18 @@ public class Block {
                 if (level != null) {
                     fluidLevel = level.byteValue();
                 } else {
-                    fluidLevel = fluidSection.getFluidLevel(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+                    fluidLevel = fluidSection.getFluidLevel(this.pos.x(), this.pos.y(), this.pos.z());
                     if (fluidLevel <= 0) fluidLevel = (byte) fluid.getMaxFluidLevel();
                 }
                 fluidLevel = (byte) Math.clamp((int) fluidLevel, 0, fluid.getMaxFluidLevel());
-                fluidSection.setFluid(this.pos.getX(), this.pos.getY(), this.pos.getZ(), fluid, fluidLevel);
+                fluidSection.setFluid(this.pos.x(), this.pos.y(), this.pos.z(), fluid, fluidLevel);
             }
             return chunk;
         });
     }
 
     public void breakBlock(int settings) {
-        this.world.breakBlock(this.pos.getX(), this.pos.getY(), this.pos.getZ(), settings);
+        this.world.breakBlock(this.pos.x(), this.pos.y(), this.pos.z(), settings);
     }
 
     public void damage(@Nullable LivingEntity performer, @Nullable ItemStack itemStack, float damage) {
@@ -268,7 +269,6 @@ public class Block {
                 chunkStore);
         } else {
             BlockHarvestUtils.performBlockDamage(
-                performer,
                 performer.getReference(),
                 this.pos,
                 itemStack,
@@ -312,8 +312,8 @@ public class Block {
 
         if (!blockHealth.isDestroyed()) {
             Predicate<PlayerRef> filter = (player) -> true;
-            world.getNotificationHandler().updateBlockDamage(this.pos.getX(), this.pos.getY(),
-                this.pos.getZ(), blockHealth.getHealth(), health, filter);
+            world.getNotificationHandler().updateBlockDamage(this.pos.x(), this.pos.y(),
+                this.pos.z(), blockHealth.getHealth(), health, filter);
         }
     }
 
@@ -326,16 +326,16 @@ public class Block {
     }
 
     public @NotNull Location getLocation() {
-        return new Location(this.world.getName(), this.pos.getX(), this.pos.getY(), this.pos.getZ());
+        return new Location(this.world.getName(), this.pos.x(), this.pos.y(), this.pos.z());
     }
 
     public String toTypeString() {
         return String.format("[%s] block at (%s,%s,%s) in '%s'",
-            this.getType().getId(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.world.getName());
+            this.getType().getId(), this.pos.x(), this.pos.y(), this.pos.z(), this.world.getName());
     }
 
     public String toVariableNameString() {
-        return String.format("%s_%s_%s_%s_%s", this.world.getName(), this.getType().getId(), this.pos.getX(), this.pos.getY(), this.pos.getZ());
+        return String.format("%s_%s_%s_%s_%s", this.world.getName(), this.getType().getId(), this.pos.x(), this.pos.y(), this.pos.z());
     }
 
     @Override
