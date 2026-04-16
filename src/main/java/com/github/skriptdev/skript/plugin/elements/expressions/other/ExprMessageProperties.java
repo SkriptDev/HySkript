@@ -1,6 +1,5 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
-import com.hypixel.hytale.protocol.MaybeBool;
 import com.hypixel.hytale.server.core.Message;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
@@ -46,10 +45,10 @@ public class ExprMessageProperties implements Expression<Boolean> {
             Message message = messageSingle.get();
 
             Boolean value = switch (this.pattern) {
-                case 0 -> translateMaybeBool(message.getFormattedMessage().bold);
-                case 1 -> translateMaybeBool(message.getFormattedMessage().italic);
-                case 2 -> translateMaybeBool(message.getFormattedMessage().monospace);
-                case 3 -> translateMaybeBool(message.getFormattedMessage().underlined);
+                case 0 -> message.getFormattedMessage().bold;
+                case 1 -> message.getFormattedMessage().italic;
+                case 2 -> message.getFormattedMessage().monospace;
+                case 3 -> message.getFormattedMessage().underlined;
                 case 4 -> message.getFormattedMessage().markupEnabled;
                 default -> null;
             };
@@ -72,7 +71,7 @@ public class ExprMessageProperties implements Expression<Boolean> {
                 case 0 -> message.bold(bool);
                 case 1 -> message.italic(bool);
                 case 2 -> message.monospace(bool);
-                case 3 -> message.getFormattedMessage().underlined = bool ? MaybeBool.True : MaybeBool.False;
+                case 3 -> message.getFormattedMessage().underlined = bool;
                 case 4 -> message.getFormattedMessage().markupEnabled = bool;
             }
         });
@@ -87,14 +86,6 @@ public class ExprMessageProperties implements Expression<Boolean> {
     public String toString(@NotNull TriggerContext ctx, boolean debug) {
         String s = new String[]{"bold", "italic", "monospace", "underlined", "markup enabled"}[pattern];
         return s + " message property of " + this.message.toString(ctx, debug);
-    }
-
-    private Boolean translateMaybeBool(MaybeBool bool) {
-        return switch (bool) {
-            case Null -> null;
-            case True -> true;
-            case False -> false;
-        };
     }
 
 }

@@ -4,12 +4,13 @@ import com.github.skriptdev.skript.api.skript.event.CancellableContext;
 import com.github.skriptdev.skript.api.skript.event.PlayerContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.plugin.HySk;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.protocol.MouseButtonEvent;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
-import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerMouseButtonEvent;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.lang.TriggerMap;
@@ -31,7 +32,7 @@ public class EvtPlayerMouseClick extends SkriptEvent {
             .register();
 
         reg.addSingleContextValue(MouseClickContext.class, Item.class, "item", MouseClickContext::getItemInHand);
-        reg.addSingleContextValue(MouseClickContext.class, Entity.class, "target-entity", MouseClickContext::getTargetEntity);
+        reg.addSingleContextValue(MouseClickContext.class, Ref.class, "target-entity-ref", MouseClickContext::getTargetEntity);
         reg.addSingleContextValue(MouseClickContext.class, Vector3i.class, "target-block", MouseClickContext::getTargetBlock);
         reg.addSingleContextValue(MouseClickContext.class, Vector2f.class, "screen-point", MouseClickContext::getScreenPoint);
         //reg.addSingleContextValue(MouseClickContext.class, MouseButtonEvent.class, "mouse-button", MouseClickContext::getMouseButton);
@@ -70,8 +71,8 @@ public class EvtPlayerMouseClick extends SkriptEvent {
             return this.event.getItemInHand();
         }
 
-        private Entity getTargetEntity() {
-            return this.event.getTargetEntity();
+        private Ref<EntityStore> getTargetEntity() {
+            return this.event.getTargetEntityRef();
         }
 
         private Vector3i getTargetBlock() {

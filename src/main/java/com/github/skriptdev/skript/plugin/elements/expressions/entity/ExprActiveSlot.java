@@ -110,7 +110,6 @@ public class ExprActiveSlot implements Expression<Number> {
                     component.markDirty();
                 }
             }
-            entity.invalidateEquipmentNetwork();
         }
     }
 
