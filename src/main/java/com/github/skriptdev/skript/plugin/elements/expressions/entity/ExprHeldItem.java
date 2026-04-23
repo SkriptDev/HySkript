@@ -2,12 +2,15 @@ package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Tool;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Utility;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
@@ -86,6 +89,9 @@ public class ExprHeldItem implements Expression<ItemStack> {
         }
 
         for (LivingEntity livingEntity : this.entities.getArray(ctx)) {
+            Ref<EntityStore> reference = livingEntity.getReference();
+            if (reference == null) continue;
+            Store<EntityStore> store = reference.getStore();
 
             if (this.pattern == 0) {
                 Hotbar hotbar = EntityUtils.getComponent(livingEntity, Hotbar.getComponentType());
@@ -102,7 +108,7 @@ public class ExprHeldItem implements Expression<ItemStack> {
                 byte activeUtilitySlot = utility.getActiveSlot();
                 if (activeUtilitySlot < 0) {
                     activeUtilitySlot = 0;
-                    utility.setActiveSlot((byte) 0);
+                    utility.setActiveSlot((byte) 0, reference, store);
                 }
                 container.setItemStackForSlot(activeUtilitySlot, itemStack);
             } else if (this.pattern == 2) {
@@ -113,7 +119,7 @@ public class ExprHeldItem implements Expression<ItemStack> {
                 byte activeToolSlot = tool.getActiveSlot();
                 if (activeToolSlot < 0) {
                     tool.setUsingToolsItem(true);
-                    tool.setActiveSlot((byte) 1);
+                    tool.setActiveSlot((byte) 1, reference, store);
                     activeToolSlot = 1;
                 }
                 container.setItemStackForSlot(activeToolSlot, itemStack);

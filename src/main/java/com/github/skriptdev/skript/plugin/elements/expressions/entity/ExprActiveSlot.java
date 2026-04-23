@@ -2,11 +2,14 @@ package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Tool;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Utility;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
@@ -87,11 +90,15 @@ public class ExprActiveSlot implements Expression<Number> {
 
 
         for (LivingEntity entity : this.entity.getArray(ctx)) {
+            Ref<EntityStore> reference = entity.getReference();
+            if (reference == null) continue;
+            Store<EntityStore> store = reference.getStore();
+
             if (this.slot == 0) {
                 byte clamp = (byte) Math.clamp(slot, 0, InventoryComponent.DEFAULT_HOTBAR_CAPACITY - 1);
                 Hotbar component = EntityUtils.getComponent(entity, Hotbar.getComponentType());
                 if (component != null) {
-                    component.setActiveSlot(clamp);
+                    component.setActiveSlot(clamp, reference, store);
                     component.markDirty();
 
                 }
@@ -99,14 +106,14 @@ public class ExprActiveSlot implements Expression<Number> {
                 byte clamp = (byte) Math.clamp(slot, -1, InventoryComponent.DEFAULT_UTILITY_CAPACITY - 1);
                 Utility component = EntityUtils.getComponent(entity, Utility.getComponentType());
                 if (component != null) {
-                    component.setActiveSlot(clamp);
+                    component.setActiveSlot(clamp, reference, store);
                     component.markDirty();
                 }
             } else if (this.slot == 2) {
                 byte clamp = (byte) Math.clamp(slot, -1, InventoryComponent.DEFAULT_TOOLS_CAPACITY - 1);
                 Tool component = EntityUtils.getComponent(entity, Tool.getComponentType());
                 if (component != null) {
-                    component.setActiveSlot(clamp);
+                    component.setActiveSlot(clamp, reference, store);
                     component.markDirty();
                 }
             }

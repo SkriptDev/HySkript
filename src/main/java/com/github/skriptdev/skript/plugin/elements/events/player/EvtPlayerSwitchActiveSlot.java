@@ -11,7 +11,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.InventoryActiveSlotRequestEvent;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.syst3ms.skriptparser.lang.Expression;
@@ -22,7 +22,7 @@ import io.github.syst3ms.skriptparser.registration.context.ContextValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EvtPlayerSwitchActiveSlot extends SystemEvent<EntityEventSystem<EntityStore, SwitchActiveSlotEvent>> {
+public class EvtPlayerSwitchActiveSlot extends SystemEvent<EntityEventSystem<EntityStore, InventoryActiveSlotRequestEvent>> {
 
     public static void register(SkriptRegistration reg) {
         reg.newEvent(EvtPlayerSwitchActiveSlot.class,
@@ -84,7 +84,7 @@ public class EvtPlayerSwitchActiveSlot extends SystemEvent<EntityEventSystem<Ent
         return "player switch active slot";
     }
 
-    public record SwitchSlotContext(SwitchActiveSlotEvent event, Player player)
+    public record SwitchSlotContext(InventoryActiveSlotRequestEvent event, Player player)
         implements PlayerContext, CancellableContext {
 
         @Override
@@ -132,16 +132,16 @@ public class EvtPlayerSwitchActiveSlot extends SystemEvent<EntityEventSystem<Ent
         }
     }
 
-    public static class SwitchSlotSystem extends EntityEventSystem<EntityStore, SwitchActiveSlotEvent> {
+    public static class SwitchSlotSystem extends EntityEventSystem<EntityStore, InventoryActiveSlotRequestEvent> {
 
         protected SwitchSlotSystem() {
-            super(SwitchActiveSlotEvent.class);
+            super(InventoryActiveSlotRequestEvent.class);
         }
 
         @Override
         public void handle(int i, @NotNull ArchetypeChunk<EntityStore> archetypeChunk,
                            @NotNull Store<EntityStore> store, @NotNull CommandBuffer<EntityStore> commandBuffer,
-                           @NotNull SwitchActiveSlotEvent event) {
+                           @NotNull InventoryActiveSlotRequestEvent event) {
 
             Ref<EntityStore> ref = archetypeChunk.getReferenceTo(i);
             Player player = commandBuffer.getComponent(ref, Player.getComponentType());
