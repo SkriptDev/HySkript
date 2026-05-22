@@ -9,23 +9,23 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.util.MessageUtil;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
-import io.github.syst3ms.skriptparser.lang.properties.PropertyExpression;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ExprItemStackName extends PropertyExpression<Object, String> {
+public class ExprItemStackName implements Expression<Object> {
 
     public static void register(SkriptRegistration reg) {
-        reg.newPropertyExpression(ExprItemStackName.class, String.class,
-                "item (:name|description)", "itemstack/item")
+        reg.newExpression(ExprItemStackName.class, Object.class, false,
+                "item [:message] (:name|description) of %itemstack/item%")
             .name("Item Name/Description")
             .description("Get the name/description of an Item/ItemStack.",
+                "The optional `message` will return as a Message otherwise as a string.",
                 "Name/description of an ItemStack can be set, but cannot be set for an Item.")
-            .examples("set {_i} to itemstack of ingredient_stick",
+            .examples("set {_name} to item name of {_item}",
+                "set {_i} to itemstack of ingredient_stick",
                 "set item name of {_i} to formatted \"<blue>My Cool Item\"",
                 "set item description of {_i} to \"This item is special\", formatted \"<gradient:#31F527:#27EBF5>REALLY SPECIAL\" and \"I hope you enjoy!\"",
                 "add {_i} to inventory of player")
@@ -33,29 +33,69 @@ public class ExprItemStackName extends PropertyExpression<Object, String> {
             .register();
     }
 
+    private boolean formatted;
+    private Expression<?> item;
     private boolean name;
 
     @Override
     public boolean init(Expression<?> @NotNull [] expressions, int matchedPattern, ParseContext parseContext) {
+        this.item = expressions[0];
+        this.formatted = parseContext.hasMark("message");
         this.name = parseContext.hasMark("name");
-        return super.init(expressions, matchedPattern, parseContext);
+        return true;
     }
 
     @Override
-    public @Nullable String getProperty(@NotNull Object owner) {
-        Item item;
-        if (owner instanceof Item i) {
-            item = i;
+    public Object[] getValues(TriggerContext triggerContext) {
+        Optional<?> single = this.item.getSingle(triggerContext);
+        if (single.isEmpty()) return null;
+        Object owner = single.get();
+
+        if (owner instanceof Item it) {
+            ItemTranslationProperties prop = it.getTranslationProperties();
+            if (this.name) {
+                String name = prop.getName();
+                if (name == null) return null;
+
+                Message translation = Message.translation(name);
+                if (this.formatted) {
+                    return new Object[]{translation};
+                } else {
+                    return new Object[]{MessageUtil.toAnsiString(translation).toAnsi()};
+                }
+            } else {
+                String description = prop.getDescription();
+                if (description == null) return null;
+
+                Message translation = Message.translation(description);
+                if (this.formatted) {
+                    return new Object[]{translation};
+                } else {
+                    return new Object[]{MessageUtil.toAnsiString(translation).toAnsi()};
+                }
+            }
         } else if (owner instanceof ItemStack itemStack) {
-            item = itemStack.getItem();
+            if (this.name) {
+                Message displayName = itemStack.getDisplayName();
+
+                if (this.formatted) {
+                    return new Object[]{displayName};
+                } else {
+                    return new Object[]{MessageUtil.toAnsiString(displayName).toAnsi()};
+                }
+            } else {
+                Message displayDescription = itemStack.getDisplayDescription();
+
+                if (this.formatted) {
+                    return new Object[]{displayDescription};
+                } else {
+
+                    return new Object[]{MessageUtil.toAnsiString(displayDescription).toAnsi()};
+                }
+            }
         } else {
             return null;
         }
-        ItemTranslationProperties translation = item.getTranslationProperties();
-        String prop = this.name ? translation.getName() : translation.getDescription();
-        if (prop == null) return null;
-
-        return MessageUtil.toAnsiString(Message.translation(prop)).toAnsi();
     }
 
     @Override
@@ -96,7 +136,7 @@ public class ExprItemStackName extends PropertyExpression<Object, String> {
                 }
             }
         }
-        Optional<?> single = getOwner().getSingle(ctx);
+        Optional<?> single = this.item.getSingle(ctx);
         if (single.isEmpty()) return;
 
         if (single.get() instanceof ItemStack itemStack) {
@@ -107,8 +147,24 @@ public class ExprItemStackName extends PropertyExpression<Object, String> {
                 meta.setDescription(message);
             }
             ItemStack itemStack1 = itemStack.withMetadata(ItemDisplayMetadata.KEYED_CODEC, meta);
-            getOwner().change(ctx, ChangeMode.SET, new ItemStack[]{itemStack1});
+            this.item.change(ctx, ChangeMode.SET, new ItemStack[]{itemStack1});
         }
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+        if (this.formatted) {
+            return Message.class;
+        } else {
+            return String.class;
+        }
+    }
+
+    @Override
+    public String toString(TriggerContext triggerContext, boolean debug) {
+        String f = this.formatted ? "message" : "";
+        String type = this.name ? "name" : "description";
+        return String.format("item %s %s of %s", f, type, this.item.toString(triggerContext,debug));
     }
 
 }
