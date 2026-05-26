@@ -57,7 +57,7 @@ public class EffSendMessage extends Effect {
             }
         } else {
             if (ctx instanceof PlayerContext playerContext) {
-                sendMessage(playerContext.getPlayer(), messages);
+                sendMessage(playerContext.getPlayerRef(), messages);
             } else if (ctx instanceof ScriptCommandContext commandContext) {
                 sendMessage(commandContext.getSender(), messages);
             } else {

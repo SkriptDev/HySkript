@@ -1,10 +1,8 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.world;
 
 import com.hypixel.hytale.math.vector.Location;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
 import com.hypixel.hytale.server.core.universe.world.spawn.GlobalSpawnProvider;
@@ -15,6 +13,9 @@ import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -60,9 +61,9 @@ public class ExprWorldSpawn extends PropertyExpression<World, Location> {
         Object object = changeWith[0];
         Transform transform = switch (object) {
             case Location location -> location.toTransform();
-            case Vector3i vector3i -> new Transform(vector3i.toVector3d(), Vector3f.ZERO);
-            case Vector3d vector3d -> new Transform(vector3d, Vector3f.ZERO);
-            case Vector3f vector3f -> new Transform(vector3f.toVector3d(), Vector3f.ZERO);
+            case Vector3i vector3i -> new Transform(new Vector3d(vector3i), (Rotation3f) Rotation3f.ZERO);
+            case Vector3d vector3d -> new Transform(vector3d, (Rotation3f) Rotation3f.ZERO);
+            case Vector3f vector3f -> new Transform(new Vector3d(vector3f), (Rotation3f) Rotation3f.ZERO);
             case null, default -> null;
         };
         if (transform == null) return;

@@ -5,8 +5,7 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.github.skriptdev.skript.api.skript.testing.TestResults;
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
@@ -14,6 +13,8 @@ import io.github.syst3ms.skriptparser.lang.VariableString;
 import io.github.syst3ms.skriptparser.lang.event.SkriptEvent;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 public class EvtTest extends SkriptEvent {
 
@@ -58,7 +59,7 @@ public class EvtTest extends SkriptEvent {
         public TestContext(TestResults testResults, World world, Vector3i pos) {
             this.testResults = testResults;
             this.world = world;
-            this.location = new Location(world.getName(), pos.toVector3d(), Vector3f.ZERO);
+            this.location = new Location(world.getName(), new Vector3d(pos), (Rotation3f) Rotation3f.ZERO);
         }
 
         public void setTestSubject(String testSubject) {

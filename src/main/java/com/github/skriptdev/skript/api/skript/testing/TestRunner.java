@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.skript.testing.elements.EvtTest.TestConte
 import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandManager;
@@ -23,6 +22,8 @@ import io.github.syst3ms.skriptparser.log.LogType;
 import io.github.syst3ms.skriptparser.parsing.ScriptLoader;
 import io.github.syst3ms.skriptparser.registration.SkriptAddon;
 import io.github.syst3ms.skriptparser.variables.Variables;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -63,11 +64,11 @@ public class TestRunner {
             this.world.execute(() -> {
                 ISpawnProvider spawnProvider = this.world.getWorldConfig().getSpawnProvider();
                 Transform spawnPoint = spawnProvider.getSpawnPoint(this.world, UUID.randomUUID());
-                Vector3i pos = spawnPoint.getPosition().toVector3i();
+                Vector3i pos = new Vector3i(spawnPoint.getPosition(), RoundingMode.FLOOR);
 
 
-                for (int x = pos.getX() - 64; x < pos.getX() + 64; x += 32) {
-                    for (int z = pos.getZ() - 64; z < pos.getZ() + 64; z += 32) {
+                for (int x = pos.x() - 64; x < pos.x() + 64; x += 32) {
+                    for (int z = pos.z() - 64; z < pos.z() + 64; z += 32) {
                         long index = ChunkUtil.indexChunkFromBlock(x, z);
                         WorldChunk chunk = this.world.getChunk(index);
                         chunk.addKeepLoaded();

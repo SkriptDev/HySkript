@@ -3,7 +3,7 @@ package com.github.skriptdev.skript.plugin.elements.effects.entity;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry.NPCRole;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -56,10 +56,10 @@ public class EffSpawnEntity extends Effect {
 
         Store<EntityStore> store = world.getEntityStore().getStore();
 
-        Vector3f rotation = location.getRotation().clone();
-        if (Float.isNaN(rotation.getX())) rotation = Vector3f.ZERO;
+        Rotation3f rotation = location.getRotation();
+        if (Float.isNaN(rotation.x())) rotation = (Rotation3f) Rotation3f.ZERO;
 
-        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition().clone(), rotation, null, null, null);
+        NPCPlugin.get().spawnEntity(store, roleSingle.get().index(), location.getPosition(), rotation, null, null, null);
     }
 
     @Override

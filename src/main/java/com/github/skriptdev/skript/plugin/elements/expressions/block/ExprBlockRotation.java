@@ -2,13 +2,13 @@ package com.github.skriptdev.skript.plugin.elements.expressions.block;
 
 import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
-import com.hypixel.hytale.math.vector.Vector3i;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import io.github.syst3ms.skriptparser.util.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3i;
 
 import java.util.Optional;
 

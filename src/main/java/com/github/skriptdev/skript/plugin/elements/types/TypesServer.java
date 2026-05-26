@@ -7,10 +7,10 @@ import com.google.gson.JsonElement;
 import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.Vector2f;
+import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.math.vector.Vector3dUtil;
+import com.hypixel.hytale.math.vector.Vector3fUtil;
+import com.hypixel.hytale.math.vector.Vector3iUtil;
 import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.protocol.packets.worldmap.ContextMenuItem;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -26,6 +26,10 @@ import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 public class TypesServer {
 
@@ -50,7 +54,7 @@ public class TypesServer {
             .name("Command Sender")
             .description("Represents a command sender such as a player or the console.")
             .since("1.0.0")
-            .toStringFunction(CommandSender::getDisplayName)
+            .toStringFunction(CommandSender::getUsername)
             .register();
         registration.newType(ContextMenuItem.class, "contextmenuitem", "contextMenuItem@s")
             .name("Context Menu Item")
@@ -115,14 +119,15 @@ public class TypesServer {
             .serializer(new TypeSerializer<>() {
                 @Override
                 public JsonElement serialize(@NotNull Gson gson, @NotNull Vector3f value) {
-                    BsonDocument encode = Vector3f.CODEC.encode(value, new ExtraInfo());
+
+                    BsonDocument encode = Vector3fUtil.CODEC.encode(value, new ExtraInfo());
                     return gson.fromJson(encode.toJson(), JsonElement.class);
                 }
 
                 @Override
                 public Vector3f deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
                     BsonDocument decode = BsonDocument.parse(element.toString());
-                    return Vector3f.CODEC.decode(decode, new ExtraInfo());
+                    return Vector3fUtil.CODEC.decode(decode, new ExtraInfo());
                 }
             })
             .register();
@@ -134,14 +139,14 @@ public class TypesServer {
             .serializer(new TypeSerializer<>() {
                 @Override
                 public JsonElement serialize(@NotNull Gson gson, @NotNull Vector3d value) {
-                    BsonDocument encode = Vector3d.CODEC.encode(value, new ExtraInfo());
+                    BsonDocument encode = Vector3dUtil.CODEC.encode(value, new ExtraInfo());
                     return gson.fromJson(encode.toJson(), JsonElement.class);
                 }
 
                 @Override
                 public Vector3d deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
                     BsonDocument decode = BsonDocument.parse(element.toString());
-                    return Vector3d.CODEC.decode(decode, new ExtraInfo());
+                    return Vector3dUtil.CODEC.decode(decode, new ExtraInfo());
                 }
             })
             .register();
@@ -153,14 +158,14 @@ public class TypesServer {
             .serializer(new TypeSerializer<>() {
                 @Override
                 public JsonElement serialize(@NotNull Gson gson, @NotNull Vector3i value) {
-                    BsonDocument encode = Vector3i.CODEC.encode(value, new ExtraInfo());
+                    BsonDocument encode = Vector3iUtil.CODEC.encode(value, new ExtraInfo());
                     return gson.fromJson(encode.toJson(), JsonElement.class);
                 }
 
                 @Override
                 public Vector3i deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
                     BsonDocument decode = BsonDocument.parse(element.toString());
-                    return Vector3i.CODEC.decode(decode, new ExtraInfo());
+                    return Vector3iUtil.CODEC.decode(decode, new ExtraInfo());
                 }
             })
             .register();
@@ -177,8 +182,8 @@ public class TypesServer {
                         // This shouldn't be null, but let's be safe
                         bsonDocument.put("world", new BsonString(world));
                     }
-                    bsonDocument.put("position", Vector3d.CODEC.encode(location.getPosition(), new ExtraInfo()));
-                    bsonDocument.put("rotation", Vector3f.CODEC.encode(location.getRotation(), new ExtraInfo()));
+                    bsonDocument.put("position", Vector3dUtil.CODEC.encode(location.getPosition(), new ExtraInfo()));
+                    bsonDocument.put("rotation", Rotation3f.CODEC.encode(location.getRotation(), new ExtraInfo()));
 
                     return gson.fromJson(bsonDocument.toJson(), JsonElement.class);
                 }
@@ -186,8 +191,8 @@ public class TypesServer {
                 @Override
                 public Location deserialize(@NotNull Gson gson, @NotNull JsonElement element) {
                     BsonDocument decode = BsonDocument.parse(element.toString());
-                    Vector3d position = Vector3d.CODEC.decode(decode.get("position"), new ExtraInfo());
-                    Vector3f rotation = Vector3f.CODEC.decode(decode.get("rotation"), new ExtraInfo());
+                    Vector3d position = Vector3dUtil.CODEC.decode(decode.get("position"), new ExtraInfo());
+                    Rotation3f rotation = Rotation3f.CODEC.decode(decode.get("rotation"), new ExtraInfo());
 
                     String world = null;
                     if (decode.containsKey("world")) {

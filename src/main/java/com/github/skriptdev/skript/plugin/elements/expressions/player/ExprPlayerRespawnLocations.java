@@ -2,7 +2,6 @@ package com.github.skriptdev.skript.plugin.elements.expressions.player;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.data.PlayerConfigData;
 import com.hypixel.hytale.server.core.entity.entities.player.data.PlayerRespawnPointData;
@@ -13,6 +12,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.Collections;

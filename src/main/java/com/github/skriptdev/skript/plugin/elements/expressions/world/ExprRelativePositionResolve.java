@@ -2,9 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.expressions.world;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.command.system.arguments.types.RelativeDoublePosition;
 import com.hypixel.hytale.server.core.command.system.arguments.types.RelativeIntPosition;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -13,6 +11,8 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 public class ExprRelativePositionResolve implements Expression<Location> {
 
@@ -50,14 +50,14 @@ public class ExprRelativePositionResolve implements Expression<Location> {
         World world = Universe.get().getWorld(location.getWorld());
         if (world == null) return null;
 
-        Vector3f rotation = location.getRotation().clone();
+        Rotation3f rotation = location.getRotation();
         Location relativeLocation;
         if (o instanceof RelativeDoublePosition d) {
-            Vector3d pos = d.getRelativePosition(location.getPosition().clone(), world);
+            Vector3d pos = d.getRelativePosition(location.getPosition(), world);
             relativeLocation = new Location(location.getWorld(), pos, rotation);
         } else if (o instanceof RelativeIntPosition i) {
-            Vector3i pos = i.getBlockPosition(location.getPosition().clone(), world.getChunkStore());
-            relativeLocation = new Location(location.getWorld(), pos.toVector3d(), rotation);
+            Vector3i pos = i.getBlockPosition(location.getPosition(), world.getChunkStore());
+            relativeLocation = new Location(location.getWorld(), new Vector3d(pos), rotation);
         } else {
             return null;
         }

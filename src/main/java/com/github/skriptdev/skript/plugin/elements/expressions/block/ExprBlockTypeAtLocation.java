@@ -1,7 +1,6 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.block;
 
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -11,6 +10,8 @@ import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.Optional;
 
@@ -57,7 +58,7 @@ public class ExprBlockTypeAtLocation implements Expression<BlockType> {
             Location location = this.loc.getSingle(ctx).orElse(null);
             if (location != null) {
                 World world = Universe.get().getWorld(location.getWorld());
-                Vector3i vector3i = location.getPosition().toVector3i();
+                Vector3i vector3i = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
                 if (world != null)
                     return new BlockType[]{world.getBlockType(vector3i)};
             }
@@ -84,15 +85,15 @@ public class ExprBlockTypeAtLocation implements Expression<BlockType> {
             Location location = this.loc.getSingle(ctx).orElse(null);
             if (location == null) return;
             World world = Universe.get().getWorld(location.getWorld());
-            Vector3i vector3i = location.getPosition().toVector3i();
+            Vector3i vector3i = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
             if (world != null)
-                world.setBlock(vector3i.getX(), vector3i.getY(), vector3i.getZ(), type.getId());
+                world.setBlock(vector3i.x(), vector3i.y(), vector3i.z(), type.getId());
         } else if (this.pos != null && this.world != null) {
             Vector3i pos = this.pos.getSingle(ctx).orElse(null);
             World world = this.world.getSingle(ctx).orElse(null);
             if (pos == null || world == null) return;
 
-            world.setBlock(pos.getX(), pos.getY(), pos.getZ(), type.getId());
+            world.setBlock(pos.x(), pos.y(), pos.z(), type.getId());
         }
     }
 

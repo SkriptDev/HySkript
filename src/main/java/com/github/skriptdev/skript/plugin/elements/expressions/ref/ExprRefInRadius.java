@@ -1,11 +1,11 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.ref;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityReferenceUtils;
+import com.github.skriptdev.skript.api.hytale.utils.LocationUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -13,6 +13,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +87,10 @@ public class ExprRefInRadius implements Expression<Ref> {
             if (world == null) return null;
             Store<EntityStore> store = world.getEntityStore().getStore();
 
-            Vector3d min = Vector3d.min(loc1.getPosition(), loc2.getPosition());
-            Vector3d max = Vector3d.max(loc1.getPosition(), loc2.getPosition());
+            loc1 = LocationUtils.clone(loc1);
+            loc2 = LocationUtils.clone(loc2);
+            Vector3d min = loc1.getPosition().min(loc2.getPosition());
+            Vector3d max = loc1.getPosition().max(loc2.getPosition());
 
             List<Ref<EntityStore>> refsInBox = EntityReferenceUtils.getRefsInBox(min, max, store);
             refs.addAll(refsInBox);

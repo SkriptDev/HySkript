@@ -5,7 +5,6 @@ import com.github.skriptdev.skript.api.utils.Utils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.Entity;
@@ -21,6 +20,8 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.Objects;
 
@@ -91,8 +92,8 @@ public class EffInteraction extends Effect {
         if (this.location != null) {
             Location location = this.location.getSingle(ctx).orElse(null);
             if (location != null) {
-                Vector3i position = location.getPosition().toVector3i();
-                blockPosition = new BlockPosition(position.getX(), position.getY(), position.getZ());
+                Vector3i position = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
+                blockPosition = new BlockPosition(position.x(), position.y(), position.z());
             } else {
                 blockPosition = null;
             }

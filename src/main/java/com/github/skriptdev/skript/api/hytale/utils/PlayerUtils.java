@@ -4,7 +4,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.spatial.SpatialResource;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
@@ -14,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,8 +147,8 @@ public class PlayerUtils {
         Store<EntityStore> store = world.getEntityStore().getStore();
         if (store == null) return List.of();
 
-        Vector3d min = Vector3d.min(loc1.getPosition(), loc2.getPosition());
-        Vector3d max = Vector3d.max(loc1.getPosition(), loc2.getPosition());
+        Vector3d min = loc1.getPosition().min(loc2.getPosition());
+        Vector3d max = loc1.getPosition().max(loc2.getPosition());
 
         List<Ref<EntityStore>> results = SpatialResource.getThreadLocalReferenceList();
         SpatialResource<Ref<EntityStore>, EntityStore> playerSpatialResource = store.getResource(EntityModule.get()
@@ -161,6 +161,12 @@ public class PlayerUtils {
             if (player != null) players.add(player);
         }
         return players;
+    }
+
+    public static String getUsername(Player player) {
+        PlayerRef playerRef = getPlayerRef(player);
+        assert playerRef != null;
+        return playerRef.getUsername();
     }
 
 }

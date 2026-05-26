@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -12,6 +11,8 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 public class ExprHighestBlock implements Expression<Object> {
 
@@ -48,14 +49,14 @@ public class ExprHighestBlock implements Expression<Object> {
         World world = Universe.get().getWorld(worldName);
         if (world == null) return null;
 
-        Vector3i pos = location.getPosition().toVector3i().clone();
-        int x = pos.getX();
-        int z = pos.getZ();
+        Vector3i pos = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
+        int x = pos.x();
+        int z = pos.z();
         WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
         if (chunk == null) return null;
 
         short height = chunk.getHeight(x, z);
-        pos.setY(height);
+        pos.setComponent(1, height);
         if (this.pattern == 1) {
             return new Number[]{height};
         } else if (this.pattern == 2) {

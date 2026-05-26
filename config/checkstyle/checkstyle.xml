@@ -6,6 +6,7 @@
 <module name="Checker">
     <module name="LineLength">
         <property name="max" value="140"/>
+        <property name="ignorePattern" value="^.*&quot;.*&quot;.*$"/>
     </module>
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>

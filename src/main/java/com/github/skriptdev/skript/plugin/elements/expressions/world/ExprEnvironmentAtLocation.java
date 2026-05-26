@@ -4,7 +4,6 @@ import com.github.skriptdev.skript.api.hytale.utils.AssetStoreUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -15,6 +14,8 @@ import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,18 +59,18 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
             Location loc2 = this.loc2.getSingle(ctx).orElse(null);
             if (loc2 == null) return null;
 
-            Vector3i pos1 = loc1.getPosition().toVector3i();
-            Vector3i pos2 = loc2.getPosition().toVector3i();
+            Vector3i pos1 = new Vector3i(loc1.getPosition(), RoundingMode.FLOOR);
+            Vector3i pos2 = new Vector3i(loc2.getPosition(), RoundingMode.FLOOR);
 
-            Vector3i posLow = Vector3i.min(pos1, pos2);
-            Vector3i posHigh = Vector3i.max(pos1, pos2);
+            Vector3i posLow = pos1.min(pos2);
+            Vector3i posHigh = pos1.max(pos2);
 
             List<Environment> environments = new ArrayList<>();
-            for (int x = posLow.getX(); x < posHigh.getX(); x++) {
-                for (int z = posLow.getZ(); x < posHigh.getZ(); x++) {
+            for (int x = posLow.x(); x < posHigh.x(); x++) {
+                for (int z = posLow.z(); x < posHigh.z(); x++) {
                     long chunkIndex = ChunkUtil.indexChunk(x, z);
 
-                    for (int y = posLow.getY(); x < posHigh.getY(); x++) {
+                    for (int y = posLow.y(); x < posHigh.y(); x++) {
                         WorldChunk chunk = world.getChunk(chunkIndex);
                         if (chunk == null) continue;
 
@@ -88,7 +89,7 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
             BlockChunk blockChunk = getBlockChunk(loc1);
             if (blockChunk == null) return null;
 
-            Vector3i position = loc1.getPosition().toVector3i();
+            Vector3i position = new Vector3i(loc1.getPosition(), RoundingMode.FLOOR);
             int id = blockChunk.getEnvironment(position);
             return new Environment[]{AssetStoreUtils.getEnvironment(id)};
         }
@@ -118,20 +119,20 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
             Location loc2 = this.loc2.getSingle(ctx).orElse(null);
             if (loc2 == null) return;
 
-            Vector3i pos1 = loc1.getPosition().toVector3i();
-            Vector3i pos2 = loc2.getPosition().toVector3i();
+            Vector3i pos1 = new Vector3i(loc1.getPosition(), RoundingMode.FLOOR);
+            Vector3i pos2 = new Vector3i(loc2.getPosition(), RoundingMode.FLOOR);
 
-            Vector3i posLow = Vector3i.min(pos1, pos2);
-            Vector3i posHigh = Vector3i.max(pos1, pos2);
+            Vector3i posLow = pos1.min(pos2);
+            Vector3i posHigh = pos1.max(pos2);
 
             List<Long> chunkIndexes = new ArrayList<>();
-            for (int x = posLow.getX(); x < posHigh.getX(); x++) {
-                for (int z = posLow.getZ(); z < posHigh.getZ(); z++) {
+            for (int x = posLow.x(); x < posHigh.x(); x++) {
+                for (int z = posLow.z(); z < posHigh.z(); z++) {
                     long chunkIndex = ChunkUtil.indexChunk(x, z);
                     if (!chunkIndexes.contains(chunkIndex)) {
                         chunkIndexes.add(chunkIndex);
                     }
-                    for (int y = posLow.getY(); y < posHigh.getY(); y++) {
+                    for (int y = posLow.y(); y < posHigh.y(); y++) {
                         WorldChunk chunk = world.getChunk(chunkIndex);
                         if (chunk == null) continue;
 
@@ -150,11 +151,11 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
             BlockChunk blockChunk = getBlockChunk(loc1);
             if (blockChunk == null) return;
 
-            Vector3i position = loc1.getPosition().toVector3i();
+            Vector3i position = new Vector3i(loc1.getPosition(), RoundingMode.FLOOR);
 
-            int x = position.getX();
-            int y = position.getY();
-            int z = position.getZ();
+            int x = position.x();
+            int y = position.y();
+            int z = position.z();
 
             blockChunk.setEnvironment(x, y, z, index);
 
@@ -168,9 +169,9 @@ public class ExprEnvironmentAtLocation implements Expression<Environment> {
         World world = Universe.get().getWorld(worldName);
         if (world == null) return null;
 
-        Vector3i position = location.getPosition().toVector3i();
+        Vector3i position = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
 
-        WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(position.getX(), position.getZ()));
+        WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(position.x(), position.z()));
         if (chunk == null) return null;
 
         return chunk.getBlockChunk();

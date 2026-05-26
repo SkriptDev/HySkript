@@ -1,12 +1,12 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
+import com.github.skriptdev.skript.api.hytale.utils.LocationUtils;
 import com.github.skriptdev.skript.api.hytale.utils.PlayerUtils;
 import com.github.skriptdev.skript.api.skript.registration.NPCRegistry;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -19,6 +19,7 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,8 +143,11 @@ public class ExprEntitiesInRadius implements Expression<Entity> {
                 return PlayerUtils.getPlayersInCuboid(loc1, loc2).toArray(Player[]::new);
             }
 
-            Vector3d min = Vector3d.min(loc1.getPosition(), loc2.getPosition());
-            Vector3d max = Vector3d.max(loc1.getPosition(), loc2.getPosition());
+            loc1 = LocationUtils.clone(loc1);
+            loc2 = LocationUtils.clone(loc2);
+
+            Vector3d min = loc1.getPosition().min(loc2.getPosition());
+            Vector3d max = loc1.getPosition().max(loc2.getPosition());
 
             for (Ref<EntityStore> allEntitiesInBox : TargetUtil.getAllEntitiesInBox(min, max, store)) {
                 Entity entity = EntityUtils.getEntity(allEntitiesInBox, store);

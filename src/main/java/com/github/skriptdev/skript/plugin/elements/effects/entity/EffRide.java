@@ -4,12 +4,11 @@ import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.hytale.utils.StoreUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.builtin.mounts.MountedComponent;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.MountController;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
@@ -19,6 +18,8 @@ import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 public class EffRide extends Effect {
 
@@ -70,7 +71,7 @@ public class EffRide extends Effect {
         // Already mounted
         if (component != null) return;
 
-        Vector3f offset = Vector3f.ZERO;
+        Vector3f offset = VectorUtils.ZERO_3f;
         if (this.offset != null) {
             Vector3f vector3f = this.offset.getSingle(ctx).orElse(null);
             if (vector3f != null) offset = vector3f;
@@ -79,7 +80,8 @@ public class EffRide extends Effect {
         if (vehicle instanceof Entity entity) {
             Ref<EntityStore> vehicleRef = entity.getReference();
 
-            MountedComponent comp = new MountedComponent(vehicleRef, offset, MountController.Minecart);
+            MountedComponent comp = new MountedComponent(vehicleRef,
+                VectorUtils.rotFromVec3f(offset), MountController.Minecart);
             EntityUtils.addComponent(passenger, MountedComponent.getComponentType(), comp);
         } else if (vehicle instanceof Block block) {
 
@@ -90,9 +92,9 @@ public class EffRide extends Effect {
             CommandBuffer<EntityStore> commandBuffer = StoreUtils.getCommandBuffer(store);
 
             Vector3i pos = block.getPos();
-            Vector3f add = pos.toVector3f().add(offset);
 
             // TODO broken, figure this out
+            //Vector3f add = pos.toVector3f().add(offset);
             //BlockMountAPI.mountOnBlock(passengerRef, commandBuffer, pos, add);
         }
     }

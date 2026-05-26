@@ -3,10 +3,10 @@ package com.github.skriptdev.skript.plugin.elements.sections.entity;
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.event.RefContext;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
@@ -22,6 +22,7 @@ import io.github.syst3ms.skriptparser.parsing.ParserState;
 import io.github.syst3ms.skriptparser.util.Pair;
 import io.github.syst3ms.skriptparser.variables.Variables;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -105,10 +106,10 @@ public class SecDropItem extends CodeSection {
             if (single.isPresent()) {
                 velocity = single.get();
             } else {
-                velocity = Vector3f.ZERO;
+                velocity = VectorUtils.ZERO_3f;
             }
         } else {
-            velocity = Vector3f.ZERO;
+            velocity = VectorUtils.ZERO_3f;
         }
 
         float pickupDelay;

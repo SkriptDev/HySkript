@@ -1,13 +1,14 @@
 package com.github.skriptdev.skript.plugin.elements.expressions.other;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.github.skriptdev.skript.api.utils.VectorUtils;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3f;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.types.changers.ChangeMode;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class ExprLocationRotation implements Expression<Vector3f> {
         Location location = this.location.getSingle(ctx).orElse(null);
         if (location == null) return null;
 
-        return new Vector3f[]{location.getRotation()};
+        return new Vector3f[]{VectorUtils.vecFromRot3f(location.getRotation())};
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ExprLocationRotation implements Expression<Vector3f> {
             return;
         }
 
-        this.location.getSingle(ctx).ifPresent(loc -> loc.setRotation(vector3f));
+        this.location.getSingle(ctx).ifPresent(loc -> loc.setRotation(VectorUtils.rotFromVec3f(vector3f)));
     }
 
     @Override

@@ -8,8 +8,7 @@ import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.asset.type.model.config.Model;
@@ -43,6 +42,8 @@ import com.hypixel.hytale.server.npc.systems.RoleChangeSystem;
 import io.github.syst3ms.skriptparser.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -249,10 +250,10 @@ public class EntityUtils {
         }
 
         Vector3d position = location.getPosition();
-        Vector3f rotation = location.getRotation();
+        Rotation3f rotation = location.getRotation();
 
         Holder<EntityStore> itemEntityHolder = ItemComponent.generateItemDrop(store, itemStack, position, rotation,
-            velocity.getX(), velocity.getY(), velocity.getZ());
+            velocity.x(), velocity.y(), velocity.z());
         if (itemEntityHolder == null) {
             return new Pair<>(null, null);
         }

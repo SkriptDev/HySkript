@@ -4,13 +4,14 @@ import com.github.skriptdev.skript.api.hytale.objects.Block;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.math.block.BlockSphereUtil;
 import com.hypixel.hytale.math.vector.Location;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.syst3ms.skriptparser.lang.Expression;
 import io.github.syst3ms.skriptparser.lang.TriggerContext;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import org.jetbrains.annotations.NotNull;
+import org.joml.RoundingMode;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,9 +69,9 @@ public class ExprBlockSphere implements Expression<Block> {
         World world = Universe.get().getWorld(worldName);
         if (world == null) return blocks.iterator();
 
-        Vector3i pos = location.getPosition().toVector3i();
+        Vector3i pos = new Vector3i(location.getPosition(), RoundingMode.FLOOR);
 
-        BlockSphereUtil.forEachBlock(pos.getX(), pos.getY(), pos.getZ(),
+        BlockSphereUtil.forEachBlock(pos.x(), pos.y(), pos.z(),
             radius, blocks, (i, i1, i2, blocks1) -> {
                 blocks1.add(new Block(world, new Vector3i(i, i1, i2)));
                 return true;
