@@ -83,7 +83,10 @@ public class ExprLockedTarget implements Expression<Object> {
         for (NPCEntity npc : this.npcentities.getArray(ctx)) {
             Role role = npc.getRole();
             assert role != null;
-            MarkedEntitySupport markedEntitySupport = role.getMarkedEntitySupport();
+            Ref<EntityStore> npcRef = npc.getReference();
+            if (npcRef == null) continue;
+
+            MarkedEntitySupport markedEntitySupport = MarkedEntitySupport.get(npcRef, npcRef.getStore());
             markedEntitySupport.setMarkedEntity("LockedTarget", ref);
         }
     }
@@ -95,11 +98,14 @@ public class ExprLockedTarget implements Expression<Object> {
 
     private List<Ref<EntityStore>> getRefs(TriggerContext ctx) {
         List<Ref<EntityStore>> refs = new ArrayList<>();
-        for (NPCEntity entity : this.npcentities.getArray(ctx)) {
-            Role role = entity.getRole();
+        for (NPCEntity npcEntity : this.npcentities.getArray(ctx)) {
+            Role role = npcEntity.getRole();
             assert role != null;
 
-            MarkedEntitySupport markedEntitySupport = role.getMarkedEntitySupport();
+            Ref<EntityStore> npcRef = npcEntity.getReference();
+            if (npcRef == null) continue;
+
+            MarkedEntitySupport markedEntitySupport = MarkedEntitySupport.get(npcRef, npcRef.getStore());
             Ref<EntityStore> lockedTarget = markedEntitySupport.getMarkedEntityRef("LockedTarget");
             refs.add(lockedTarget);
         }

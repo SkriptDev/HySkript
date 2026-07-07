@@ -1,7 +1,9 @@
 package com.github.skriptdev.skript.plugin.elements.effects.entity;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.role.support.CombatSupport;
@@ -48,11 +50,14 @@ public class EffAttackOverrides extends Effect {
             interaction = this.interaction.getSingle(ctx).orElse(null);
         }
 
-        for (NPCEntity entity : this.npcs.getArray(ctx)) {
-            Role role = entity.getRole();
+        for (NPCEntity npcEntity : this.npcs.getArray(ctx)) {
+            Role role = npcEntity.getRole();
             assert role != null;
 
-            CombatSupport combatSupport = role.getCombatSupport();
+            Ref<EntityStore> npcRef = npcEntity.getReference();
+            if (npcRef == null) continue;
+
+            CombatSupport combatSupport = CombatSupport.get(npcRef, npcRef.getStore());
             if (interaction == null) {
                 combatSupport.clearAttackOverrides();
             } else {

@@ -5,6 +5,7 @@ import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Location;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.item.config.ItemTool;
 import com.hypixel.hytale.server.core.asset.type.item.config.ItemToolSpec;
 import com.hypixel.hytale.server.core.entity.ExplosionConfig;
@@ -97,6 +98,7 @@ public class EffExplosion extends Effect {
 
                 ExplosionUtils.performExplosion(ExplodeInteraction.DAMAGE_SOURCE_EXPLOSION,
                     location.getPosition(),
+                    new Rotation3f(),
                     config,
                     null,
                     commandBuffer,

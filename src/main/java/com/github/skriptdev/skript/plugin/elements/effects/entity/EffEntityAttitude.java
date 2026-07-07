@@ -69,9 +69,10 @@ public class EffEntityAttitude extends Effect {
             Role npcRole = npcEntity.getRole();
             if (npcRole == null) continue;
 
-            WorldSupport worldSupport = npcRole.getWorldSupport();
             Ref<EntityStore> npcRef = npcEntity.getReference();
             if (npcRef == null) continue;
+
+            WorldSupport worldSupport = WorldSupport.get(npcRef, npcRef.getStore());
 
             for (Entity target : this.targets.getArray(ctx)) {
                 Ref<EntityStore> targetRef = target.getReference();

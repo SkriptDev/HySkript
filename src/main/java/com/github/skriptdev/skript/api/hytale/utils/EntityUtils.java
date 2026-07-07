@@ -324,7 +324,11 @@ public class EntityUtils {
     public static void clearMarkedEntity(NPCEntity npcEntity, @Nullable Entity target) {
         Role role = npcEntity.getRole();
         assert role != null;
-        MarkedEntitySupport markedEntitySupport = role.getMarkedEntitySupport();
+
+        Ref<EntityStore> npcRef = npcEntity.getReference();
+        if (npcRef == null) return;
+
+        MarkedEntitySupport markedEntitySupport = MarkedEntitySupport.get(npcRef, npcRef.getStore());
         if (target != null) {
             Ref<EntityStore> reference = target.getReference();
             assert reference != null;
