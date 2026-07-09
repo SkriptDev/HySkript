@@ -9,7 +9,7 @@ java.sourceCompatibility = JavaVersion.VERSION_25
 
 group = "com.github.SkriptDev"
 val projectVersion = "1.7.0"
-val hytaleVersion = "0.6.0-pre.6"
+val hytaleVersion = "0.6.0-pre.7"
 // You can find Hytale versions on their maven repo:
 // https://maven.hytale.com/release/com/hypixel/hytale/Server/maven-metadata.xml
 // https://maven.hytale.com/pre-release/com/hypixel/hytale/Server/maven-metadata.xml
