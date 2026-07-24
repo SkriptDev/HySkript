@@ -9,6 +9,7 @@ import com.hypixel.hytale.builtin.mounts.MountedComponent;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector3fUtil;
 import com.hypixel.hytale.protocol.MountController;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.entity.LivingEntity;
@@ -80,8 +81,7 @@ public class EffRide extends Effect {
         if (vehicle instanceof Entity entity) {
             Ref<EntityStore> vehicleRef = entity.getReference();
 
-            MountedComponent comp = new MountedComponent(vehicleRef,
-                VectorUtils.rotFromVec3f(offset), MountController.Minecart);
+            MountedComponent comp = new MountedComponent(vehicleRef, offset, MountController.Minecart);
             EntityUtils.addComponent(passenger, MountedComponent.getComponentType(), comp);
         } else if (vehicle instanceof Block block) {
 
