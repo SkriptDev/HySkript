@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.expressions.entity;
 
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -51,8 +52,10 @@ public class ExprEntityAttitude implements Expression<Attitude> {
         Ref<EntityStore> targetRef = target.getReference();
         if (npcRef == null || targetRef == null) return null;
 
-        WorldSupport worldSupport = role.getWorldSupport();
-        Attitude attitude = worldSupport.getAttitude(npcRef, targetRef, npcRef.getStore());
+        Store<EntityStore> store = npcRef.getStore();
+
+        WorldSupport worldSupport = WorldSupport.get(npcRef, store);
+        Attitude attitude = worldSupport.getAttitude(npcRef, targetRef, store);
         return new Attitude[]{attitude};
     }
 

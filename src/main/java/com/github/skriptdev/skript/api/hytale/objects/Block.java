@@ -264,6 +264,7 @@ public class Block {
                 null,
                 damage,
                 0,
+                false,
                 ref,
                 commandBuffer,
                 chunkStore);
@@ -277,6 +278,7 @@ public class Block {
                 false,
                 damage,
                 0,
+                false,
                 ref,
                 commandBuffer,
                 chunkStore);

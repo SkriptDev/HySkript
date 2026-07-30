@@ -2,6 +2,7 @@ package com.github.skriptdev.skript.plugin.elements.conditions.player;
 
 import com.github.skriptdev.skript.api.hytale.utils.EntityUtils;
 import com.github.skriptdev.skript.api.skript.registration.SkriptRegistration;
+import com.hypixel.hytale.protocol.FlyMode;
 import com.hypixel.hytale.protocol.SavedMovementStates;
 import com.hypixel.hytale.protocol.packets.player.SetMovementStates;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -35,7 +36,7 @@ public class CondPlayerMovementCanFly extends PropertyConditional<Player> {
         return getPerformer().check(ctx, player -> {
             MovementManager component = EntityUtils.getComponent(player, MovementManager.getComponentType());
             assert component != null;
-            return component.getSettings().canFly;
+            return component.getSettings().fly == FlyMode.Allowed;
         }, isNegated());
     }
 
@@ -62,13 +63,13 @@ public class CondPlayerMovementCanFly extends PropertyConditional<Player> {
             assert ref != null;
 
             if (changeMode == ChangeMode.RESET) {
-                component.getSettings().canFly = component.getDefaultSettings().canFly;
+                component.getSettings().fly = component.getDefaultSettings().fly;
             } else if (changeValue != null) {
-                component.getSettings().canFly = changeValue;
+                component.getSettings().fly = changeValue ? FlyMode.Allowed : FlyMode.Disabled;
 
             }
 
-            if (!component.getSettings().canFly) {
+            if (component.getSettings().fly != FlyMode.Allowed) {
                 // Stop the player from actually flying
                 MovementStatesComponent movementStates = EntityUtils.getMovementStatesComponent(player);
                 assert movementStates != null;
